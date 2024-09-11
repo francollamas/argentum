@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "version": "0.6.7"
+  },
+  "savePath": "/Users/franco/Documents/AO/argentum/tools/texpacker/output-normal",
+  "images": [],
+  "folders": [
+    "/Users/franco/Documents/AO/argentum/tools/texpacker/textures-normal"
+  ],
+  "packOptions": {
+    "textureName": "texture",
+    "textureFormat": "png",
+    "removeFileExtension": true,
+    "prependFolderName": false,
+    "base64Export": false,
+    "tinify": false,
+    "tinifyKey": "",
+    "scale": 1,
+    "filter": "none",
+    "exporter": "pixi.js",
+    "fileName": "pack-result",
+    "savePath": "/Users/franco/Documents/AO/argentum/tools/texpacker/output-normal",
+    "width": 1024,
+    "height": 1024,
+    "fixedSize": false,
+    "powerOfTwo": false,
+    "padding": 0,
+    "extrude": 0,
+    "allowRotation": true,
+    "allowTrim": true,
+    "trimMode": "trim",
+    "alphaThreshold": "0",
+    "detectIdentical": true,
+    "packer": "MaxRectsBin",
+    "packerMethod": "BestShortSideFit"
+  }
+}
