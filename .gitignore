@@ -12,10 +12,6 @@ coverage
 dist
 dist-ssr
 src/assets/*
-tools/texpacker/output-normal
-tools/texpacker/output-bigger
-tools/texpacker/textures-normal
-tools/texpacker/textures-bigger
 
 *.local
 
