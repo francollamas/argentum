@@ -51,7 +51,7 @@ async function generatePackedTextures(projectName: string) {
 
         // Execute the command
         const {stdout, stderr} = await execPromise(
-            `free-tex-packer-cli --project ${projectFile} --output ${texturesDir}`,
+            `pnpm free-tex-packer-cli --project ${projectFile} --output ${texturesDir}`,
         )
 
         // Log the output and error (if any)
