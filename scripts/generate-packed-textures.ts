@@ -11,7 +11,7 @@ const execPromise = util.promisify(exec)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Function to generate the JSON file with list of JSON filenames
+/*// Function to generate the JSON file with list of JSON filenames
 async function generateTexturesFile() {
     // Directory containing the JSON files
     const texturesDir = path.join(__dirname, '../src/assets/textures')
@@ -37,6 +37,56 @@ async function generateTexturesFile() {
     } catch (error) {
         console.error('Error generating textures.json:', error)
     }
+}*/
+
+async function generateImportsFile() {
+    const texturesDir = path.join(__dirname, '../src/assets/textures')
+
+    // Output JSON file
+    const outputFilePath = path.join(__dirname, '../src/assets.ts')
+
+    try {
+        const files = await fs.promises.readdir(texturesDir);
+
+        // Filtrar los archivos PNG y JSON
+        const pngFiles = files.filter(file => file.endsWith('.png'));
+        const jsonFiles = files.filter(file => file.endsWith('.json'));
+
+        // Encontrar pares de archivos PNG y JSON
+        const textureData = pngFiles
+            .map(png => {
+                const baseName = path.basename(png, '.png');
+                const jsonFile = jsonFiles.find(json => json.startsWith(baseName));
+                if (jsonFile) {
+                    return {baseName, png, json: jsonFile};
+                }
+                return null;
+            })
+            .filter(Boolean) as { baseName: string; png: string; json: string }[];
+
+        // Generar las líneas de import y el listado de pares
+        let importsContent = `import { TextureData } from './types';\n\n`;
+        let pairsArray = `export const textureData: TextureData[] = [\n`;
+
+        textureData.forEach(({baseName, png, json}) => {
+            baseName = baseName.replace("-", "")
+            const importLinePng = `import ${baseName}Png from './assets/textures/${png}';\n`;
+            const importLineJson = `import ${baseName}Json from './assets/textures/${json}';\n`;
+
+            importsContent += importLinePng;
+            importsContent += importLineJson;
+
+            pairsArray += `  { json: ${baseName}Json, png: ${baseName}Png },\n`;
+        });
+
+        pairsArray += `];\n`;
+
+        // Escribir el archivo de imports
+        await fs.promises.writeFile(outputFilePath, importsContent + '\n' + pairsArray);
+        console.log(`File ${outputFilePath} generated successfully.`);
+    } catch (error) {
+        console.error('Error generating imports:', error);
+    }
 }
 
 // Function to run the pnpm command
@@ -51,7 +101,7 @@ async function generatePackedTextures(projectName: string) {
 
         // Execute the command
         const {stdout, stderr} = await execPromise(
-            `pnpm free-tex-packer-cli --project ${projectFile} --output ${texturesDir}`,
+            `free-tex-packer-cli --project ${projectFile} --output ${texturesDir}`,
         )
 
         // Log the output and error (if any)
@@ -62,6 +112,7 @@ async function generatePackedTextures(projectName: string) {
     }
 }
 
-await generatePackedTextures('normal')
-await generatePackedTextures('bigger')
-await generateTexturesFile()
+//await generatePackedTextures('normal')
+//await generatePackedTextures('bigger')
+//await generateTexturesFile()
+await generateImportsFile()
