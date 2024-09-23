@@ -2,10 +2,10 @@
   "meta": {
     "version": "0.6.7"
   },
-  "savePath": "/Users/franco/Documents/AO/argentum/tools/texpacker/output-bigger",
+  "savePath": "../../src/assets/textures",
   "images": [],
   "folders": [
-    "/Users/franco/Documents/AO/argentum/tools/texpacker/textures-bigger"
+    "./textures-bigger"
   ],
   "packOptions": {
     "textureName": "textureb",
@@ -19,7 +19,7 @@
     "filter": "none",
     "exporter": "pixi.js",
     "fileName": "pack-result",
-    "savePath": "/Users/franco/Documents/AO/argentum/tools/texpacker/output-bigger",
+    "savePath": "../../src/assets/textures",
     "width": 2048,
     "height": 2048,
     "fixedSize": false,

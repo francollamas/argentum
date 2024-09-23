@@ -2,10 +2,10 @@
   "meta": {
     "version": "0.6.7"
   },
-  "savePath": "/Users/franco/Documents/AO/argentum/tools/texpacker/output-normal",
+  "savePath": "../../src/assets/textures",
   "images": [],
   "folders": [
-    "/Users/franco/Documents/AO/argentum/tools/texpacker/textures-normal"
+    "./textures-normal"
   ],
   "packOptions": {
     "textureName": "texture",
@@ -19,7 +19,7 @@
     "filter": "none",
     "exporter": "pixi.js",
     "fileName": "pack-result",
-    "savePath": "/Users/franco/Documents/AO/argentum/tools/texpacker/output-normal",
+    "savePath": "../../src/assets/textures",
     "width": 1024,
     "height": 1024,
     "fixedSize": false,
