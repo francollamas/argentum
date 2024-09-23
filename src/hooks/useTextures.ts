@@ -34,6 +34,7 @@ export const useTextures = () => {
 
                 //const imageFile = await loadImage(jsonFile.meta?.image)
                 const imageTexture = await Assets.load(textureData.png)
+                console.log("imagen cargada!" + textureData.png)
 
                 const spritesheet = new Spritesheet(imageTexture, textureData.json)
                 const parsedSpritesheet = await spritesheet.parse()
