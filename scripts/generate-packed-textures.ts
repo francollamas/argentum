@@ -65,17 +65,30 @@ async function generateImportsFile() {
 // Function to run the pnpm command
 async function generatePackedTextures(projectName: string) {
     try {
-        const projectFile = path.join(
+        const projectFileName = path.join(
             __dirname,
             `../tools/texpacker/${projectName}.ftpp`,
         )
+
+        const projectFile = await fs.promises.readFile(projectFileName, 'utf-8');
+        const project = JSON.parse(projectFile)
+        const imageFolderFileName = path.join(__dirname, `../tools/texpacker/textures-${projectName}`)
+        project.folders = [imageFolderFileName]
+
+        const tempProjectFileName = path.join(
+            __dirname,
+            `../tools/texpacker/temp.ftpp`,
+        )
+        await fs.promises.writeFile(tempProjectFileName, JSON.stringify(project))
 
         const texturesDir = path.join(__dirname, '../src/assets/textures')
 
         // Execute the command
         const {stdout, stderr} = await execPromise(
-            `free-tex-packer-cli --project ${projectFile} --output ${texturesDir}`,
+            `free-tex-packer-cli --project ${tempProjectFileName} --output ${texturesDir}`,
         )
+
+        await fs.promises.unlink(tempProjectFileName)
 
         // Log the output and error (if any)
         if (stdout) console.log('Output:', stdout)

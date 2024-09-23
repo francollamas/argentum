@@ -4,9 +4,7 @@
   },
   "savePath": "../../src/assets/textures",
   "images": [],
-  "folders": [
-    "/home/runner/work/argentum/argentum/tools/texpacker/textures-bigger"
-  ],
+  "folders": [],
   "packOptions": {
     "textureName": "textureb",
     "textureFormat": "png",
