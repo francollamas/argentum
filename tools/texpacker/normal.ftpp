@@ -5,7 +5,7 @@
   "savePath": "../../src/assets/textures",
   "images": [],
   "folders": [
-    "textures-normal"
+    "/home/runner/work/argentum/argentum/tools/texpacker/textures-normal"
   ],
   "packOptions": {
     "textureName": "texture",
