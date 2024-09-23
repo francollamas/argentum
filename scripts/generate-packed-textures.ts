@@ -11,33 +11,6 @@ const execPromise = util.promisify(exec)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-/*// Function to generate the JSON file with list of JSON filenames
-async function generateTexturesFile() {
-    // Directory containing the JSON files
-    const texturesDir = path.join(__dirname, '../src/assets/textures')
-
-    // Output JSON file
-    const outputFile = path.join(texturesDir, 'textures.json')
-
-    try {
-        // Read files in the directory
-        const files = await fs.promises.readdir(texturesDir)
-
-        // Filter out only JSON files and exclude the output file itself
-        const jsonFiles = files.filter(
-            (file) => file.endsWith('.json') && file !== 'textures.json',
-        ).map(
-            (file) => file.split(".")[0]
-        )
-
-        // Write the list of JSON filenames to the output file
-        await fs.promises.writeFile(outputFile, JSON.stringify(jsonFiles, null, 2))
-
-        console.log('textures.json has been created with the list of JSON files.')
-    } catch (error) {
-        console.error('Error generating textures.json:', error)
-    }
-}*/
 
 async function generateImportsFile() {
     const texturesDir = path.join(__dirname, '../src/assets/textures')
@@ -112,7 +85,6 @@ async function generatePackedTextures(projectName: string) {
     }
 }
 
-//await generatePackedTextures('normal')
-//await generatePackedTextures('bigger')
-//await generateTexturesFile()
+await generatePackedTextures('normal')
+await generatePackedTextures('bigger')
 await generateImportsFile()
