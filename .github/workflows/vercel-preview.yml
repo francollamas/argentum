@@ -34,7 +34,7 @@ jobs:
         run: pwd
 
       - name: PROBANDO
-        run: cd ./src/assets/textures; ls -l
+        run: ls -l src
 
 
       - name: Pull Vercel Environment Information
