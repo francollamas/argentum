@@ -2,21 +2,6 @@ import {useCallback, useEffect, useState} from "react";
 import {Assets, Spritesheet, Texture} from "pixi.js";
 import {textureData as textureDataList} from "../assets.ts";
 
-// const loadJson = async <T>(fileName: string): Promise<T> => {
-//     const file = await import(`../assets/textures/${fileName}.json`);
-//     return file.default
-// }
-//
-// const loadImage = async (fileName: string): Promise<HTMLImageElement> => {
-//     const imageUrl = new URL(`../assets/textures/${fileName}`, import.meta.url).href
-//     return new Promise((resolve, reject) => {
-//         const img = new Image()
-//         img.src = imageUrl
-//         img.onload = () => resolve(img)
-//         img.onerror = (error) => reject(error)
-//     });
-// };
-
 export const useTextures = () => {
     const [textureRecord, setTextureRecord] = useState<Record<string, Texture>>({})
     const [isLoaded, setLoaded] = useState(false)
@@ -34,7 +19,6 @@ export const useTextures = () => {
 
                 //const imageFile = await loadImage(jsonFile.meta?.image)
                 const imageTexture = await Assets.load(textureData.png)
-                console.log("imagen cargada!" + textureData.png)
 
                 const spritesheet = new Spritesheet(imageTexture, textureData.json)
                 const parsedSpritesheet = await spritesheet.parse()

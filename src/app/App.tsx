@@ -19,7 +19,7 @@ const App: FC = () => {
 
     return (
         <container x={150} y={150}>
-            <pixiText text={"Hola me llamo franco!"} style={styly}/>
+            <pixiText text={"Texto de prueba!"} style={styly}/>
             {isLoaded && <Example getTexture={getTexture}/>}
         </container>
     )

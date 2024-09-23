@@ -12,7 +12,7 @@
     "tauri": "tauri",
     "linter-check": "biome check .",
     "linter": "biome check --fix --unsafe .",
-    "generate-packed-textures": "npx tsx scripts/generate-packed-textures.ts"
+    "generate-assets": "npx tsx scripts/generate-assets.ts"
   },
   "dependencies": {
     "@pixi/react": "8.0.0-beta.14",
