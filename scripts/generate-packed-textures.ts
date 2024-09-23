@@ -64,4 +64,4 @@ async function generatePackedTextures(projectName: string) {
 
 await generatePackedTextures('normal')
 await generatePackedTextures('bigger')
-await generateTexturesFile()
+//await generateTexturesFile()
