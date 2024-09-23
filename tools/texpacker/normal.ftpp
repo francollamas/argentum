@@ -5,7 +5,7 @@
   "savePath": "../../src/assets/textures",
   "images": [],
   "folders": [
-    "./textures-normal"
+    "textures-normal"
   ],
   "packOptions": {
     "textureName": "texture",

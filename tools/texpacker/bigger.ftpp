@@ -5,7 +5,7 @@
   "savePath": "../../src/assets/textures",
   "images": [],
   "folders": [
-    "./textures-bigger"
+    "textures-bigger"
   ],
   "packOptions": {
     "textureName": "textureb",
