@@ -1,7 +1,9 @@
 import type {
-    TextureData
+    TextureData,
+    SpritesheetList
 } from "./textureData.ts";
 
 export type {
-    TextureData
+    TextureData,
+    SpritesheetList
 }
