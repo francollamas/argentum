@@ -1,39 +1,34 @@
-import { extend, useAssets } from '@pixi/react'
-import { Container, Sprite } from 'pixi.js'
-import { Texture } from 'pixi.js'
-import clothes from '../assets/clothes.png'
-import gold from '../assets/gold.png'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { addUser, userSelector } from '../store/slice/userSlice'
+import {extend} from '@pixi/react'
+import {Container, Sprite} from 'pixi.js'
 
-extend({ Container, Sprite })
+import {useAppDispatch, useAppSelector} from '../store/hooks'
+import {addUser, userSelector} from '../store/slices/userSlice'
+import {useTexture} from "../hooks/useTexture.ts";
+
+
+extend({Container, Sprite})
 
 export const Example = () => {
-	const users = useAppSelector(userSelector)
-	const dispatch = useAppDispatch()
-	const {
-		assets: [goldTexture, clothesTexture],
-		isSuccess,
-	} = useAssets([gold, clothes])
 
-	const handleAddUser = () => {
-		console.log('clicking!!')
-		const newUser = {
-			id: 'abc',
-			name: 'John',
-			email: 'john@email.com',
-		}
+    const users = useAppSelector(userSelector)
+    const dispatch = useAppDispatch()
+    const tex1 = useTexture("689")
+    const tex2 = useTexture("386")
 
-		dispatch(addUser(newUser))
-	}
+    const handleAddUser = () => {
+        console.log('clicking!!')
+        const newUser = {
+            id: 'abc', name: 'John', email: 'john@email.com',
+        }
 
-	return (
-		<container eventMode='static' onPointerDown={handleAddUser}>
-			{isSuccess && (
-				<sprite
-					texture={users.length % 2 === 0 ? goldTexture : clothesTexture}
-				/>
-			)}
-		</container>
-	)
+        dispatch(addUser(newUser))
+    }
+
+    return (<container>
+        {tex1 && tex2 && <sprite
+            eventMode='static' onPointerDown={handleAddUser}
+            texture={users.length % 2 === 0 ? tex1 : tex2}
+        />}
+
+    </container>)
 }
