@@ -1,7 +1,7 @@
+import { exec } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { exec } from 'node:child_process'
 import util from 'node:util'
 import type { SpritesheetData } from 'pixi.js'
 
@@ -92,26 +92,26 @@ async function generateAssetsFile() {
 		.filter(Boolean) as { baseName: string; png: string; json: string }[]
 
 	// Generate import lines and pairs list
-	let importsContent = `import type { TextureData, SpritesheetList } from './types';\n`
-	importsContent += `import spritesheetsJson from './assets/textures/spritesheets.json';\n\n`
+	let importsContent = `import spritesheetsJson from './assets/textures/spritesheets.json'\n`
+	importsContent += `import type { SpritesheetList, TextureData } from './types'\n\n`
 
 	let pairsArray = 'export const textureData: TextureData = {\n'
 
 	const spritesheetsJson =
-		'export const spritesheets: SpritesheetList = spritesheetsJson'
+		'export const spritesheets: SpritesheetList = spritesheetsJson\n'
 
 	for (let { baseName, png, json } of textureData) {
 		baseName = baseName.replace('-', '')
-		const importLinePng = `import ${baseName}Png from './assets/textures/${png}';\n`
-		const importLineJson = `import ${baseName}Json from './assets/textures/${json}';\n`
+		const importLinePng = `import ${baseName}Png from './assets/textures/${png}'\n`
+		const importLineJson = `import ${baseName}Json from './assets/textures/${json}'\n`
 
 		importsContent += importLinePng
 		importsContent += importLineJson
 
-		pairsArray += `  ${baseName}: { json: ${baseName}Json, png: ${baseName}Png },\n`
+		pairsArray += `\t${baseName}: { json: ${baseName}Json, png: ${baseName}Png },\n`
 	}
 
-	pairsArray += '};\n'
+	pairsArray += '}\n'
 
 	// Write the imports file
 	const assetsFilePath = path.join(__dirname, '../src/assets.ts')
@@ -121,7 +121,7 @@ async function generateAssetsFile() {
 	)
 }
 
-await generatePackedTextures('normal')
-await generatePackedTextures('bigger')
+//await generatePackedTextures('normal')
+//await generatePackedTextures('bigger')
 await generateSpritesheetFile()
 await generateAssetsFile()

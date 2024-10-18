@@ -1,9 +1,3 @@
-import type {
-    TextureData,
-    SpritesheetList
-} from "./textureData.ts";
+import type { SpritesheetList, TextureData } from './textureData.ts'
 
-export type {
-    TextureData,
-    SpritesheetList
-}
+export type { TextureData, SpritesheetList }

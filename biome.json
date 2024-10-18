@@ -4,7 +4,7 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["dist", "public", "src-tauri"]
+		"ignore": ["dist", "public", "src-tauri", "src/assets", "src/assets.ts"]
 	},
 	"javascript": {
 		"formatter": {
