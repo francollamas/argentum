@@ -11,10 +11,11 @@
 		"coverage": "vitest run --coverage",
 		"tauri": "tauri",
 		"linter-check": "biome check .",
-		"linter": "biome check --fix --unsafe ."
+		"linter": "biome check --fix --unsafe .",
+		"generate-assets": "npx tsx scripts/generate-assets.ts"
 	},
 	"dependencies": {
-		"@pixi/react": "8.0.0-beta.7",
+		"@pixi/react": "8.0.0-beta.14",
 		"@reduxjs/toolkit": "^2.2.7",
 		"@tauri-apps/api": ">=2.0.0-rc.0",
 		"@tauri-apps/plugin-shell": ">=2.0.0-rc.0",
@@ -27,12 +28,14 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@tauri-apps/cli": ">=2.0.0-rc.0",
+		"@types/node": "^22.5.4",
 		"@types/react": "^18.3.3",
 		"@types/react-dom": "^18.3.0",
 		"@vitejs/plugin-react": "^4.3.1",
 		"@vitest/coverage-v8": "^2.0.5",
 		"globals": "^15.9.0",
 		"internal-ip": "^8.0.0",
+		"tsx": "^4.19.0",
 		"typescript": "^5.5.4",
 		"vite": "^5.4.0",
 		"vitest": "^2.0.5"
