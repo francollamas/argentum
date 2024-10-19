@@ -62,6 +62,12 @@ jobs:
         with:
           node-version: lts/*
 
+      - name: Install Free Tex Packer
+        run: pnpm add -g free-tex-packer-cli
+
+      - name: Generate packed textures
+        run: pnpm run generate-assets
+
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -99,6 +105,17 @@ jobs:
         with:
           version: 8
 
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install Free Tex Packer
+        run: pnpm add -g free-tex-packer-cli
+
+      - name: Generate packed textures
+        run: pnpm run generate-assets
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -110,11 +127,6 @@ jobs:
 
       - name: Install NDK
         run: sdkmanager "ndk;27.0.11902837"
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
