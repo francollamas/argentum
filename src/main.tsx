@@ -6,6 +6,31 @@ import App from './app/App.js'
 import { persistor, store } from './store/store.ts'
 import './index.css'
 import { Application } from '@pixi/react'
+import { info, error, warn, debug, attachConsole } from '@tauri-apps/plugin-log'
+
+// with TargetKind::Webview enabled this function will print logs to the browser console
+attachConsole()
+
+// Sobreescribimos las funciones nativas de console
+console.log = async (...args) => {
+	await info(args.join(' '))
+}
+
+console.error = async (...args) => {
+	await error(args.join(' '))
+}
+
+console.warn = async (...args) => {
+	await warn(args.join(' '))
+}
+
+console.debug = async (...args) => {
+	await debug(args.join(' '))
+}
+
+console.info = async (...args) => {
+	await info(args.join(' '))
+}
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
