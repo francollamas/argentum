@@ -121,7 +121,7 @@ async function generateAssetsFile() {
 	)
 }
 
-//await generatePackedTextures('normal')
-//await generatePackedTextures('bigger')
+await generatePackedTextures('normal')
+await generatePackedTextures('bigger')
 await generateSpritesheetFile()
 await generateAssetsFile()
