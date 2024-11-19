@@ -10,8 +10,8 @@ extend({ Container, Sprite })
 export const Example = () => {
 	const users = useAppSelector(userSelector)
 	const dispatch = useAppDispatch()
-	const tex1 = useTexture('689')
-	const tex2 = useTexture('386')
+	const tex1 = useTexture('185')
+	const tex2 = useTexture('335')
 
 	const handleAddUser = () => {
 		console.log('clicking!!')

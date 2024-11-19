@@ -7,6 +7,11 @@ const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM)
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
+	base: './', // Esto asegura que las rutas sean relativas a la raíz del proyecto
+	build: {
+		assetsDir: 'assets', // Especifica la carpeta donde se colocarán los activos
+	},
+
 	plugins: [react()],
 
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
