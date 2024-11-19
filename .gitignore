@@ -12,7 +12,6 @@ coverage
 dist
 dist-ssr
 src/assets/*
-public/assets/*
 
 *.local
 
