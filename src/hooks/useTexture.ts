@@ -22,7 +22,9 @@ export const useTexture = (id: string) => {
 				const spritesheet = new Spritesheet(imageTexture, textureData.json)
 				await spritesheet.parse()
 
-				Assets.cache.set(spritesheetName, spritesheet)
+				if (!Assets.cache.has(spritesheetName)) {
+					Assets.cache.set(spritesheetName, spritesheet)
+				}
 			}
 
 			const spritesheet = Assets.get<Spritesheet>(spritesheetName)
