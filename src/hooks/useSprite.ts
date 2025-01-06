@@ -4,8 +4,10 @@ import { Texture } from 'pixi.js'
 import spritesBin from '../assets/inits/sprites.bin'
 import { TextureManager } from '../managers/textureManager.ts'
 
+
 export const useSprite = (id: string) => {
 	const [textures, setTextures] = useState<Texture[]>([])
+	const [speed, setSpeed] = useState(0)
 
 	useEffect(() => {
 		;(async () => {
@@ -34,8 +36,9 @@ export const useSprite = (id: string) => {
 			)
 
 			setTextures(textures)
+			setSpeed(spriteData.speed / 55)
 		})()
 	}, [id])
 
-	return { textures }
+	return { textures, speed }
 }

@@ -34,7 +34,7 @@ export const Example = () => {
 					texture={users.length % 2 === 0 ? tex1 : tex2}
 				/>
 			)}*/}
-			<CustomSprite />
+			<CustomSprite id={'145'} />
 		</container>
 	)
 }

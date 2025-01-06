@@ -8,28 +8,20 @@ extend({ Sprite, AnimatedSprite })
 const styly = new TextStyle({
 	fontFamily: 'Arial',
 	fontSize: 36,
-	fill: '#ffffff', // Color del texto
-	stroke: '#000000', // Color del borde
-	align: 'center', // Alineación
+	fill: '#ffffff',
+	stroke: '#000000',
+	align: 'center',
 })
 
-export const CustomSprite = () => {
-	const [num, setNum] = useState('145')
-	const { textures } = useSprite(num)
+export const CustomSprite = ({ id }) => {
+	const { textures, speed } = useSprite(id)
 	const animatedSpriteRef = useRef(null)
-	const [refValue, setRefValue] = useState(null)
 
 	useEffect(() => {
-		if (animatedSpriteRef.current !== refValue) {
-			setRefValue(animatedSpriteRef.current)
-		}
-	}, [refValue, animatedSpriteRef.current])
-
-	useEffect(() => {
-		if (refValue) {
+		if (textures.length > 1 && animatedSpriteRef.current) {
 			animatedSpriteRef.current.play()
 		}
-	}, [refValue])
+	}, [animatedSpriteRef.current, textures])
 
 	if (!textures.length) {
 		return <></>
@@ -39,12 +31,17 @@ export const CustomSprite = () => {
 		return <sprite texture={textures[0]} eventMode='static' />
 	}
 
+	console.log(textures.length)
+
 	return (
 		<pixiAnimatedSprite
 			textures={textures}
 			eventMode='static'
-			animationSpeed={1}
+			animationSpeed={speed}
 			ref={animatedSpriteRef}
+			onFrameChange={(currentFrame) => {
+				console.log(currentFrame)
+			}}
 		/>
 	)
 }
