@@ -75,6 +75,22 @@ import texture40Png from './assets/textures/texture-40.png'
 import texture40Json from './assets/textures/texture-40.json'
 import texture41Png from './assets/textures/texture-41.png'
 import texture41Json from './assets/textures/texture-41.json'
+import texture42Png from './assets/textures/texture-42.png'
+import texture42Json from './assets/textures/texture-42.json'
+import texture43Png from './assets/textures/texture-43.png'
+import texture43Json from './assets/textures/texture-43.json'
+import texture44Png from './assets/textures/texture-44.png'
+import texture44Json from './assets/textures/texture-44.json'
+import texture45Png from './assets/textures/texture-45.png'
+import texture45Json from './assets/textures/texture-45.json'
+import texture46Png from './assets/textures/texture-46.png'
+import texture46Json from './assets/textures/texture-46.json'
+import texture47Png from './assets/textures/texture-47.png'
+import texture47Json from './assets/textures/texture-47.json'
+import texture48Png from './assets/textures/texture-48.png'
+import texture48Json from './assets/textures/texture-48.json'
+import texture49Png from './assets/textures/texture-49.png'
+import texture49Json from './assets/textures/texture-49.json'
 import texture5Png from './assets/textures/texture-5.png'
 import texture5Json from './assets/textures/texture-5.json'
 import texture6Png from './assets/textures/texture-6.png'
@@ -130,6 +146,14 @@ export const textureData: TextureData = {
 	texture4: { json: texture4Json, png: texture4Png },
 	texture40: { json: texture40Json, png: texture40Png },
 	texture41: { json: texture41Json, png: texture41Png },
+	texture42: { json: texture42Json, png: texture42Png },
+	texture43: { json: texture43Json, png: texture43Png },
+	texture44: { json: texture44Json, png: texture44Png },
+	texture45: { json: texture45Json, png: texture45Png },
+	texture46: { json: texture46Json, png: texture46Png },
+	texture47: { json: texture47Json, png: texture47Png },
+	texture48: { json: texture48Json, png: texture48Png },
+	texture49: { json: texture49Json, png: texture49Png },
 	texture5: { json: texture5Json, png: texture5Png },
 	texture6: { json: texture6Json, png: texture6Png },
 	texture7: { json: texture7Json, png: texture7Png },

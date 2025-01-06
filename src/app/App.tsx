@@ -2,6 +2,7 @@ import { extend } from '@pixi/react'
 import { Container, Text, TextStyle } from 'pixi.js'
 import type { FC } from 'react'
 import { Example } from '../components/Example'
+import { useResources } from '../hooks/loaders/useResources.ts'
 
 extend({ Container, Text })
 
@@ -14,9 +15,15 @@ const styly: TextStyle = new TextStyle({
 })
 
 const App: FC = () => {
+	const resourcesLoaded = useResources()
+
+	if (!resourcesLoaded) {
+		return <></>
+	}
+
 	return (
 		<container x={150} y={150}>
-			<pixiText text={'Texto de prueba!'} style={styly} />
+			{/*<pixiText text={'Texto de prueba!'} style={styly} />*/}
 			<Example />
 		</container>
 	)

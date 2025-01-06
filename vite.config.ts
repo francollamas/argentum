@@ -11,6 +11,7 @@ export default defineConfig(async () => ({
 	build: {
 		assetsDir: 'assets', // Especifica la carpeta donde se colocarán los activos
 	},
+	assetsInclude: ['**/*.bin'], // Incluye los archivos binarios
 
 	plugins: [react()],
 
