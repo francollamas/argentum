@@ -1,5 +1,5 @@
+import { ExtensionType, Rectangle, extensions } from 'pixi.js'
 import { useEffect, useState } from 'react'
-import { extensions, ExtensionType, Rectangle } from 'pixi.js'
 import type { SpriteData } from '../../types'
 
 export const useSpritesParser = () => {
@@ -28,17 +28,11 @@ export const useSpritesParser = () => {
 					const view = new DataView(buffer)
 
 					let offset = 0
-
-					// Skip the first 4 bytes (not relevant for the current logic)
 					offset += 4
-
-					// Read the number of sprites
 					const spriteCount = view.getInt32(offset, true)
 					offset += 4
 
-					// Process each SpriteData
 					while (offset < view.byteLength) {
-						// Read the index
 						const index = view.getInt32(offset, true)
 						offset += 4
 
@@ -54,16 +48,11 @@ export const useSpritesParser = () => {
 						}
 
 						const sprite = spriteData[index]
-
-						// Read the number of frames
 						const frameCount = view.getInt16(offset, true)
 						offset += 2
 
 						if (frameCount === 1) {
-							// Single-frame Sprite
-							sprite.frames.push(index)
-
-							// Read properties
+							sprite.frames.push(index.toString())
 							sprite.textureID = `${view.getInt32(offset, true)}`
 							offset += 4
 
@@ -90,7 +79,7 @@ export const useSpritesParser = () => {
 							}
 
 							// Read animation properties
-							sprite.speed = view.getFloat32(offset, true) / 45
+							sprite.speed = view.getFloat32(offset, true) / 2025
 							offset += 4
 
 							const firstFrame = spriteData[sprite.frames[0]]

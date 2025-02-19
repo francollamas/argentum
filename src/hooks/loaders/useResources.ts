@@ -1,6 +1,6 @@
-import { useCustomParsers } from './useCustomParsers.ts'
-import { useEffect, useState } from 'react'
 import { Assets } from 'pixi.js'
+import { useEffect, useState } from 'react'
+import { useCustomParsers } from './useCustomParsers.ts'
 
 import spritesBin from '../../assets/inits/sprites.bin'
 
