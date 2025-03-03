@@ -1,4 +1,4 @@
-name: CI
+name: continuous integration
 
 on:
     pull_request:
@@ -14,15 +14,21 @@ jobs:
 
             - uses: pnpm/action-setup@v4
               with:
-                  version: 8
+                  version: 10.4.1
 
             - name: setup node
               uses: actions/setup-node@v4
               with:
                   node-version: lts/*
 
+            - name: Install Free Tex Packer
+              run: pnpm add -g free-tex-packer-cli
+
             - name: Install dependencies
               run: pnpm i
+
+            - name: Generate packed textures
+              run: pnpm run generate-assets
 
             - name: Build
               run: pnpm run build
@@ -31,4 +37,4 @@ jobs:
               run: pnpm test
 
             - name: Linter and Format
-              run: npm run linter
+              run: npm run linter-check
