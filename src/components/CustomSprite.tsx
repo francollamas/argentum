@@ -6,9 +6,9 @@ import { useSprite } from '../hooks/useSprite.ts'
 
 extend({ Sprite, AnimatedSprite })
 
-interface CustomSpriteProps {
+type CustomSpriteProps = {
 	id: string
-	[key: string]: any
+	[key: string]: unknown
 }
 
 export const CustomSprite: FC<CustomSpriteProps> = ({ id, ...props }) => {
