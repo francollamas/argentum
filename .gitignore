@@ -11,7 +11,7 @@ node_modules
 coverage
 dist
 dist-ssr
-src/assets/*
+src/assets/textures/*
 
 *.local
 
