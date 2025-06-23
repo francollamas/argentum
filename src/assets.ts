@@ -93,6 +93,18 @@ import texture49Png from './assets/textures/texture-49.png'
 import texture49Json from './assets/textures/texture-49.json'
 import texture5Png from './assets/textures/texture-5.png'
 import texture5Json from './assets/textures/texture-5.json'
+import texture50Png from './assets/textures/texture-50.png'
+import texture50Json from './assets/textures/texture-50.json'
+import texture51Png from './assets/textures/texture-51.png'
+import texture51Json from './assets/textures/texture-51.json'
+import texture52Png from './assets/textures/texture-52.png'
+import texture52Json from './assets/textures/texture-52.json'
+import texture53Png from './assets/textures/texture-53.png'
+import texture53Json from './assets/textures/texture-53.json'
+import texture54Png from './assets/textures/texture-54.png'
+import texture54Json from './assets/textures/texture-54.json'
+import texture55Png from './assets/textures/texture-55.png'
+import texture55Json from './assets/textures/texture-55.json'
 import texture6Png from './assets/textures/texture-6.png'
 import texture6Json from './assets/textures/texture-6.json'
 import texture7Png from './assets/textures/texture-7.png'
@@ -155,6 +167,12 @@ export const textureData: TextureData = {
 	texture48: { json: texture48Json, png: texture48Png },
 	texture49: { json: texture49Json, png: texture49Png },
 	texture5: { json: texture5Json, png: texture5Png },
+	texture50: { json: texture50Json, png: texture50Png },
+	texture51: { json: texture51Json, png: texture51Png },
+	texture52: { json: texture52Json, png: texture52Png },
+	texture53: { json: texture53Json, png: texture53Png },
+	texture54: { json: texture54Json, png: texture54Png },
+	texture55: { json: texture55Json, png: texture55Png },
 	texture6: { json: texture6Json, png: texture6Png },
 	texture7: { json: texture7Json, png: texture7Png },
 	texture8: { json: texture8Json, png: texture8Png },
