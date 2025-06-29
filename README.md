@@ -43,7 +43,7 @@ This client is fully compatible with the original Argentum Online server version
     <img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="50" height="50" />
   </a>&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://tauri.app/" title="Tauri">
-    <img src="https://tauri.app/_astro/logo_light.Br3qH4L.svg" alt="Tauri" width="50" height="50" />
+    <img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" height="35" style="margin: 7.5px 0" />
   </a>
 </div>
 
