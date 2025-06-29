@@ -27,40 +27,24 @@ This client is fully compatible with the original Argentum Online server version
 ## 🛠️ Technologies
 
 <div align="center">
-  <table style="border-collapse: collapse; border: none;">
-    <tr>
-      <td align="center" style="border: none; padding: 0 10px;">
-        <a href="https://www.typescriptlang.org/" title="TypeScript">
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" />
-        </a>
-      </td>
-      <td align="center" style="border: none; padding: 0 10px;">
-        <a href="https://pixijs.com/" title="PixiJS">
-          <img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="40" />
-        </a>
-      </td>
-      <td align="center" style="border: none; padding: 0 10px;">
-        <a href="https://react.dev/" title="React">
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="40" />
-        </a>
-      </td>
-      <td align="center" style="border: none; padding: 0 10px;">
-        <a href="https://redux-toolkit.js.org/" title="Redux">
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux" width="40" />
-        </a>
-      </td>
-      <td align="center" style="border: none; padding: 0 10px;">
-        <a href="https://vitejs.dev/" title="Vite">
-          <img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="40" />
-        </a>
-      </td>
-      <td align="center" style="border: none; padding: 0 10px;">
-        <a href="https://tauri.app/" title="Tauri">
-          <img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" width="40" />
-        </a>
-      </td>
-    </tr>
-  </table>
+  <a href="https://www.typescriptlang.org/" title="TypeScript">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" />
+  </a>&nbsp;&nbsp;&nbsp;
+  <a href="https://pixijs.com/" title="PixiJS">
+    <img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="40" />
+  </a>&nbsp;&nbsp;&nbsp;
+  <a href="https://react.dev/" title="React">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="40" />
+  </a>&nbsp;&nbsp;&nbsp;
+  <a href="https://redux-toolkit.js.org/" title="Redux">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux" width="40" />
+  </a>&nbsp;&nbsp;&nbsp;
+  <a href="https://vitejs.dev/" title="Vite">
+    <img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="40" />
+  </a>&nbsp;&nbsp;&nbsp;
+  <a href="https://tauri.app/" title="Tauri">
+    <img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" width="40" />
+  </a>
 </div>
 
 ## 🚀 Installation
