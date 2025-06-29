@@ -7,8 +7,6 @@
 
 A multiplatform reimplementation of the classic MMORPG "Argentum Online"
 
-[Features](#features) • [Technologies](#technologies) • [Installation](#installation) • [Development](#development) • [Contributing](#contributing) • [License](#license)
-
 </div>
 
 ## 📋 About
