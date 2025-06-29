@@ -115,6 +115,8 @@ Built packages will be available in the `src-tauri/target` directory for desktop
 **[Franco Llamas](https://github.com/francollamas)**  
 *Project Creator and Maintainer*
 
+<br clear="both" />
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
