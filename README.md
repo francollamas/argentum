@@ -29,7 +29,7 @@ This client is fully compatible with the original Argentum Online server version
 <div align="center">
   <a style="text-decoration: none;" href="https://www.typescriptlang.org/" title="TypeScript">
     <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" />
-  </a>&nbsp;&nbsp;&nbsp;
+  </a>
   <a style="text-decoration: none;" href="https://pixijs.com/" title="PixiJS">
     <img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="40" />
   </a>&nbsp;&nbsp;&nbsp;
