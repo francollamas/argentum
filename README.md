@@ -26,30 +26,41 @@ This client is fully compatible with the original Argentum Online server version
 
 ## 🛠️ Technologies
 
-<div align="center" style="display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 12px; margin: 20px auto; width: 100%; overflow-x: auto; padding: 10px 0;">
-  <a href="https://www.typescriptlang.org/" title="TypeScript" style="display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; flex-shrink: 0;">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" style="width: 100%; height: 100%; object-fit: contain;" />
-  </a>
-
-  <a href="https://pixijs.com/" title="PixiJS" style="display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; flex-shrink: 0;">
-    <img src="https://pixijs.com/images/logo.svg" alt="PixiJS" style="width: 100%; height: 100%; object-fit: contain;" />
-  </a>
-
-  <a href="https://react.dev/" title="React" style="display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; flex-shrink: 0;">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" style="width: 100%; height: 100%; object-fit: contain;" />
-  </a>
-  
-  <a href="https://redux-toolkit.js.org/" title="Redux" style="display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; flex-shrink: 0;">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux Toolkit" style="width: 100%; height: 100%; object-fit: contain;" />
-  </a>
-  
-  <a href="https://vitejs.dev/" title="Vite" style="display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; flex-shrink: 0;">
-    <img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" style="width: 100%; height: 100%; object-fit: contain;" />
-  </a>
-  
-  <a href="https://tauri.app/" title="Tauri" style="display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; flex-shrink: 0;">
-    <img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" style="width: 100%; height: 100%; object-fit: contain;" />
-  </a>
+<div align="center">
+  <table style="border-collapse: collapse; border: none;">
+    <tr>
+      <td align="center" style="border: none; padding: 0 10px;">
+        <a href="https://www.typescriptlang.org/" title="TypeScript">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" />
+        </a>
+      </td>
+      <td align="center" style="border: none; padding: 0 10px;">
+        <a href="https://pixijs.com/" title="PixiJS">
+          <img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="40" />
+        </a>
+      </td>
+      <td align="center" style="border: none; padding: 0 10px;">
+        <a href="https://react.dev/" title="React">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="40" />
+        </a>
+      </td>
+      <td align="center" style="border: none; padding: 0 10px;">
+        <a href="https://redux-toolkit.js.org/" title="Redux">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux" width="40" />
+        </a>
+      </td>
+      <td align="center" style="border: none; padding: 0 10px;">
+        <a href="https://vitejs.dev/" title="Vite">
+          <img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="40" />
+        </a>
+      </td>
+      <td align="center" style="border: none; padding: 0 10px;">
+        <a href="https://tauri.app/" title="Tauri">
+          <img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" width="40" />
+        </a>
+      </td>
+    </tr>
+  </table>
 </div>
 
 ## 🚀 Installation
