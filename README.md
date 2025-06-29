@@ -110,7 +110,7 @@ Built packages will be available in the `src-tauri/target` directory for desktop
 
 ## 👥 Contributors
 
-[![Franco Llamas](https://avatars.githubusercontent.com/u/48653836?s=100)](https://github.com/francollamas)
+[<img align="left" width="100" src="https://avatars.githubusercontent.com/u/48653836" alt="Franco Llamas" style="margin-right: 20px;"/>](https://github.com/francollamas)
 
 **[Franco Llamas](https://github.com/francollamas)**  
 *Project Creator and Maintainer*
