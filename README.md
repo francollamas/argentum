@@ -27,12 +27,12 @@ This client is fully compatible with the original Argentum Online server version
 ## 🛠️ Technologies
 
 <div align="center"><!--
---><a href="https://www.typescriptlang.org/" title="TypeScript"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="50" height="50" /></a><!--
---><a href="https://pixijs.com/" title="PixiJS"><img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="50" height="50" /></a><!--
---><a href="https://react.dev/" title="React"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="50" height="50" /></a><!--
---><a href="https://redux-toolkit.js.org/" title="Redux"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux" width="50" height="50" /></a><!--
---><a href="https://vitejs.dev/" title="Vite"><img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="50" height="50" /></a><!--
---><a href="https://tauri.app/" title="Tauri"><img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" height="35" style="margin: 7.5px 0" /></a>
+--><a href="https://www.typescriptlang.org/" title="TypeScript"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="50" height="50" style="margin: 0 8px" /></a><!--
+--><a href="https://pixijs.com/" title="PixiJS"><img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="50" height="50" style="margin: 0 8px" /></a><!--
+--><a href="https://react.dev/" title="React"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="50" height="50" style="margin: 0 8px" /></a><!--
+--><a href="https://redux-toolkit.js.org/" title="Redux"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux" width="50" height="50" style="margin: 0 8px" /></a><!--
+--><a href="https://vitejs.dev/" title="Vite"><img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="50" height="50" style="margin: 0 8px" /></a><!--
+--><a href="https://tauri.app/" title="Tauri"><img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" height="35" style="margin: 7.5px 8px" /></a>
 </div>
 
 ## 🚀 Installation
