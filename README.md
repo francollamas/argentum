@@ -110,17 +110,10 @@ Built packages will be available in the `src-tauri/target` directory for desktop
 
 ## 👥 Contributors
 
-<div style="display: flex; align-items: center; gap: 20px;">
-  <a href="https://github.com/francollamas" title="Franco Llamas - Project Creator and Maintainer">
-    <img src="https://avatars.githubusercontent.com/u/48653836" alt="Franco Llamas" width="80" height="80" />
-  </a>
-  <div>
-    <a href="https://github.com/francollamas" style="text-decoration: none; color: #58a6ff; font-weight: 600; font-size: 1.1em;">
-      Franco Llamas
-    </a>
-    <div style="color: #8b949e; font-size: 0.9em;">Project Creator and Maintainer</div>
-  </div>
-</div>
+[![Franco Llamas](https://avatars.githubusercontent.com/u/48653836?s=100)](https://github.com/francollamas)
+
+**[Franco Llamas](https://github.com/francollamas)**  
+*Project Creator and Maintainer*
 
 ## 📄 License
 
