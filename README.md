@@ -27,22 +27,22 @@ This client is fully compatible with the original Argentum Online server version
 ## 🛠️ Technologies
 
 <div align="center">
-  <a href="https://www.typescriptlang.org/" title="TypeScript">
+  <a style="text-decoration: none;" href="https://www.typescriptlang.org/" title="TypeScript">
     <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" alt="TypeScript" width="40" />
   </a>&nbsp;&nbsp;&nbsp;
-  <a href="https://pixijs.com/" title="PixiJS">
+  <a style="text-decoration: none;" href="https://pixijs.com/" title="PixiJS">
     <img src="https://pixijs.com/images/logo.svg" alt="PixiJS" width="40" />
   </a>&nbsp;&nbsp;&nbsp;
-  <a href="https://react.dev/" title="React">
+  <a style="text-decoration: none;" href="https://react.dev/" title="React">
     <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="40" />
   </a>&nbsp;&nbsp;&nbsp;
-  <a href="https://redux-toolkit.js.org/" title="Redux">
+  <a style="text-decoration: none;" href="https://redux-toolkit.js.org/" title="Redux">
     <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/redux/redux-original.svg" alt="Redux" width="40" />
   </a>&nbsp;&nbsp;&nbsp;
-  <a href="https://vitejs.dev/" title="Vite">
+  <a style="text-decoration: none;" href="https://vitejs.dev/" title="Vite">
     <img src="https://raw.githubusercontent.com/vitejs/vite/main/docs/public/logo.svg" alt="Vite" width="40" />
   </a>&nbsp;&nbsp;&nbsp;
-  <a href="https://tauri.app/" title="Tauri">
+  <a style="text-decoration: none;" href="https://tauri.app/" title="Tauri">
     <img src="https://tauri.app/_astro/logo_light.Br3nqH4L.svg" alt="Tauri" width="40" />
   </a>
 </div>
@@ -123,11 +123,11 @@ Built packages will be available in the `src-tauri/target` directory for desktop
 ## 👥 Contributors
 
 <div style="display: flex; align-items: center; gap: 20px;">
-  <a href="https://github.com/francollamas" title="Franco Llamas - Project Creator and Maintainer">
+  <a style="text-decoration: none;" href="https://github.com/francollamas" title="Franco Llamas - Project Creator and Maintainer">
     <img src="https://avatars.githubusercontent.com/u/48653836?v=4" alt="Franco Llamas" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #2d2d2d;" />
   </a>
   <div>
-    <a href="https://github.com/francollamas" style="text-decoration: none; color: #58a6ff; font-weight: 600; font-size: 1.1em;">
+    <a style="text-decoration: none;" href="https://github.com/francollamas" style="text-decoration: none; color: #58a6ff; font-weight: 600; font-size: 1.1em;">
       Franco Llamas
     </a>
     <div style="color: #8b949e; font-size: 0.9em;">Project Creator and Maintainer</div>
