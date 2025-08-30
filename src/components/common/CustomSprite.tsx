@@ -2,7 +2,7 @@ import { extend } from '@pixi/react'
 import { AnimatedSprite, Sprite } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
-import { useSprite } from '../hooks/useSprite.ts'
+import { useSprite } from '../../hooks/useSprite.ts'
 
 extend({ Sprite, AnimatedSprite })
 

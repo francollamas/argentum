@@ -2,9 +2,9 @@ import { extend } from '@pixi/react'
 import { Container, Sprite } from 'pixi.js'
 
 import { useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { addUser, userSelector } from '../store/slices/userSlice'
-import { CustomSprite } from './CustomSprite.tsx'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { addUser, userSelector } from '../../store/slices/userSlice'
+import { CustomSprite } from '../common/CustomSprite.tsx'
 
 extend({ Container, Sprite })
 
