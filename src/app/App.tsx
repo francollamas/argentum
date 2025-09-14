@@ -1,7 +1,7 @@
 import { extend } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
-import { Example } from '../components/Example'
+import { Example } from '../components/scenes/Example'
 import { useResources } from '../hooks/useResources.ts'
 
 extend({ Container })
