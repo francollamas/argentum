@@ -14,10 +14,13 @@ export const useKeyPressed = () => {
 		pressedKeys.current.delete(event.key)
 	}, [])
 
-	const isActionPressed = useCallback((action: InputAction): boolean => {
-		const keys = keybinds[action]
-		return keys.some(key => pressedKeys.current.has(key))
-	}, [keybinds])
+	const isActionPressed = useCallback(
+		(action: InputAction): boolean => {
+			const keys = keybinds[action]
+			return keys.some((key) => pressedKeys.current.has(key))
+		},
+		[keybinds],
+	)
 
 	useEffect(() => {
 		window.addEventListener('keydown', handleKeyDown)

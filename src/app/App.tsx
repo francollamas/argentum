@@ -16,7 +16,7 @@ const App: FC = () => {
 
 	return (
 		<pixiContainer>
-			<MapNavigator mapNumber={34} />
+			<MapNavigator mapNumber={1} />
 			<FPSCounter />
 		</pixiContainer>
 	)

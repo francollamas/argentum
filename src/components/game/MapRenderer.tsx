@@ -13,7 +13,11 @@ type MapRendererProps = {
 	cameraY: number
 }
 
-export const MapRenderer: FC<MapRendererProps> = ({ mapNumber, cameraX, cameraY }) => {
+export const MapRenderer: FC<MapRendererProps> = ({
+	mapNumber,
+	cameraX,
+	cameraY,
+}) => {
 	const { map, loading, error } = useMapLoader(mapNumber)
 
 	if (loading || error || !map) {
@@ -33,10 +37,22 @@ export const MapRenderer: FC<MapRendererProps> = ({ mapNumber, cameraX, cameraY 
 
 	// Helper function to get bounds for specific padding
 	const getBounds = (padding: number) => ({
-		startX: Math.max(0, Math.floor(viewportLeft / GAME_CONSTANTS.TILE_SIZE) - padding),
-		endX: Math.min(map.width - 1, Math.floor(viewportRight / GAME_CONSTANTS.TILE_SIZE) + padding),
-		startY: Math.max(0, Math.floor(viewportTop / GAME_CONSTANTS.TILE_SIZE) - padding),
-		endY: Math.min(map.height - 1, Math.floor(viewportBottom / GAME_CONSTANTS.TILE_SIZE) + padding),
+		startX: Math.max(
+			0,
+			Math.floor(viewportLeft / GAME_CONSTANTS.TILE_SIZE) - padding,
+		),
+		endX: Math.min(
+			map.width - 1,
+			Math.floor(viewportRight / GAME_CONSTANTS.TILE_SIZE) + padding,
+		),
+		startY: Math.max(
+			0,
+			Math.floor(viewportTop / GAME_CONSTANTS.TILE_SIZE) - padding,
+		),
+		endY: Math.min(
+			map.height - 1,
+			Math.floor(viewportBottom / GAME_CONSTANTS.TILE_SIZE) + padding,
+		),
 	})
 
 	const layer1and2: JSX.Element[] = []

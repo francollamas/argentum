@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const useFPS = () => {
 	const [fps, setFps] = useState(0)
@@ -13,7 +13,9 @@ export const useFPS = () => {
 
 			// Update FPS every second
 			if (now - lastTime.current >= 1000) {
-				setFps(Math.round((frameCount.current * 1000) / (now - lastTime.current)))
+				setFps(
+					Math.round((frameCount.current * 1000) / (now - lastTime.current)),
+				)
 				frameCount.current = 0
 				lastTime.current = now
 			}

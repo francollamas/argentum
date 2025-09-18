@@ -1,9 +1,9 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { GAME_CONSTANTS } from '../constants/game'
-import { useKeyPressed } from './useKeyPressed'
-import { usePlayerPosition } from './usePlayerPosition'
 import { InputAction } from '../types/input'
 import type { GameMap } from '../types/map'
+import { useKeyPressed } from './useKeyPressed'
+import { usePlayerPosition } from './usePlayerPosition'
 
 const ANIMATION_DURATION = 250 // milliseconds - like original client (slower, more deliberate movement)
 
@@ -21,7 +21,10 @@ export const useSmoothCamera = ({ map }: UseSmoothCameraProps = {}) => {
 
 	const animationRef = useRef<number | null>(null)
 	const isAnimating = useRef(false)
-	const currentPosition = useRef({ x: GAME_CONSTANTS.CAMERA.DEFAULT_X, y: GAME_CONSTANTS.CAMERA.DEFAULT_Y })
+	const currentPosition = useRef({
+		x: GAME_CONSTANTS.CAMERA.DEFAULT_X,
+		y: GAME_CONSTANTS.CAMERA.DEFAULT_Y,
+	})
 
 	// Update map when it changes
 	useEffect(() => {
@@ -54,72 +57,75 @@ export const useSmoothCamera = ({ map }: UseSmoothCameraProps = {}) => {
 		return null
 	}, [isActionPressed])
 
-	const startMovement = useCallback((direction: MovementDirection) => {
-		const startX = currentPosition.current.x
-		const startY = currentPosition.current.y
+	const startMovement = useCallback(
+		(direction: MovementDirection) => {
+			const startX = currentPosition.current.x
+			const startY = currentPosition.current.y
 
-		// Calculate new target position
-		let newTargetX = startX
-		let newTargetY = startY
+			// Calculate new target position
+			let newTargetX = startX
+			let newTargetY = startY
 
-		switch (direction) {
-			case 'up':
-				newTargetY = startY + GAME_CONSTANTS.TILE_SIZE
-				break
-			case 'down':
-				newTargetY = startY - GAME_CONSTANTS.TILE_SIZE
-				break
-			case 'left':
-				newTargetX = startX + GAME_CONSTANTS.TILE_SIZE
-				break
-			case 'right':
-				newTargetX = startX - GAME_CONSTANTS.TILE_SIZE
-				break
-		}
+			switch (direction) {
+				case 'up':
+					newTargetY = startY + GAME_CONSTANTS.TILE_SIZE
+					break
+				case 'down':
+					newTargetY = startY - GAME_CONSTANTS.TILE_SIZE
+					break
+				case 'left':
+					newTargetX = startX + GAME_CONSTANTS.TILE_SIZE
+					break
+				case 'right':
+					newTargetX = startX - GAME_CONSTANTS.TILE_SIZE
+					break
+			}
 
-		const clamped = clampCameraPosition(newTargetX, newTargetY)
-		const finalTargetX = clamped.x
-		const finalTargetY = clamped.y
+			const clamped = clampCameraPosition(newTargetX, newTargetY)
+			const finalTargetX = clamped.x
+			const finalTargetY = clamped.y
 
-		// If no movement needed, don't animate
-		if (startX === finalTargetX && startY === finalTargetY) {
-			return
-		}
+			// If no movement needed, don't animate
+			if (startX === finalTargetX && startY === finalTargetY) {
+				return
+			}
 
-		// Update current position to target
-		currentPosition.current = { x: finalTargetX, y: finalTargetY }
+			// Update current position to target
+			currentPosition.current = { x: finalTargetX, y: finalTargetY }
 
-		const deltaX = finalTargetX - startX
-		const deltaY = finalTargetY - startY
-		const startTime = performance.now()
+			const deltaX = finalTargetX - startX
+			const deltaY = finalTargetY - startY
+			const startTime = performance.now()
 
-		const animate = (currentTime: number) => {
-			const elapsed = currentTime - startTime
-			const progress = Math.min(elapsed / ANIMATION_DURATION, 1)
+			const animate = (currentTime: number) => {
+				const elapsed = currentTime - startTime
+				const progress = Math.min(elapsed / ANIMATION_DURATION, 1)
 
-			// Linear interpolation for consistent feel like original
-			const x = startX + deltaX * progress
-			const y = startY + deltaY * progress
+				// Linear interpolation for consistent feel like original
+				const x = startX + deltaX * progress
+				const y = startY + deltaY * progress
 
-			// Round to prevent subpixel rendering and tile gaps
-			setCameraX(Math.round(x))
-			setCameraY(Math.round(y))
+				// Round to prevent subpixel rendering and tile gaps
+				setCameraX(Math.round(x))
+				setCameraY(Math.round(y))
 
-			if (progress < 1) {
-				animationRef.current = requestAnimationFrame(animate)
-			} else {
-				// Animation complete, check if should continue moving
-				isAnimating.current = false
-				const nextDirection = getNextDirection()
-				if (nextDirection) {
-					startMovement(nextDirection)
+				if (progress < 1) {
+					animationRef.current = requestAnimationFrame(animate)
+				} else {
+					// Animation complete, check if should continue moving
+					isAnimating.current = false
+					const nextDirection = getNextDirection()
+					if (nextDirection) {
+						startMovement(nextDirection)
+					}
 				}
 			}
-		}
 
-		isAnimating.current = true
-		animationRef.current = requestAnimationFrame(animate)
-	}, [minCameraX, maxCameraX, minCameraY, maxCameraY, getNextDirection])
+			isAnimating.current = true
+			animationRef.current = requestAnimationFrame(animate)
+		},
+		[getNextDirection, clampCameraPosition],
+	)
 
 	// Check for movement when not animating with polling
 	useEffect(() => {
