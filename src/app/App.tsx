@@ -2,7 +2,7 @@ import { extend } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
 import { MapNavigator } from '../components/game/MapNavigator'
-import { useResources } from '../hooks/useResources.ts'
+import { useResources } from '../hooks/useResources'
 
 extend({ Container })
 
@@ -14,8 +14,8 @@ const App: FC = () => {
 	}
 
 	return (
-		<pixiContainer x={0} y={0}>
-			<MapNavigator mapNumber={1} viewportWidth={800} viewportHeight={600} />
+		<pixiContainer>
+			<MapNavigator mapNumber={1} />
 		</pixiContainer>
 	)
 }

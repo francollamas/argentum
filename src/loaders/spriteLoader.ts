@@ -7,7 +7,7 @@ const parserName = 'loadSprites'
 export const loadSprites = async () => {
 	await Assets.load({
 		src: spritesBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 

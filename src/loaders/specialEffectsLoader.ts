@@ -8,7 +8,7 @@ const parserName = 'loadSpecialEffects'
 export const loadSpecialEffects = async () => {
 	await Assets.load({
 		src: specialEffectsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 

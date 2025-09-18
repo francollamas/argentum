@@ -1,7 +1,7 @@
 import { extend } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useInput } from '../../hooks/useInput'
 import { InputAction } from '../../types/input'
@@ -11,15 +11,9 @@ extend({ Container })
 
 type MapNavigatorProps = {
 	mapNumber: number
-	viewportWidth?: number
-	viewportHeight?: number
 }
 
-export const MapNavigator: FC<MapNavigatorProps> = ({
-	mapNumber,
-	viewportWidth = GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH,
-	viewportHeight = GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT,
-}) => {
+export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
 	const [cameraX, setCameraX] = useState(
 		GAME_CONSTANTS.CAMERA.DEFAULT_X * GAME_CONSTANTS.TILE_SIZE,
 	)
@@ -27,36 +21,20 @@ export const MapNavigator: FC<MapNavigatorProps> = ({
 		GAME_CONSTANTS.CAMERA.DEFAULT_Y * GAME_CONSTANTS.TILE_SIZE,
 	)
 
-	const moveUp = useCallback(() => {
-		setCameraY((prev) => prev + GAME_CONSTANTS.TILE_SIZE)
-	}, [])
-
-	const moveDown = useCallback(() => {
-		setCameraY((prev) => prev - GAME_CONSTANTS.TILE_SIZE)
-	}, [])
-
-	const moveLeft = useCallback(() => {
-		setCameraX((prev) => prev + GAME_CONSTANTS.TILE_SIZE)
-	}, [])
-
-	const moveRight = useCallback(() => {
-		setCameraX((prev) => prev - GAME_CONSTANTS.TILE_SIZE)
-	}, [])
-
 	useInput({
-		[InputAction.MOVE_UP]: moveUp,
-		[InputAction.MOVE_DOWN]: moveDown,
-		[InputAction.MOVE_LEFT]: moveLeft,
-		[InputAction.MOVE_RIGHT]: moveRight,
+		[InputAction.MOVE_UP]: () =>
+			setCameraY((prev) => prev + GAME_CONSTANTS.TILE_SIZE),
+		[InputAction.MOVE_DOWN]: () =>
+			setCameraY((prev) => prev - GAME_CONSTANTS.TILE_SIZE),
+		[InputAction.MOVE_LEFT]: () =>
+			setCameraX((prev) => prev + GAME_CONSTANTS.TILE_SIZE),
+		[InputAction.MOVE_RIGHT]: () =>
+			setCameraX((prev) => prev - GAME_CONSTANTS.TILE_SIZE),
 	})
 
 	return (
 		<pixiContainer x={cameraX} y={cameraY}>
-			<MapRenderer
-				mapNumber={mapNumber}
-				viewportWidth={viewportWidth}
-				viewportHeight={viewportHeight}
-			/>
+			<MapRenderer mapNumber={mapNumber} />
 		</pixiContainer>
 	)
 }

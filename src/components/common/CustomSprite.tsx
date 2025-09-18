@@ -3,7 +3,7 @@ import { AnimatedSprite, Sprite, type Texture } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
-import { useSprite } from '../../hooks/useSprite.ts'
+import { useSprite } from '../../hooks/useSprite'
 
 extend({ Sprite, AnimatedSprite })
 

@@ -13,35 +13,35 @@ const parserName = 'loadCharacterParts'
 export const loadBodies = async () => {
 	await Assets.load({
 		src: bodiesBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadHeads = async () => {
 	await Assets.load({
 		src: headsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadHelmets = async () => {
 	await Assets.load({
 		src: helmetsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadShields = async () => {
 	await Assets.load({
 		src: shieldsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadWeapons = async () => {
 	await Assets.load({
 		src: weaponsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
