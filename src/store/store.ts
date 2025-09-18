@@ -13,7 +13,6 @@ import storage from 'redux-persist/lib/storage'
 import inputReducer from './slices/inputSlice'
 import playerReducer from './slices/playerSlice'
 import userReducer from './slices/userSlice'
-import worldReducer from './slices/worldSlice'
 
 const persistConfig = {
 	key: 'root',
@@ -25,7 +24,6 @@ const rootReducer = combineReducers({
 	users: userReducer,
 	input: inputReducer,
 	player: playerReducer,
-	world: worldReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
