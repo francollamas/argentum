@@ -20,14 +20,24 @@ export const playerSlice = createSlice({
 	name: 'player',
 	initialState,
 	reducers: {
-		setPlayerPosition: (state, action: PayloadAction<{ tileX: number; tileY: number }>) => {
+		setPlayerPosition: (
+			state,
+			action: PayloadAction<{ tileX: number; tileY: number }>,
+		) => {
 			state.position.tileX = action.payload.tileX
 			state.position.tileY = action.payload.tileY
 		},
 		setIsInRoofTrigger: (state, action: PayloadAction<boolean>) => {
 			state.isInRoofTrigger = action.payload
 		},
-		movePlayer: (state, action: PayloadAction<{ tileX: number; tileY: number; isInRoofTrigger: boolean }>) => {
+		movePlayer: (
+			state,
+			action: PayloadAction<{
+				tileX: number
+				tileY: number
+				isInRoofTrigger: boolean
+			}>,
+		) => {
 			state.position.tileX = action.payload.tileX
 			state.position.tileY = action.payload.tileY
 			state.isInRoofTrigger = action.payload.isInRoofTrigger
@@ -35,5 +45,6 @@ export const playerSlice = createSlice({
 	},
 })
 
-export const { setPlayerPosition, setIsInRoofTrigger, movePlayer } = playerSlice.actions
+export const { setPlayerPosition, setIsInRoofTrigger, movePlayer } =
+	playerSlice.actions
 export default playerSlice.reducer

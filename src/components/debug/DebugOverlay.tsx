@@ -79,7 +79,12 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 								g.rect(0, 0, GAME_CONSTANTS.TILE_SIZE, GAME_CONSTANTS.TILE_SIZE)
 								// Add inner border for better visibility
 								g.stroke({ color: 0xffff00, width: 2 })
-								g.rect(2, 2, GAME_CONSTANTS.TILE_SIZE - 4, GAME_CONSTANTS.TILE_SIZE - 4)
+								g.rect(
+									2,
+									2,
+									GAME_CONSTANTS.TILE_SIZE - 4,
+									GAME_CONSTANTS.TILE_SIZE - 4,
+								)
 							}}
 						/>,
 					)
@@ -137,7 +142,17 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 		}
 
 		return elements
-	}, [startX, endX, startY, endY, playerTileX, playerTileY, map.tiles])
+	}, [
+		startX,
+		endX,
+		startY,
+		endY,
+		playerTileX,
+		playerTileY,
+		map.tiles,
+		map.bounds.minX,
+		map.bounds.minY,
+	])
 
 	return (
 		<pixiContainer>

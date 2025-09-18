@@ -73,19 +73,21 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 
 			// Update Redux immediately with new player position
 			const tile = playerPosition.getTileAt(newPlayerTileX, newPlayerTileY)
-			const isInRoofTrigger = tile?.trigger !== null &&
-				[1, 2, 4].includes(tile?.trigger || 0)
+			const isInRoofTrigger =
+				tile?.trigger !== null && [1, 2, 4].includes(tile?.trigger || 0)
 
-			dispatch(movePlayer({
-				tileX: newPlayerTileX,
-				tileY: newPlayerTileY,
-				isInRoofTrigger
-			}))
+			dispatch(
+				movePlayer({
+					tileX: newPlayerTileX,
+					tileY: newPlayerTileY,
+					isInRoofTrigger,
+				}),
+			)
 
 			lastMoveTime.current = currentTime
 			return true
 		},
-		[reduxPlayerPosition, playerPosition, dispatch]
+		[reduxPlayerPosition, playerPosition, dispatch],
 	)
 
 	// Check for movement with polling
@@ -97,7 +99,7 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 				const direction = getNextDirection()
 				if (direction) {
 					isMoving.current = true
-					const moved = movePlayerToTile(direction)
+					const _moved = movePlayerToTile(direction)
 
 					// Schedule next movement check
 					setTimeout(() => {

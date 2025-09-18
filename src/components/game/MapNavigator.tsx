@@ -19,7 +19,7 @@ type MapNavigatorProps = {
 export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
 	const { map } = useMapLoader(mapNumber)
 	const { cameraX, cameraY } = useSmoothCamera()
-	const { playerTileX, playerTileY } = usePlayerMovement({ map })
+	usePlayerMovement({ map: map || undefined }) // Only need for side effects, not return values
 
 	const maskRef = useRef<Graphics>(null)
 	const gameContainerRef = useRef<Container>(null)

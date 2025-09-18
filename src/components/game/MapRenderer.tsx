@@ -1,8 +1,10 @@
 import { extend } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
+import { useEffect, useRef } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useMapLoader } from '../../hooks/useMapLoader'
+import { useAppSelector } from '../../store/hooks'
 import { CustomSprite } from '../common/CustomSprite'
 
 extend({ Container })
@@ -19,6 +21,64 @@ export const MapRenderer: FC<MapRendererProps> = ({
 	cameraY,
 }) => {
 	const { map, loading, error } = useMapLoader(mapNumber)
+	const isInRoofTrigger = useAppSelector(
+		(state) => state.player.isInRoofTrigger,
+	)
+
+	// Reference to layer 4 container for direct PixiJS animation
+	const layer4ContainerRef = useRef<Container>(null)
+	const animationRef = useRef<number | null>(null)
+	const lastRoofState = useRef<boolean>(false)
+
+	// Animate layer 4 opacity when roof trigger state changes using native PixiJS
+	useEffect(() => {
+		// Only animate if the state actually changed and container exists
+		if (
+			isInRoofTrigger !== lastRoofState.current &&
+			layer4ContainerRef.current
+		) {
+			lastRoofState.current = isInRoofTrigger
+
+			// Cancel any existing animation
+			if (animationRef.current) {
+				cancelAnimationFrame(animationRef.current)
+			}
+
+			const container = layer4ContainerRef.current
+			const startAlpha = container.alpha
+			const targetAlpha = isInRoofTrigger ? 0 : 1 // Fade out when in roof, fade in when out
+			const startTime = performance.now()
+			const duration = 500 // 1 second
+
+			const animate = (currentTime: number) => {
+				const elapsed = currentTime - startTime
+				const progress = Math.min(elapsed / duration, 1)
+
+				// Smooth easing function (ease-in-out)
+				const easedProgress = progress * progress * (3 - 2 * progress)
+				const currentAlpha =
+					startAlpha + (targetAlpha - startAlpha) * easedProgress
+
+				// Directly set the alpha on the PixiJS container
+				container.alpha = currentAlpha
+
+				if (progress < 1) {
+					animationRef.current = requestAnimationFrame(animate)
+				} else {
+					animationRef.current = null
+				}
+			}
+
+			animationRef.current = requestAnimationFrame(animate)
+		}
+
+		// Cleanup on unmount
+		return () => {
+			if (animationRef.current) {
+				cancelAnimationFrame(animationRef.current)
+			}
+		}
+	}, [isInRoofTrigger])
 
 	if (loading || error || !map) {
 		return <pixiContainer />
@@ -158,7 +218,8 @@ export const MapRenderer: FC<MapRendererProps> = ({
 		<pixiContainer>
 			{layer1and2}
 			{objectsAndLayer3}
-			{layer4}
+			{/* Layer 4 with animated alpha using native PixiJS animation */}
+			<pixiContainer ref={layer4ContainerRef}>{layer4}</pixiContainer>
 		</pixiContainer>
 	)
 }

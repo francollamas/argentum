@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { GAME_CONSTANTS } from '../constants/game'
 import { useAppSelector } from '../store/hooks'
 
@@ -32,27 +32,45 @@ export const useSmoothCamera = () => {
 	const minCameraY = -(mapHeightPixels - GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT)
 	const maxCameraY = 0
 
-	const clampCameraPosition = (x: number, y: number) => {
-		const clampedX = Math.max(minCameraX, Math.min(maxCameraX, x))
-		const clampedY = Math.max(minCameraY, Math.min(maxCameraY, y))
-		return { x: clampedX, y: clampedY }
-	}
+	const clampCameraPosition = useCallback(
+		(x: number, y: number) => {
+			const clampedX = Math.max(minCameraX, Math.min(maxCameraX, x))
+			const clampedY = Math.max(minCameraY, Math.min(maxCameraY, y))
+			return { x: clampedX, y: clampedY }
+		},
+		[minCameraX, minCameraY],
+	)
 
-	const calculateCameraPositionForPlayer = (playerTileX: number, playerTileY: number) => {
-		// Convert player tile position to camera position
-		// Camera shows player at center of viewport
-		const centerTileIndexX = Math.floor(GAME_CONSTANTS.VIEWPORT.TILES_HORIZONTAL / 2)
-		const centerTileIndexY = Math.floor(GAME_CONSTANTS.VIEWPORT.TILES_VERTICAL / 2)
+	const calculateCameraPositionForPlayer = useCallback(
+		(playerTileX: number, playerTileY: number) => {
+			// Convert player tile position to camera position
+			// Camera shows player at center of viewport
+			const centerTileIndexX = Math.floor(
+				GAME_CONSTANTS.VIEWPORT.TILES_HORIZONTAL / 2,
+			)
+			const centerTileIndexY = Math.floor(
+				GAME_CONSTANTS.VIEWPORT.TILES_VERTICAL / 2,
+			)
 
-		// Calculate where camera should be to center player
-		const playerPixelX = (playerTileX - GAME_CONSTANTS.MAP.MIN_X) * GAME_CONSTANTS.TILE_SIZE
-		const playerPixelY = (playerTileY - GAME_CONSTANTS.MAP.MIN_Y) * GAME_CONSTANTS.TILE_SIZE
+			// Calculate where camera should be to center player
+			const playerPixelX =
+				(playerTileX - GAME_CONSTANTS.MAP.MIN_X) * GAME_CONSTANTS.TILE_SIZE
+			const playerPixelY =
+				(playerTileY - GAME_CONSTANTS.MAP.MIN_Y) * GAME_CONSTANTS.TILE_SIZE
 
-		const targetCameraX = -(playerPixelX - centerTileIndexX * GAME_CONSTANTS.TILE_SIZE)
-		const targetCameraY = -(playerPixelY - centerTileIndexY * GAME_CONSTANTS.TILE_SIZE)
+			const targetCameraX = -(
+				playerPixelX -
+				centerTileIndexX * GAME_CONSTANTS.TILE_SIZE
+			)
+			const targetCameraY = -(
+				playerPixelY -
+				centerTileIndexY * GAME_CONSTANTS.TILE_SIZE
+			)
 
-		return clampCameraPosition(targetCameraX, targetCameraY)
-	}
+			return clampCameraPosition(targetCameraX, targetCameraY)
+		},
+		[clampCameraPosition],
+	)
 
 	// React to player position changes and animate camera
 	useEffect(() => {
@@ -60,19 +78,28 @@ export const useSmoothCamera = () => {
 		const lastPos = lastPlayerPosition.current
 
 		// Check if player position changed
-		if (currentPlayerPos.tileX !== lastPos.tileX || currentPlayerPos.tileY !== lastPos.tileY) {
+		if (
+			currentPlayerPos.tileX !== lastPos.tileX ||
+			currentPlayerPos.tileY !== lastPos.tileY
+		) {
 			// Player moved, animate camera to follow
 			// Use actual camera state values instead of ref to avoid desync
 			const startX = cameraX
 			const startY = cameraY
 
-			const targetPos = calculateCameraPositionForPlayer(currentPlayerPos.tileX, currentPlayerPos.tileY)
+			const targetPos = calculateCameraPositionForPlayer(
+				currentPlayerPos.tileX,
+				currentPlayerPos.tileY,
+			)
 			const finalTargetX = targetPos.x
 			const finalTargetY = targetPos.y
 
 			// Update current position reference
 			currentCameraPosition.current = { x: finalTargetX, y: finalTargetY }
-			lastPlayerPosition.current = { tileX: currentPlayerPos.tileX, tileY: currentPlayerPos.tileY }
+			lastPlayerPosition.current = {
+				tileX: currentPlayerPos.tileX,
+				tileY: currentPlayerPos.tileY,
+			}
 
 			// If no movement needed, don't animate
 			if (startX === finalTargetX && startY === finalTargetY) {
@@ -110,7 +137,7 @@ export const useSmoothCamera = () => {
 			isAnimating.current = true
 			animationRef.current = requestAnimationFrame(animate)
 		}
-	}, [reduxPlayerPosition])
+	}, [reduxPlayerPosition, calculateCameraPositionForPlayer, cameraX, cameraY])
 
 	// Cleanup animation on unmount
 	useEffect(() => {
