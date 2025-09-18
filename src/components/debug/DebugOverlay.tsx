@@ -4,6 +4,7 @@ import type { FC, JSX } from 'react'
 import { useMemo } from 'react'
 import { DEBUG_CONFIG } from '../../config/debug'
 import { GAME_CONSTANTS } from '../../constants/game'
+import { useAppSelector } from '../../store/hooks'
 import type { GameMap } from '../../types/map'
 
 extend({ Container, Graphics, Text })
@@ -19,18 +20,10 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 	cameraX,
 	cameraY,
 }) => {
-	// Player is always at the center tile of the viewport (tile 8,6 in 0-indexed 17x13 grid)
-	// For 17x13 viewport: center tile is at index 8,6 (0-indexed)
-	const centerTileIndexX = Math.floor(GAME_CONSTANTS.VIEWPORT.TILES_HORIZONTAL / 2) // 8
-	const centerTileIndexY = Math.floor(GAME_CONSTANTS.VIEWPORT.TILES_VERTICAL / 2) // 6
-
-	// Calculate which tile is at the center based on camera position
-	const topLeftTileX = Math.floor(-cameraX / GAME_CONSTANTS.TILE_SIZE) + GAME_CONSTANTS.MAP.MIN_X
-	const topLeftTileY = Math.floor(-cameraY / GAME_CONSTANTS.TILE_SIZE) + GAME_CONSTANTS.MAP.MIN_Y
-
-	// Player tile is the center tile of the viewport
-	const playerTileX = topLeftTileX + centerTileIndexX
-	const playerTileY = topLeftTileY + centerTileIndexY
+	// Get player position from Redux store
+	const playerPosition = useAppSelector((state) => state.player.position)
+	const playerTileX = playerPosition.tileX
+	const playerTileY = playerPosition.tileY
 
 	// Calculate visible tile bounds
 	const viewportLeft = -cameraX
