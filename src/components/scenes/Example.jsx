@@ -2017,7 +2017,7 @@ const animations = [
 ]
 
 export const Example = () => {
-	const users = useAppSelector(userSelector)
+	const _users = useAppSelector(userSelector)
 	const dispatch = useAppDispatch()
 	const [index, setIndex] = useState(0)
 

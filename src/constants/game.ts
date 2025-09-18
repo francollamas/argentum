@@ -1,0 +1,24 @@
+export const GAME_CONSTANTS = {
+	TILE_SIZE: 32,
+	MAP: {
+		MIN_X: 1,
+		MIN_Y: 1,
+		MAX_X: 100,
+		MAX_Y: 100,
+		LAYER_COUNT: 4,
+		HEADER_SIZE: 273,
+	},
+	WATER_SPRITE_RANGES: [
+		[1505, 1520],
+		[5665, 5680],
+		[13547, 13562],
+	] as const,
+	CAMERA: {
+		DEFAULT_X: -50,
+		DEFAULT_Y: -50,
+	},
+	VIEWPORT: {
+		DEFAULT_WIDTH: 800,
+		DEFAULT_HEIGHT: 600,
+	},
+} as const

@@ -1,5 +1,4 @@
-import { ExtensionType, Point } from 'pixi.js'
-import { Assets } from 'pixi.js'
+import { Assets, ExtensionType, Point } from 'pixi.js'
 import bodiesBin from '../assets/inits/bodies.odir.bin'
 import headsBin from '../assets/inits/heads.dir.bin'
 import helmetsBin from '../assets/inits/helmets.dir.bin'

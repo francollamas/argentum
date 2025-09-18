@@ -8,6 +8,7 @@ import {
 	loadShields,
 	loadWeapons,
 } from '../loaders/characterPartsLoader'
+import { mapsParser } from '../loaders/mapLoader'
 import {
 	loadSpecialEffects,
 	specialEffectsParser,
@@ -15,7 +16,12 @@ import {
 import { loadSprites, spritesParser } from '../loaders/spriteLoader'
 
 const loadParsers = () => {
-	const parsers = [spritesParser, characterPartsParser, specialEffectsParser]
+	const parsers = [
+		spritesParser,
+		characterPartsParser,
+		specialEffectsParser,
+		mapsParser,
+	]
 
 	for (const parser of parsers) {
 		extensions.add(parser)

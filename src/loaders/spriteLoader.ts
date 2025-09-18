@@ -1,5 +1,4 @@
-import { ExtensionType, Rectangle } from 'pixi.js'
-import { Assets } from 'pixi.js'
+import { Assets, ExtensionType, Rectangle } from 'pixi.js'
 import spritesBin from '../assets/inits/sprites.bin'
 import type { SpriteData } from '../types'
 

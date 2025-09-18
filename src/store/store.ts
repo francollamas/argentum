@@ -4,22 +4,24 @@ import {
 	PAUSE,
 	PERSIST,
 	PURGE,
-	REGISTER,
-	REHYDRATE,
 	persistReducer,
 	persistStore,
+	REGISTER,
+	REHYDRATE,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import inputReducer from './slices/inputSlice'
 import userReducer from './slices/userSlice'
 
 const persistConfig = {
 	key: 'root',
 	storage: storage,
-	whitelist: [], // TODO Agregar elementos a la lista blanca a persistir... ej 'users'
+	whitelist: ['input'],
 }
 
 const rootReducer = combineReducers({
 	users: userReducer,
+	input: inputReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
