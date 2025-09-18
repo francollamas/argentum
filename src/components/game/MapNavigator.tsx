@@ -1,40 +1,50 @@
 import { extend } from '@pixi/react'
-import { Container } from 'pixi.js'
+import { Container, Graphics } from 'pixi.js'
 import type { FC } from 'react'
-import { useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
-import { useInput } from '../../hooks/useInput'
-import { InputAction } from '../../types/input'
+import { useSmoothCamera } from '../../hooks/useSmoothCamera'
 import { MapRenderer } from './MapRenderer'
 
-extend({ Container })
+extend({ Container, Graphics })
 
 type MapNavigatorProps = {
 	mapNumber: number
 }
 
 export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
-	const [cameraX, setCameraX] = useState(
-		GAME_CONSTANTS.CAMERA.DEFAULT_X * GAME_CONSTANTS.TILE_SIZE,
-	)
-	const [cameraY, setCameraY] = useState(
-		GAME_CONSTANTS.CAMERA.DEFAULT_Y * GAME_CONSTANTS.TILE_SIZE,
-	)
+	const { cameraX, cameraY } = useSmoothCamera()
 
-	useInput({
-		[InputAction.MOVE_UP]: () =>
-			setCameraY((prev) => prev + GAME_CONSTANTS.TILE_SIZE),
-		[InputAction.MOVE_DOWN]: () =>
-			setCameraY((prev) => prev - GAME_CONSTANTS.TILE_SIZE),
-		[InputAction.MOVE_LEFT]: () =>
-			setCameraX((prev) => prev + GAME_CONSTANTS.TILE_SIZE),
-		[InputAction.MOVE_RIGHT]: () =>
-			setCameraX((prev) => prev - GAME_CONSTANTS.TILE_SIZE),
+	const maskRef = useRef<Graphics>(null)
+	const gameContainerRef = useRef<Container>(null)
+
+	// Set up the mask when refs are available
+	useEffect(() => {
+		if (maskRef.current && gameContainerRef.current) {
+			gameContainerRef.current.mask = maskRef.current
+		}
 	})
 
 	return (
-		<pixiContainer x={cameraX} y={cameraY}>
-			<MapRenderer mapNumber={mapNumber} />
+		<pixiContainer>
+			{/* Viewport mask - defines the clipping area */}
+			<pixiGraphics
+				ref={maskRef}
+				draw={(g) => {
+					g.clear()
+					g.rect(0, 0, GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH, GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT)
+					g.fill(0xffffff)
+				}}
+			/>
+
+			{/* Game content with camera transform and mask applied */}
+			<pixiContainer
+				ref={gameContainerRef}
+				x={cameraX}
+				y={cameraY}
+			>
+				<MapRenderer mapNumber={mapNumber} cameraX={cameraX} cameraY={cameraY} />
+			</pixiContainer>
 		</pixiContainer>
 	)
 }

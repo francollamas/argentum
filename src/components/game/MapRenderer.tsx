@@ -9,27 +9,49 @@ extend({ Container })
 
 type MapRendererProps = {
 	mapNumber: number
+	cameraX: number
+	cameraY: number
 }
 
-export const MapRenderer: FC<MapRendererProps> = ({ mapNumber }) => {
+export const MapRenderer: FC<MapRendererProps> = ({ mapNumber, cameraX, cameraY }) => {
 	const { map, loading, error } = useMapLoader(mapNumber)
 
 	if (loading || error || !map) {
 		return <pixiContainer />
 	}
 
-	// React 19 should auto-optimize this, but let's test performance
+	// Calculate visible tile bounds based on camera position
+	const viewportLeft = -cameraX
+	const viewportTop = -cameraY
+	const viewportRight = viewportLeft + GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH
+	const viewportBottom = viewportTop + GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT
+
+	// Different padding for different layers (like original client)
+	const groundPadding = GAME_CONSTANTS.VIEWPORT.PADDING.GROUND
+	const objectPadding = GAME_CONSTANTS.VIEWPORT.PADDING.OBJECTS
+	const overlayPadding = GAME_CONSTANTS.VIEWPORT.PADDING.OVERLAY
+
+	// Helper function to get bounds for specific padding
+	const getBounds = (padding: number) => ({
+		startX: Math.max(0, Math.floor(viewportLeft / GAME_CONSTANTS.TILE_SIZE) - padding),
+		endX: Math.min(map.width - 1, Math.floor(viewportRight / GAME_CONSTANTS.TILE_SIZE) + padding),
+		startY: Math.max(0, Math.floor(viewportTop / GAME_CONSTANTS.TILE_SIZE) - padding),
+		endY: Math.min(map.height - 1, Math.floor(viewportBottom / GAME_CONSTANTS.TILE_SIZE) + padding),
+	})
+
 	const layer1and2: JSX.Element[] = []
 	const objectsAndLayer3: JSX.Element[] = []
 	const layer4: JSX.Element[] = []
 
-	for (let y = 0; y < map.height; y++) {
-		for (let x = 0; x < map.width; x++) {
+	// Render layers 1-2 (ground) with minimal padding
+	const groundBounds = getBounds(groundPadding)
+	for (let y = groundBounds.startY; y <= groundBounds.endY; y++) {
+		for (let x = groundBounds.startX; x <= groundBounds.endX; x++) {
 			const tile = map.tiles[x][y]
 			const tileX = x * GAME_CONSTANTS.TILE_SIZE
 			const tileY = y * GAME_CONSTANTS.TILE_SIZE
 
-			// Pass 1: Layers 1 and 2
+			// Layer 1 (ground) - not centered
 			if (tile?.layers[0].spriteId) {
 				layer1and2.push(
 					<CustomSprite
@@ -41,6 +63,8 @@ export const MapRenderer: FC<MapRendererProps> = ({ mapNumber }) => {
 					/>,
 				)
 			}
+
+			// Layer 2 (background) - centered
 			if (tile?.layers[1].spriteId) {
 				layer1and2.push(
 					<CustomSprite
@@ -52,8 +76,18 @@ export const MapRenderer: FC<MapRendererProps> = ({ mapNumber }) => {
 					/>,
 				)
 			}
+		}
+	}
 
-			// Pass 2: Objects and Layer 3
+	// Render objects and layer 3 with larger padding
+	const objectBounds = getBounds(objectPadding)
+	for (let y = objectBounds.startY; y <= objectBounds.endY; y++) {
+		for (let x = objectBounds.startX; x <= objectBounds.endX; x++) {
+			const tile = map.tiles[x][y]
+			const tileX = x * GAME_CONSTANTS.TILE_SIZE
+			const tileY = y * GAME_CONSTANTS.TILE_SIZE
+
+			// Objects - centered
 			if (tile?.objectSpriteId) {
 				objectsAndLayer3.push(
 					<CustomSprite
@@ -65,6 +99,8 @@ export const MapRenderer: FC<MapRendererProps> = ({ mapNumber }) => {
 					/>,
 				)
 			}
+
+			// Layer 3 (foreground) - centered
 			if (tile?.layers[2].spriteId) {
 				objectsAndLayer3.push(
 					<CustomSprite
@@ -76,8 +112,18 @@ export const MapRenderer: FC<MapRendererProps> = ({ mapNumber }) => {
 					/>,
 				)
 			}
+		}
+	}
 
-			// Pass 3: Layer 4
+	// Render layer 4 with maximum padding
+	const overlayBounds = getBounds(overlayPadding)
+	for (let y = overlayBounds.startY; y <= overlayBounds.endY; y++) {
+		for (let x = overlayBounds.startX; x <= overlayBounds.endX; x++) {
+			const tile = map.tiles[x][y]
+			const tileX = x * GAME_CONSTANTS.TILE_SIZE
+			const tileY = y * GAME_CONSTANTS.TILE_SIZE
+
+			// Layer 4 (overlay) - centered
 			if (tile?.layers[3].spriteId) {
 				layer4.push(
 					<CustomSprite

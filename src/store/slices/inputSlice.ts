@@ -2,10 +2,10 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { InputAction, type KeybindMap } from '../../types/input'
 
 const DEFAULT_KEYBINDS: KeybindMap = {
-	[InputAction.MOVE_UP]: ['ArrowUp', 'w', 'W'],
-	[InputAction.MOVE_DOWN]: ['ArrowDown', 's', 'S'],
-	[InputAction.MOVE_LEFT]: ['ArrowLeft', 'a', 'A'],
-	[InputAction.MOVE_RIGHT]: ['ArrowRight', 'd', 'D'],
+	[InputAction.MOVE_UP]: ['ArrowUp'],
+	[InputAction.MOVE_DOWN]: ['ArrowDown'],
+	[InputAction.MOVE_LEFT]: ['ArrowLeft'],
+	[InputAction.MOVE_RIGHT]: ['ArrowRight'],
 	[InputAction.ATTACK]: [' ', 'Enter'],
 	[InputAction.CAST_SPELL]: ['c', 'C'],
 	[InputAction.USE_ITEM]: ['u', 'U'],

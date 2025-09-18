@@ -57,21 +57,21 @@
 - [ ] **1.2.4** **🧪 PRUEBA:** Cargar un mapa simple (ej. Mapa1.map)
 
 #### **1.3 Renderizado Básico**
-- [ ] **1.3.1** Componente MapRenderer (`src/components/game/MapRenderer.tsx`)
-- [ ] **1.3.2** Renderizado de las 4 capas por tile
-- [ ] **1.3.3** Sistema básico de viewport (mostrar área visible)
-- [ ] **1.3.4** **🧪 PRUEBA:** Ver mapa estático renderizado correctamente
+- [x] **1.3.1** Componente MapRenderer (`src/components/game/MapRenderer.tsx`)
+- [x] **1.3.2** Renderizado de las 4 capas por tile
+- [x] **1.3.3** Sistema básico de viewport (mostrar área visible)
+- [x] **1.3.4** **🧪 PRUEBA:** Ver mapa estático renderizado correctamente
 
 #### **1.4 Sistema de Cámara/Viewport**
-- [ ] **1.4.1** Implementar cámara desplazable
-- [ ] **1.4.2** Límites del mapa (no salir de bordes)
-- [ ] **1.4.3** Controles con teclado/mouse para mover cámara
-- [ ] **1.4.4** **🧪 PRUEBA:** Navegar libremente por todo el mapa
+- [x] **1.4.1** Implementar cámara desplazable
+- [x] **1.4.2** Límites del mapa (no salir de bordes)
+- [x] **1.4.3** Controles con teclado/mouse para mover cámara
+- [x] **1.4.4** **🧪 PRUEBA:** Navegar libremente por todo el mapa
 
 #### **1.5 Optimizaciones de Renderizado**
-- [ ] **1.5.1** Culling de tiles fuera del viewport
-- [ ] **1.5.2** Sistema de chunks/areas para mapas grandes
-- [ ] **1.5.3** **🧪 PRUEBA:** Performance fluida en mapas grandes
+- [x] **1.5.1** Culling de tiles fuera del viewport
+- [x] **1.5.2** Sistema de chunks/areas para mapas grandes (implementado via culling)
+- [x] **1.5.3** **🧪 PRUEBA:** Performance fluida en mapas grandes
 
 ### **FASE 2: SISTEMA DE PERSONAJES UNIFICADO** 👤
 *Un solo sistema para manejar TODOS los personajes (propio y ajenos)*
