@@ -10,7 +10,7 @@ export interface PlayerState {
 
 const initialState: PlayerState = {
 	position: {
-		tileX: 50, // Initial position
+		tileX: 50, // Initial position - matches GAME_CONSTANTS.CAMERA.DEFAULT_X/Y
 		tileY: 50,
 	},
 	isInRoofTrigger: false,

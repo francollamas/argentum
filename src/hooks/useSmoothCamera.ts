@@ -5,9 +5,11 @@ import { useAppSelector } from '../store/hooks'
 const ANIMATION_DURATION = 250 // milliseconds - like original client (slower, more deliberate movement)
 
 export const useSmoothCamera = () => {
+	const reduxPlayerPosition = useAppSelector((state) => state.player.position)
+
+	// Use the correct initial camera position (same as constants)
 	const [cameraX, setCameraX] = useState(GAME_CONSTANTS.CAMERA.DEFAULT_X)
 	const [cameraY, setCameraY] = useState(GAME_CONSTANTS.CAMERA.DEFAULT_Y)
-	const reduxPlayerPosition = useAppSelector((state) => state.player.position)
 
 	const animationRef = useRef<number | null>(null)
 	const isAnimating = useRef(false)
@@ -16,7 +18,7 @@ export const useSmoothCamera = () => {
 		y: GAME_CONSTANTS.CAMERA.DEFAULT_Y,
 	})
 	const lastPlayerPosition = useRef({
-		tileX: 50,
+		tileX: 50, // This should match the initial player position
 		tileY: 50,
 	})
 
@@ -60,8 +62,9 @@ export const useSmoothCamera = () => {
 		// Check if player position changed
 		if (currentPlayerPos.tileX !== lastPos.tileX || currentPlayerPos.tileY !== lastPos.tileY) {
 			// Player moved, animate camera to follow
-			const startX = currentCameraPosition.current.x
-			const startY = currentCameraPosition.current.y
+			// Use actual camera state values instead of ref to avoid desync
+			const startX = cameraX
+			const startY = cameraY
 
 			const targetPos = calculateCameraPositionForPlayer(currentPlayerPos.tileX, currentPlayerPos.tileY)
 			const finalTargetX = targetPos.x

@@ -7,8 +7,6 @@ import { GAME_CONSTANTS } from '../../constants/game'
 import { useMapLoader } from '../../hooks/useMapLoader'
 import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
-import { useAppDispatch } from '../../store/hooks'
-import { setCurrentMap } from '../../store/slices/worldSlice'
 import { DebugOverlay } from '../debug/DebugOverlay'
 import { MapRenderer } from './MapRenderer'
 
@@ -22,17 +20,9 @@ export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
 	const { map } = useMapLoader(mapNumber)
 	const { cameraX, cameraY } = useSmoothCamera()
 	const { playerTileX, playerTileY } = usePlayerMovement({ map })
-	const dispatch = useAppDispatch()
 
 	const maskRef = useRef<Graphics>(null)
 	const gameContainerRef = useRef<Container>(null)
-
-	// Update Redux with current map when it loads
-	useEffect(() => {
-		if (map) {
-			dispatch(setCurrentMap({ map, mapNumber }))
-		}
-	}, [map, mapNumber, dispatch])
 
 	// Set up the mask when refs are available
 	useEffect(() => {
