@@ -4,8 +4,12 @@ import type { FC, JSX } from 'react'
 import { useMemo } from 'react'
 import { DEBUG_CONFIG } from '../../config/debug'
 import { GAME_CONSTANTS } from '../../constants/game'
-import { useAppSelector } from '../../store/hooks'
+import { usePlayerPosition } from '../../hooks/usePlayer'
 import type { GameMap } from '../../types/map'
+import {
+	calculateViewportBounds,
+	getTilePositionInPixels,
+} from '../../utils/viewport'
 
 extend({ Container, Graphics, Text })
 
@@ -20,44 +24,22 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 	cameraX,
 	cameraY,
 }) => {
-	// Get player position from Redux store
-	const playerPosition = useAppSelector((state) => state.player.position)
-	const playerTileX = playerPosition.tileX
-	const playerTileY = playerPosition.tileY
+	const { tileX: playerTileX, tileY: playerTileY } = usePlayerPosition()
 
-	// Calculate visible tile bounds
-	const viewportLeft = -cameraX
-	const viewportTop = -cameraY
-	const viewportRight = viewportLeft + GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH
-	const viewportBottom = viewportTop + GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT
-
-	const startX = Math.max(
-		0,
-		Math.floor(viewportLeft / GAME_CONSTANTS.TILE_SIZE) - 2,
-	)
-	const endX = Math.min(
-		map.width - 1,
-		Math.floor(viewportRight / GAME_CONSTANTS.TILE_SIZE) + 2,
-	)
-	const startY = Math.max(
-		0,
-		Math.floor(viewportTop / GAME_CONSTANTS.TILE_SIZE) - 2,
-	)
-	const endY = Math.min(
-		map.height - 1,
-		Math.floor(viewportBottom / GAME_CONSTANTS.TILE_SIZE) + 2,
-	)
+	// Calculate visible tile bounds with debug padding
+	const bounds = calculateViewportBounds(cameraX, cameraY, map, 2)
 
 	// Memoize debug elements for performance
 	const debugElements = useMemo(() => {
 		const elements: JSX.Element[] = []
 
 		// Render debug info for each visible tile
-		for (let y = startY; y <= endY; y++) {
-			for (let x = startX; x <= endX; x++) {
+		for (let y = bounds.startY; y <= bounds.endY; y++) {
+			for (let x = bounds.startX; x <= bounds.endX; x++) {
 				const tile = map.tiles[x][y]
-				const tileX = x * GAME_CONSTANTS.TILE_SIZE
-				const tileY = y * GAME_CONSTANTS.TILE_SIZE
+				if (!tile) continue
+
+				const { x: tileX, y: tileY } = getTilePositionInPixels(x, y)
 				const worldTileX = x + map.bounds.minX
 				const worldTileY = y + map.bounds.minY
 
@@ -142,17 +124,7 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 		}
 
 		return elements
-	}, [
-		startX,
-		endX,
-		startY,
-		endY,
-		playerTileX,
-		playerTileY,
-		map.tiles,
-		map.bounds.minX,
-		map.bounds.minY,
-	])
+	}, [bounds, playerTileX, playerTileY, map.tiles, map.bounds])
 
 	return (
 		<pixiContainer>

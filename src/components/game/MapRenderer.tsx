@@ -1,11 +1,13 @@
-import { extend } from '@pixi/react'
+import { extend, useTick } from '@pixi/react'
+import * as TWEEN from '@tweenjs/tween.js'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useMapLoader } from '../../hooks/useMapLoader'
-import { useAppSelector } from '../../store/hooks'
-import { CustomSprite } from '../common/CustomSprite'
+import { useIsInRoofTrigger } from '../../hooks/usePlayer'
+import { calculateViewportBounds } from '../../utils/viewport'
+import { MapLayerRenderer } from './MapTileRenderer'
 
 extend({ Container })
 
@@ -21,205 +23,85 @@ export const MapRenderer: FC<MapRendererProps> = ({
 	cameraY,
 }) => {
 	const { map, loading, error } = useMapLoader(mapNumber)
-	const isInRoofTrigger = useAppSelector(
-		(state) => state.player.isInRoofTrigger,
-	)
+	const isInRoofTrigger = useIsInRoofTrigger()
 
-	// Reference to layer 4 container for direct PixiJS animation
 	const layer4ContainerRef = useRef<Container>(null)
-	const animationRef = useRef<number | null>(null)
-	const lastRoofState = useRef<boolean>(false)
+	const lastRoofState = useRef<boolean | null>(null) // null means uninitialized
+	const activeTweenRef = useRef<TWEEN.Tween<{ alpha: number }> | null>(null)
 
-	// Animate layer 4 opacity when roof trigger state changes using native PixiJS
+	// Update Tween.js animations on each frame
+	useTick((ticker) => {
+		if (activeTweenRef.current) {
+			activeTweenRef.current.update(ticker.lastTime)
+		}
+	})
+
+	// Animate roof fade when trigger state changes
 	useEffect(() => {
-		// Only animate if the state actually changed and container exists
-		if (
-			isInRoofTrigger !== lastRoofState.current &&
-			layer4ContainerRef.current
-		) {
+		if (!layer4ContainerRef.current) return
+
+		const container = layer4ContainerRef.current
+		const targetAlpha = isInRoofTrigger ? 0 : 1
+
+		// Skip if already at target
+		if (Math.abs(container.alpha - targetAlpha) < 0.1) {
 			lastRoofState.current = isInRoofTrigger
-
-			// Cancel any existing animation
-			if (animationRef.current) {
-				cancelAnimationFrame(animationRef.current)
-			}
-
-			const container = layer4ContainerRef.current
-			const startAlpha = container.alpha
-			const targetAlpha = isInRoofTrigger ? 0 : 1 // Fade out when in roof, fade in when out
-			const startTime = performance.now()
-			const duration = 500 // 1 second
-
-			const animate = (currentTime: number) => {
-				const elapsed = currentTime - startTime
-				const progress = Math.min(elapsed / duration, 1)
-
-				// Smooth easing function (ease-in-out)
-				const easedProgress = progress * progress * (3 - 2 * progress)
-				const currentAlpha =
-					startAlpha + (targetAlpha - startAlpha) * easedProgress
-
-				// Directly set the alpha on the PixiJS container
-				container.alpha = currentAlpha
-
-				if (progress < 1) {
-					animationRef.current = requestAnimationFrame(animate)
-				} else {
-					animationRef.current = null
-				}
-			}
-
-			animationRef.current = requestAnimationFrame(animate)
+			return
 		}
 
-		// Cleanup on unmount
-		return () => {
-			if (animationRef.current) {
-				cancelAnimationFrame(animationRef.current)
-			}
+		// Stop any existing tween
+		if (activeTweenRef.current) {
+			activeTweenRef.current.stop()
 		}
+
+		// Create and start fade animation
+		activeTweenRef.current = new TWEEN.Tween({ alpha: container.alpha })
+			.to({ alpha: targetAlpha }, 500)
+			.easing(TWEEN.Easing.Quadratic.InOut)
+			.onUpdate((obj) => {
+				container.alpha = obj.alpha
+			})
+			.onComplete(() => {
+				activeTweenRef.current = null
+			})
+			.start()
+
+		lastRoofState.current = isInRoofTrigger
 	}, [isInRoofTrigger])
 
 	if (loading || error || !map) {
 		return <pixiContainer />
 	}
 
-	// Calculate visible tile bounds based on camera position
-	const viewportLeft = -cameraX
-	const viewportTop = -cameraY
-	const viewportRight = viewportLeft + GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH
-	const viewportBottom = viewportTop + GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT
-
-	// Different padding for different layers (like original client)
-	const groundPadding = GAME_CONSTANTS.VIEWPORT.PADDING.GROUND
-	const objectPadding = GAME_CONSTANTS.VIEWPORT.PADDING.OBJECTS
-	const overlayPadding = GAME_CONSTANTS.VIEWPORT.PADDING.OVERLAY
-
-	// Helper function to get bounds for specific padding
-	const getBounds = (padding: number) => ({
-		startX: Math.max(
-			0,
-			Math.floor(viewportLeft / GAME_CONSTANTS.TILE_SIZE) - padding,
-		),
-		endX: Math.min(
-			map.width - 1,
-			Math.floor(viewportRight / GAME_CONSTANTS.TILE_SIZE) + padding,
-		),
-		startY: Math.max(
-			0,
-			Math.floor(viewportTop / GAME_CONSTANTS.TILE_SIZE) - padding,
-		),
-		endY: Math.min(
-			map.height - 1,
-			Math.floor(viewportBottom / GAME_CONSTANTS.TILE_SIZE) + padding,
-		),
-	})
-
-	const layer1and2: JSX.Element[] = []
-	const objectsAndLayer3: JSX.Element[] = []
-	const layer4: JSX.Element[] = []
-
-	// Render layers 1-2 (ground) with minimal padding
-	const groundBounds = getBounds(groundPadding)
-	for (let y = groundBounds.startY; y <= groundBounds.endY; y++) {
-		for (let x = groundBounds.startX; x <= groundBounds.endX; x++) {
-			const tile = map.tiles[x][y]
-			const tileX = x * GAME_CONSTANTS.TILE_SIZE
-			const tileY = y * GAME_CONSTANTS.TILE_SIZE
-
-			// Layer 1 (ground) - not centered
-			if (tile?.layers[0].spriteId) {
-				layer1and2.push(
-					<CustomSprite
-						key={`layer1-${x}-${y}`}
-						id={tile.layers[0].spriteId}
-						x={tileX}
-						y={tileY}
-						centered={false}
-					/>,
-				)
-			}
-
-			// Layer 2 (background) - centered
-			if (tile?.layers[1].spriteId) {
-				layer1and2.push(
-					<CustomSprite
-						key={`layer2-${x}-${y}`}
-						id={tile.layers[1].spriteId}
-						x={tileX}
-						y={tileY}
-						centered={true}
-					/>,
-				)
-			}
-		}
-	}
-
-	// Render objects and layer 3 with larger padding
-	const objectBounds = getBounds(objectPadding)
-	for (let y = objectBounds.startY; y <= objectBounds.endY; y++) {
-		for (let x = objectBounds.startX; x <= objectBounds.endX; x++) {
-			const tile = map.tiles[x][y]
-			const tileX = x * GAME_CONSTANTS.TILE_SIZE
-			const tileY = y * GAME_CONSTANTS.TILE_SIZE
-
-			// Objects - centered
-			if (tile?.objectSpriteId) {
-				objectsAndLayer3.push(
-					<CustomSprite
-						key={`object-${x}-${y}`}
-						id={tile.objectSpriteId}
-						x={tileX}
-						y={tileY}
-						centered={true}
-					/>,
-				)
-			}
-
-			// Layer 3 (foreground) - centered
-			if (tile?.layers[2].spriteId) {
-				objectsAndLayer3.push(
-					<CustomSprite
-						key={`layer3-${x}-${y}`}
-						id={tile.layers[2].spriteId}
-						x={tileX}
-						y={tileY}
-						centered={true}
-					/>,
-				)
-			}
-		}
-	}
-
-	// Render layer 4 with maximum padding
-	const overlayBounds = getBounds(overlayPadding)
-	for (let y = overlayBounds.startY; y <= overlayBounds.endY; y++) {
-		for (let x = overlayBounds.startX; x <= overlayBounds.endX; x++) {
-			const tile = map.tiles[x][y]
-			const tileX = x * GAME_CONSTANTS.TILE_SIZE
-			const tileY = y * GAME_CONSTANTS.TILE_SIZE
-
-			// Layer 4 (overlay) - centered
-			if (tile?.layers[3].spriteId) {
-				layer4.push(
-					<CustomSprite
-						key={`layer4-${x}-${y}`}
-						id={tile.layers[3].spriteId}
-						x={tileX}
-						y={tileY}
-						centered={true}
-					/>,
-				)
-			}
-		}
-	}
+	// Calculate bounds for different layers with appropriate padding
+	const groundBounds = calculateViewportBounds(
+		cameraX,
+		cameraY,
+		map,
+		GAME_CONSTANTS.VIEWPORT.PADDING.GROUND,
+	)
+	const objectBounds = calculateViewportBounds(
+		cameraX,
+		cameraY,
+		map,
+		GAME_CONSTANTS.VIEWPORT.PADDING.OBJECTS,
+	)
+	const overlayBounds = calculateViewportBounds(
+		cameraX,
+		cameraY,
+		map,
+		GAME_CONSTANTS.VIEWPORT.PADDING.OVERLAY,
+	)
 
 	return (
 		<pixiContainer>
-			{layer1and2}
-			{objectsAndLayer3}
-			{/* Layer 4 with animated alpha using native PixiJS animation */}
-			<pixiContainer ref={layer4ContainerRef}>{layer4}</pixiContainer>
+			<MapLayerRenderer map={map} bounds={groundBounds} layer='ground' />
+			<MapLayerRenderer map={map} bounds={groundBounds} layer='background' />
+			<MapLayerRenderer map={map} bounds={objectBounds} layer='objects' />
+			<MapLayerRenderer map={map} bounds={objectBounds} layer='foreground' />
+			<pixiContainer ref={layer4ContainerRef}>
+				<MapLayerRenderer map={map} bounds={overlayBounds} layer='overlay' />
+			</pixiContainer>
 		</pixiContainer>
 	)
 }

@@ -12,16 +12,14 @@ import {
 import storage from 'redux-persist/lib/storage'
 import inputReducer from './slices/inputSlice'
 import playerReducer from './slices/playerSlice'
-import userReducer from './slices/userSlice'
 
 const persistConfig = {
 	key: 'root',
 	storage: storage,
-	whitelist: ['input'],
+	whitelist: ['input'], // Only persist input preferences
 }
 
 const rootReducer = combineReducers({
-	users: userReducer,
 	input: inputReducer,
 	player: playerReducer,
 })

@@ -1,24 +1,25 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { movementService } from '../services/movement'
+import { useAppDispatch } from '../store/hooks'
 import { movePlayer } from '../store/slices/playerSlice'
 import { InputAction } from '../types/input'
 import type { GameMap } from '../types/map'
 import { useKeyPressed } from './useKeyPressed'
-import { usePlayerPosition } from './usePlayerPosition'
+import { usePlayerPosition } from './usePlayer'
 
 const MOVEMENT_INTERVAL = 250 // milliseconds between movements
+const POLLING_INTERVAL = 16 // ~60fps
 
 type MovementDirection = 'up' | 'down' | 'left' | 'right'
 
-type UsePlayerMovementProps = {
+interface UsePlayerMovementProps {
 	map?: GameMap
 }
 
 export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 	const { isActionPressed } = useKeyPressed()
-	const playerPosition = usePlayerPosition()
 	const dispatch = useAppDispatch()
-	const reduxPlayerPosition = useAppSelector((state) => state.player.position)
+	const playerPosition = usePlayerPosition()
 
 	const lastMoveTime = useRef<number>(0)
 	const isMoving = useRef(false)
@@ -26,9 +27,9 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 	// Update map when it changes
 	useEffect(() => {
 		if (map) {
-			playerPosition.setCurrentMap(map)
+			movementService.setMap(map)
 		}
-	}, [map, playerPosition])
+	}, [map])
 
 	const getNextDirection = useCallback((): MovementDirection | null => {
 		if (isActionPressed(InputAction.MOVE_UP)) return 'up'
@@ -38,7 +39,7 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 		return null
 	}, [isActionPressed])
 
-	const movePlayerToTile = useCallback(
+	const attemptMove = useCallback(
 		(direction: MovementDirection): boolean => {
 			const currentTime = performance.now()
 
@@ -47,39 +48,28 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 				return false
 			}
 
-			// Calculate new player tile position
-			let newPlayerTileX = reduxPlayerPosition.tileX
-			let newPlayerTileY = reduxPlayerPosition.tileY
-
-			switch (direction) {
-				case 'up':
-					newPlayerTileY = reduxPlayerPosition.tileY - 1
-					break
-				case 'down':
-					newPlayerTileY = reduxPlayerPosition.tileY + 1
-					break
-				case 'left':
-					newPlayerTileX = reduxPlayerPosition.tileX - 1
-					break
-				case 'right':
-					newPlayerTileX = reduxPlayerPosition.tileX + 1
-					break
-			}
+			const nextPosition = movementService.calculateNextPosition(
+				playerPosition.tileX,
+				playerPosition.tileY,
+				direction,
+			)
 
 			// Check if movement is valid
-			if (!playerPosition.isValidPosition(newPlayerTileX, newPlayerTileY)) {
-				return false // Movement blocked
+			if (!movementService.isValidPosition(nextPosition.x, nextPosition.y)) {
+				return false
 			}
 
-			// Update Redux immediately with new player position
-			const tile = playerPosition.getTileAt(newPlayerTileX, newPlayerTileY)
-			const isInRoofTrigger =
-				tile?.trigger !== null && [1, 2, 4].includes(tile?.trigger || 0)
+			// Check roof trigger
+			const isInRoofTrigger = movementService.isRoofTrigger(
+				nextPosition.x,
+				nextPosition.y,
+			)
 
+			// Update Redux with new position
 			dispatch(
 				movePlayer({
-					tileX: newPlayerTileX,
-					tileY: newPlayerTileY,
+					tileX: nextPosition.x,
+					tileY: nextPosition.y,
 					isInRoofTrigger,
 				}),
 			)
@@ -87,39 +77,32 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 			lastMoveTime.current = currentTime
 			return true
 		},
-		[reduxPlayerPosition, playerPosition, dispatch],
+		[playerPosition, dispatch],
 	)
 
-	// Check for movement with polling
+	// Movement polling system
 	useEffect(() => {
-		let intervalId: NodeJS.Timeout
-
 		const checkMovement = () => {
 			if (!isMoving.current) {
 				const direction = getNextDirection()
 				if (direction) {
 					isMoving.current = true
-					const _moved = movePlayerToTile(direction)
+					attemptMove(direction)
 
-					// Schedule next movement check
+					// Reset moving flag after short delay
 					setTimeout(() => {
 						isMoving.current = false
-					}, 50) // Small delay to prevent spam
+					}, 50)
 				}
 			}
 		}
 
-		// Poll for input every 16ms (~60fps)
-		intervalId = setInterval(checkMovement, 16)
-
-		return () => {
-			clearInterval(intervalId)
-		}
-	}, [getNextDirection, movePlayerToTile])
+		const intervalId = setInterval(checkMovement, POLLING_INTERVAL)
+		return () => clearInterval(intervalId)
+	}, [getNextDirection, attemptMove])
 
 	return {
-		// Expose current player position from Redux
-		playerTileX: reduxPlayerPosition.tileX,
-		playerTileY: reduxPlayerPosition.tileY,
+		playerTileX: playerPosition.tileX,
+		playerTileY: playerPosition.tileY,
 	}
 }

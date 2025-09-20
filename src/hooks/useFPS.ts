@@ -4,7 +4,7 @@ export const useFPS = () => {
 	const [fps, setFps] = useState(0)
 	const frameCount = useRef(0)
 	const lastTime = useRef(performance.now())
-	const animationFrame = useRef<number>()
+	const animationFrame = useRef<number | undefined>(undefined)
 
 	useEffect(() => {
 		const updateFPS = () => {

@@ -17,6 +17,9 @@ importers:
       '@tauri-apps/api':
         specifier: '>=2.8.0'
         version: 2.8.0
+      '@tweenjs/tween.js':
+        specifier: ^25.0.0
+        version: 25.0.0
       pixi.js:
         specifier: ^8.12.0
         version: 8.12.0
@@ -616,6 +619,9 @@ packages:
     resolution: {integrity: sha512-5IlcOtVBI6HYcTRFH4tuLZV+FX09Psi4Xi+TyFf/S8T8w+ZzPNnrehHz6KUGRbuXHfJhtmRDoUULXNEhpdVkfA==}
     engines: {node: '>= 10'}
     hasBin: true
+
+  '@tweenjs/tween.js@25.0.0':
+    resolution: {integrity: sha512-XKLA6syeBUaPzx4j3qwMqzzq+V4uo72BnlbOjmuljLrRqdsd3qnzvZZoxvMHZ23ndsRS4aufU6JOZYpCbU6T1A==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1798,6 +1804,8 @@ snapshots:
       '@tauri-apps/cli-win32-arm64-msvc': 2.8.3
       '@tauri-apps/cli-win32-ia32-msvc': 2.8.3
       '@tauri-apps/cli-win32-x64-msvc': 2.8.3
+
+  '@tweenjs/tween.js@25.0.0': {}
 
   '@types/babel__core@7.20.5':
     dependencies:
