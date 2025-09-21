@@ -1,15 +1,14 @@
-import { ExtensionType, Point } from 'pixi.js'
-import { Assets } from 'pixi.js'
+import { Assets, ExtensionType, Point } from 'pixi.js'
 import specialEffectsBin from '../assets/inits/specialeffects.o.bin'
 
-import type { SpecialEffectData } from '../types'
+import type { SpecialEffectData } from '../types/sprites'
 
 const parserName = 'loadSpecialEffects'
 
 export const loadSpecialEffects = async () => {
 	await Assets.load({
 		src: specialEffectsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 

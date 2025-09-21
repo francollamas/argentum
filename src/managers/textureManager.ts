@@ -1,5 +1,5 @@
-import { Assets, Spritesheet, Texture } from 'pixi.js'
-import { spritesheets, importTexture } from '../importers/texturesImporter.ts'
+import { Assets, Spritesheet, type SpritesheetData, Texture } from 'pixi.js'
+import { importTexture, spritesheets } from '../importers/texturesImporter.ts'
 
 export class TextureManager {
 	private static instance: TextureManager
@@ -21,15 +21,18 @@ export class TextureManager {
 
 		if (!Assets.cache.has(spritesheetName)) {
 			const textureData = await importTexture(spritesheetName)
-			
+
 			if (!textureData) {
 				console.warn(`Texture data for ${spritesheetName} not found`)
 				return Texture.EMPTY
 			}
-			
+
 			const imageTexture = await Assets.load(textureData.png)
 
-			const spritesheet = new Spritesheet(imageTexture, textureData.json)
+			const spritesheet = new Spritesheet(
+				imageTexture,
+				textureData.json as unknown as SpritesheetData,
+			)
 			await spritesheet.parse()
 
 			if (!Assets.cache.has(spritesheetName)) {
@@ -45,3 +48,6 @@ export class TextureManager {
 		return spritesheet.textures[id]
 	}
 }
+
+// Singleton instance
+export const textureManager = TextureManager.getInstance()

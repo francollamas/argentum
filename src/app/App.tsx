@@ -1,21 +1,32 @@
-import { extend } from '@pixi/react'
+import { extend, useApplication } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
-import { Example } from '../components/scenes/Example'
-import { useResources } from '../hooks/useResources.ts'
+import { FPSCounter } from '../components/common/FPSCounter'
+import { Text } from '../components/common/Text'
+import { MapNavigator } from '../components/game/MapNavigator'
+import { useResources } from '../hooks/useResources'
 
 extend({ Container })
 
 const App: FC = () => {
+	const app = useApplication()
 	const resourcesLoaded = useResources()
 
 	if (!resourcesLoaded) {
-		return <></>
+		return null
 	}
 
 	return (
-		<pixiContainer x={150} y={150}>
-			<Example />
+		<pixiContainer>
+			<MapNavigator mapNumber={60} />
+			<FPSCounter />
+			<Text
+				text={`Renderer: ${app.app.renderer.type}`}
+				x={10}
+				y={50}
+				bold
+				border
+			/>
 		</pixiContainer>
 	)
 }

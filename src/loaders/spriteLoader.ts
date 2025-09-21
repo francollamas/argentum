@@ -1,14 +1,13 @@
-import { ExtensionType, Rectangle } from 'pixi.js'
-import { Assets } from 'pixi.js'
+import { Assets, ExtensionType, Rectangle } from 'pixi.js'
 import spritesBin from '../assets/inits/sprites.bin'
-import type { SpriteData } from '../types'
+import type { SpriteData } from '../types/sprites'
 
 const parserName = 'loadSprites'
 
 export const loadSprites = async () => {
 	await Assets.load({
 		src: spritesBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 

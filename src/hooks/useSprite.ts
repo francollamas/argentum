@@ -1,5 +1,4 @@
-import { Assets, Rectangle } from 'pixi.js'
-import { Texture } from 'pixi.js'
+import { Assets, Rectangle, Texture } from 'pixi.js'
 import { useEffect, useState } from 'react'
 import spritesBin from '../assets/inits/sprites.bin'
 import { TextureManager } from '../managers/textureManager.ts'

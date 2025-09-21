@@ -8,6 +8,8 @@ import {
 	loadShields,
 	loadWeapons,
 } from '../loaders/characterPartsLoader'
+import { loadFonts } from '../loaders/fontsLoader'
+import { mapsParser } from '../loaders/mapLoader'
 import {
 	loadSpecialEffects,
 	specialEffectsParser,
@@ -15,7 +17,12 @@ import {
 import { loadSprites, spritesParser } from '../loaders/spriteLoader'
 
 const loadParsers = () => {
-	const parsers = [spritesParser, characterPartsParser, specialEffectsParser]
+	const parsers = [
+		spritesParser,
+		characterPartsParser,
+		specialEffectsParser,
+		mapsParser,
+	]
 
 	for (const parser of parsers) {
 		extensions.add(parser)
@@ -23,6 +30,7 @@ const loadParsers = () => {
 }
 
 const loadResources = async () => {
+	await loadFonts()
 	await loadSprites()
 	await loadBodies()
 	await loadHeads()

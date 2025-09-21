@@ -1,16 +1,18 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
 	"files": {
-		"ignore": [
-			"dist",
-			"public",
-			"src-tauri",
-			"src/assets",
-			"src/assets.ts",
-			"src/types/assets.d.ts"
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.json",
+			"!dist",
+			"!public",
+			"!src-tauri",
+			"!src/assets",
+			"!src/assets.ts",
+			"!src/types/assets.d.ts"
 		]
 	},
 	"javascript": {
@@ -24,6 +26,13 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
 		}
 	}
 }

@@ -1,48 +1,46 @@
-import { ExtensionType, Point } from 'pixi.js'
-import { Assets } from 'pixi.js'
+import { Assets, ExtensionType, Point } from 'pixi.js'
 import bodiesBin from '../assets/inits/bodies.odir.bin'
 import headsBin from '../assets/inits/heads.dir.bin'
 import helmetsBin from '../assets/inits/helmets.dir.bin'
 import shieldsBin from '../assets/inits/shields.dir.bin'
 import weaponsBin from '../assets/inits/weapons.dir.bin'
-
-import type { CharacterPartData } from '../types'
-import { Direction } from '../types'
+import { Direction } from '../types/general'
+import type { CharacterPartData } from '../types/sprites'
 
 const parserName = 'loadCharacterParts'
 
 export const loadBodies = async () => {
 	await Assets.load({
 		src: bodiesBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadHeads = async () => {
 	await Assets.load({
 		src: headsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadHelmets = async () => {
 	await Assets.load({
 		src: helmetsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadShields = async () => {
 	await Assets.load({
 		src: shieldsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
 export const loadWeapons = async () => {
 	await Assets.load({
 		src: weaponsBin,
-		loadParser: parserName,
+		parser: parserName,
 	})
 }
 
