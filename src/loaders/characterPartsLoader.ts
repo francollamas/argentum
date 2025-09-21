@@ -4,9 +4,8 @@ import headsBin from '../assets/inits/heads.dir.bin'
 import helmetsBin from '../assets/inits/helmets.dir.bin'
 import shieldsBin from '../assets/inits/shields.dir.bin'
 import weaponsBin from '../assets/inits/weapons.dir.bin'
-
-import type { CharacterPartData } from '../types/sprites'
 import { Direction } from '../types/general'
+import type { CharacterPartData } from '../types/sprites'
 
 const parserName = 'loadCharacterParts'
 

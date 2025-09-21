@@ -1,5 +1,5 @@
 import spritesheetsJson from '../assets/textures/spritesheets.json'
-import type { SpritesheetList } from '../types'
+import type { SpritesheetList } from '../types/textureData'
 
 const pngFiles = import.meta.glob('../assets/textures/*.png')
 const jsonFiles = import.meta.glob('../assets/textures/*.json')

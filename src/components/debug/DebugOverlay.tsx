@@ -1,16 +1,16 @@
 import { extend } from '@pixi/react'
-import { Container, Graphics, BitmapText } from 'pixi.js'
+import { BitmapText, Container, Graphics } from 'pixi.js'
 import type { FC, JSX } from 'react'
 import { useMemo } from 'react'
 import { DEBUG_CONFIG } from '../../config/debug'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { usePlayerPosition } from '../../hooks/usePlayer'
-import { Text } from '../common/Text'
 import type { GameMap } from '../../types/map'
 import {
 	calculateViewportBounds,
 	getTilePositionInPixels,
 } from '../../utils/viewport'
+import { Text } from '../common/Text'
 
 extend({ Container, Graphics, BitmapText })
 

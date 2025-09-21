@@ -59,18 +59,11 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 				return false
 			}
 
-			// Check roof trigger
-			const isInRoofTrigger = movementService.isRoofTrigger(
-				nextPosition.x,
-				nextPosition.y,
-			)
-
 			// Update Redux with new position
 			dispatch(
 				movePlayer({
 					tileX: nextPosition.x,
 					tileY: nextPosition.y,
-					isInRoofTrigger,
 				}),
 			)
 

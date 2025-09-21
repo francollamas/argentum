@@ -8,13 +8,13 @@ import {
 	loadShields,
 	loadWeapons,
 } from '../loaders/characterPartsLoader'
+import { loadFonts } from '../loaders/fontsLoader'
 import { mapsParser } from '../loaders/mapLoader'
 import {
 	loadSpecialEffects,
 	specialEffectsParser,
 } from '../loaders/specialEffectsLoader'
 import { loadSprites, spritesParser } from '../loaders/spriteLoader'
-import { loadFonts } from '../loaders/fontsLoader'
 
 const loadParsers = () => {
 	const parsers = [

@@ -1,11 +1,10 @@
-import { extend } from '@pixi/react'
+import { extend, useApplication } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
 import { FPSCounter } from '../components/common/FPSCounter'
+import { Text } from '../components/common/Text'
 import { MapNavigator } from '../components/game/MapNavigator'
 import { useResources } from '../hooks/useResources'
-import { Text } from '../components/common/Text'
-import { useApplication } from '@pixi/react'
 
 extend({ Container })
 
@@ -25,6 +24,8 @@ const App: FC = () => {
 				text={`Renderer: ${app.app.renderer.type}`}
 				x={10}
 				y={50}
+				bold
+				border
 			/>
 		</pixiContainer>
 	)

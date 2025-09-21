@@ -1,28 +1,16 @@
 import { useTick } from '@pixi/react'
 import { useRef, useState } from 'react'
 import { GAME_CONSTANTS } from '../constants/game'
+import { movementService } from '../services/movement'
 import { useAppSelector } from '../store/hooks'
-import {
-	selectIsInRoofTrigger,
-	selectPlayerPosition,
-	selectPlayerTileX,
-	selectPlayerTileY,
-} from '../store/slices/playerSlice'
 
 export const usePlayerPosition = () => {
-	return useAppSelector(selectPlayerPosition)
-}
-
-export const usePlayerTileX = () => {
-	return useAppSelector(selectPlayerTileX)
-}
-
-export const usePlayerTileY = () => {
-	return useAppSelector(selectPlayerTileY)
+	return useAppSelector((state) => state.player.position)
 }
 
 export const useIsInRoofTrigger = () => {
-	return useAppSelector(selectIsInRoofTrigger)
+	const position = usePlayerPosition()
+	return movementService.isRoofTrigger(position.tileX, position.tileY)
 }
 
 export const usePlayer = () => {

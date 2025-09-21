@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '../store'
 
 export interface PlayerPosition {
 	tileX: number
@@ -8,7 +7,6 @@ export interface PlayerPosition {
 
 export interface PlayerState {
 	position: PlayerPosition
-	isInRoofTrigger: boolean
 }
 
 const initialState: PlayerState = {
@@ -16,7 +14,6 @@ const initialState: PlayerState = {
 		tileX: 90, // Initial position
 		tileY: 40,
 	},
-	isInRoofTrigger: false,
 }
 
 export const playerSlice = createSlice({
@@ -26,31 +23,13 @@ export const playerSlice = createSlice({
 		setPlayerPosition: (state, action: PayloadAction<PlayerPosition>) => {
 			state.position = action.payload
 		},
-		setIsInRoofTrigger: (state, action: PayloadAction<boolean>) => {
-			state.isInRoofTrigger = action.payload
-		},
-		movePlayer: (
-			state,
-			action: PayloadAction<PlayerPosition & { isInRoofTrigger: boolean }>,
-		) => {
+		movePlayer: (state, action: PayloadAction<PlayerPosition>) => {
 			state.position.tileX = action.payload.tileX
 			state.position.tileY = action.payload.tileY
-			state.isInRoofTrigger = action.payload.isInRoofTrigger
 		},
 	},
 })
 
-export const { setPlayerPosition, setIsInRoofTrigger, movePlayer } =
-	playerSlice.actions
-
-// Selectors
-export const selectPlayerPosition = (state: RootState): PlayerPosition =>
-	state.player.position
-export const selectIsInRoofTrigger = (state: RootState): boolean =>
-	state.player.isInRoofTrigger
-export const selectPlayerTileX = (state: RootState): number =>
-	state.player.position.tileX
-export const selectPlayerTileY = (state: RootState): number =>
-	state.player.position.tileY
+export const { setPlayerPosition, movePlayer } = playerSlice.actions
 
 export default playerSlice.reducer

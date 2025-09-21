@@ -16,7 +16,7 @@ import playerReducer from './slices/playerSlice'
 const persistConfig = {
 	key: 'root',
 	storage: storage,
-	whitelist: ['input'], // Only persist input preferences
+	whitelist: ['input', 'player'], // Only persist input preferences
 }
 
 const rootReducer = combineReducers({
