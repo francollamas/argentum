@@ -1,17 +1,18 @@
 import { extend } from '@pixi/react'
-import { Container, Graphics, Text } from 'pixi.js'
+import { Container, Graphics, BitmapText } from 'pixi.js'
 import type { FC, JSX } from 'react'
 import { useMemo } from 'react'
 import { DEBUG_CONFIG } from '../../config/debug'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { usePlayerPosition } from '../../hooks/usePlayer'
+import { Text } from '../common/Text'
 import type { GameMap } from '../../types/map'
 import {
 	calculateViewportBounds,
 	getTilePositionInPixels,
 } from '../../utils/viewport'
 
-extend({ Container, Graphics, Text })
+extend({ Container, Graphics, BitmapText })
 
 type DebugOverlayProps = {
 	map: GameMap
@@ -105,18 +106,13 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 					tile?.trigger !== undefined
 				) {
 					elements.push(
-						<pixiText
+						<Text
 							key={`trigger-${x}-${y}`}
 							text={tile.trigger.toString()}
 							x={tileX + GAME_CONSTANTS.TILE_SIZE / 2}
 							y={tileY + 4}
-							anchor={0.5}
-							style={{
-								fontFamily: 'Arial',
-								fontSize: 9,
-								fill: 0xffffff,
-								stroke: { color: 0x000000, width: 1 },
-							}}
+							bold
+							border
 						/>,
 					)
 				}
@@ -131,19 +127,15 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 			{debugElements}
 			{/* Player coordinates display (top-left corner, fixed position) */}
 			{DEBUG_CONFIG.showPlayerPosition && (
-				<pixiText
+				<Text
 					key='player-coords'
 					text={`[${playerTileX.toString().padStart(2, '0')} ; ${playerTileY
 						.toString()
 						.padStart(2, '0')}]`}
 					x={10 - cameraX}
 					y={10 - cameraY}
-					style={{
-						fontFamily: 'Arial',
-						fontSize: 16,
-						fill: 0xffffff,
-						stroke: { color: 0x000000, width: 3 },
-					}}
+					bold
+					border
 				/>
 			)}
 		</pixiContainer>

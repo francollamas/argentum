@@ -1,7 +1,7 @@
 import { Assets, ExtensionType, Point } from 'pixi.js'
 import specialEffectsBin from '../assets/inits/specialeffects.o.bin'
 
-import type { SpecialEffectData } from '../types'
+import type { SpecialEffectData } from '../types/sprites'
 
 const parserName = 'loadSpecialEffects'
 

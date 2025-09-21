@@ -1,6 +1,6 @@
 import { Assets, ExtensionType, Rectangle } from 'pixi.js'
 import spritesBin from '../assets/inits/sprites.bin'
-import type { SpriteData } from '../types'
+import type { SpriteData } from '../types/sprites'
 
 const parserName = 'loadSprites'
 

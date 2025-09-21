@@ -14,6 +14,7 @@ import {
 	specialEffectsParser,
 } from '../loaders/specialEffectsLoader'
 import { loadSprites, spritesParser } from '../loaders/spriteLoader'
+import { loadFonts } from '../loaders/fontsLoader'
 
 const loadParsers = () => {
 	const parsers = [
@@ -29,6 +30,7 @@ const loadParsers = () => {
 }
 
 const loadResources = async () => {
+	await loadFonts()
 	await loadSprites()
 	await loadBodies()
 	await loadHeads()
