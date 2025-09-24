@@ -108,7 +108,7 @@ export const mapsParser = {
 	extension: {
 		type: ExtensionType.LoadParser,
 	},
-	test: (url: string): boolean => url.endsWith('.map.bin'),
+	test: (url: string): boolean => url.endsWith('.mmap'),
 	load: async (url: string): Promise<GameMap> => {
 		const response = await fetch(url)
 		if (!response.ok) {
@@ -116,7 +116,7 @@ export const mapsParser = {
 		}
 		const buffer = await response.arrayBuffer()
 		const mapNumber = Number.parseInt(
-			url.split('/').pop()?.replace('.map.bin', '') || '0',
+			url.split('/').pop()?.replace('.mmap', '') || '0',
 			10,
 		)
 		return parseMapData(mapNumber, buffer)

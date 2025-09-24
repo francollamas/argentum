@@ -1,29 +1,41 @@
-const mapFiles = import.meta.glob('../assets/maps/*.map.bin')
-
-type MapModule = {
-	default: string
-}
+// Import all map files with glob pattern
+const mapFiles = import.meta.glob('../assets/maps/*.mmap', { eager: false, as: 'url' })
 
 function getBaseName(path: string): string {
 	const filename = path.split('/').pop() || ''
-	return filename.replace(/\.map\.bin$/, '')
+	return filename.replace(/\.mmap$/, '')
 }
 
-const mapMap: Record<string, string> = {}
+// Create mapping from map number to import function
+const mapMap: Record<string, () => Promise<string>> = {}
 
-Object.keys(mapFiles).forEach((mapPath) => {
+// Process each map file path and create the mapping
+Object.entries(mapFiles).forEach(([mapPath, importFn]) => {
 	const baseName = getBaseName(mapPath)
-	mapMap[baseName] = mapPath
+	mapMap[baseName] = importFn as () => Promise<string>
 })
 
 export async function importMap(
 	mapName: string,
 ): Promise<string | undefined> {
-	const path = mapMap[mapName]
-	if (!path) return undefined
+	console.log(`[MAP DEBUG] Attempting to load map: ${mapName}`)
+	console.log(`[MAP DEBUG] Available maps:`, Object.keys(mapMap))
+	console.log(`[MAP DEBUG] Import functions:`, mapFiles)
 
-	const mod = await mapFiles[path]() as MapModule
-	const url = mod.default
+	const importFn = mapMap[mapName]
+	if (!importFn) {
+		console.error(`[MAP DEBUG] Map import function not found for: ${mapName}`)
+		return undefined
+	}
 
-	return url
+	console.log(`[MAP DEBUG] Found import function for: ${mapName}`)
+
+	try {
+		const url = await importFn()
+		console.log(`[MAP DEBUG] Successfully loaded URL: ${url}`)
+		return url
+	} catch (error) {
+		console.error(`[MAP DEBUG] Failed to load map ${mapName}:`, error)
+		throw error
+	}
 }
