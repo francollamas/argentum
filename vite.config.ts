@@ -11,7 +11,7 @@ export default defineConfig(async () => ({
 	build: {
 		assetsDir: 'assets', // Especifica la carpeta donde se colocarán los activos
 	},
-	assetsInclude: ['**/*.bin', '**/*.fnt'], // Incluye los archivos binarios
+	assetsInclude: ['**/*.bin'], // Incluye los archivos binarios
 
 	plugins: [react()],
 
@@ -26,10 +26,10 @@ export default defineConfig(async () => ({
 		host: mobile ? '0.0.0.0' : false,
 		hmr: mobile
 			? {
-					protocol: 'ws',
-					host: await internalIpV4(),
-					port: 1421,
-				}
+				protocol: 'ws',
+				host: await internalIpV4(),
+				port: 1421,
+			}
 			: undefined,
 		watch: {
 			// 3. tell vite to ignore watching `src-tauri`

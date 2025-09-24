@@ -1,6 +1,7 @@
 import { Assets, ExtensionType } from 'pixi.js'
 import { GAME_CONSTANTS } from '../constants/game'
 import type { GameMap, MapTile, TileLayer } from '../types/map'
+import { importMap } from '../importers/mapsImporter'
 
 const parserName = 'loadMaps'
 
@@ -107,7 +108,7 @@ export const mapsParser = {
 	extension: {
 		type: ExtensionType.LoadParser,
 	},
-	test: (url: string): boolean => url.endsWith('.map'),
+	test: (url: string): boolean => url.endsWith('.map.bin'),
 	load: async (url: string): Promise<GameMap> => {
 		const response = await fetch(url)
 		if (!response.ok) {
@@ -115,7 +116,7 @@ export const mapsParser = {
 		}
 		const buffer = await response.arrayBuffer()
 		const mapNumber = Number.parseInt(
-			url.split('/').pop()?.replace('.map', '') || '0',
+			url.split('/').pop()?.replace('.map.bin', '') || '0',
 			10,
 		)
 		return parseMapData(mapNumber, buffer)
@@ -128,19 +129,12 @@ export const getMap = async (mapNumber: number): Promise<GameMap> => {
 		return Assets.cache.get(cacheKey)
 	}
 
-	const mapPath = `/src/assets/maps/${mapNumber}.map`
-	const map = await Assets.load(mapPath)
+	const importedMap = await importMap(mapNumber.toString())
+	if (!importedMap) {
+		throw new Error(`Map ${mapNumber} not found`)
+	}
+
+	const map = await Assets.load(importedMap)
 	Assets.cache.set(cacheKey, map)
 	return map
-}
-
-export const preloadMaps = async (mapNumbers: number[]): Promise<void> => {
-	const promises = mapNumbers.map(async (mapNumber) => {
-		try {
-			await getMap(mapNumber)
-		} catch (error) {
-			console.warn(`Failed to preload map ${mapNumber}:`, error)
-		}
-	})
-	await Promise.allSettled(promises)
 }
