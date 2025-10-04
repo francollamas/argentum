@@ -13,7 +13,7 @@ window.addEventListener('error', (event) => {
 	logger.error(`JavaScript Error: ${event.message}`, {
 		source: event.filename,
 		line: event.lineno,
-		column: event.colno
+		column: event.colno,
 	})
 })
 

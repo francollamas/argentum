@@ -1,5 +1,8 @@
 // Import all map files with glob pattern
-const mapFiles = import.meta.glob('../assets/maps/*.mmap', { query: '?url', import: 'default' })
+const mapFiles = import.meta.glob('../assets/maps/*.mmap', {
+	query: '?url',
+	import: 'default',
+})
 
 function getBaseName(path: string): string {
 	const filename = path.split('/').pop() || ''
@@ -17,9 +20,7 @@ Object.entries(mapFiles).forEach(([mapPath, importFn]) => {
 
 import { logger } from '../utils/logger'
 
-export async function importMap(
-	mapName: string,
-): Promise<string | undefined> {
+export async function importMap(mapName: string): Promise<string | undefined> {
 	logger.debug(`Attempting to load map: ${mapName}`)
 	logger.debug('Available maps', { maps: Object.keys(mapMap) })
 
@@ -27,7 +28,7 @@ export async function importMap(
 	if (!importFn) {
 		logger.error(`Map import function not found for: ${mapName}`, {
 			requestedMap: mapName,
-			availableMaps: Object.keys(mapMap)
+			availableMaps: Object.keys(mapMap),
 		})
 		return undefined
 	}

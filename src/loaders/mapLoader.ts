@@ -1,7 +1,7 @@
 import { Assets, ExtensionType } from 'pixi.js'
 import { GAME_CONSTANTS } from '../constants/game'
-import type { GameMap, MapTile, TileLayer } from '../types/map'
 import { importMap } from '../importers/mapsImporter'
+import type { GameMap, MapTile, TileLayer } from '../types/map'
 
 const parserName = 'loadMaps'
 
