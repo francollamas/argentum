@@ -1,5 +1,5 @@
 // Import all map files with glob pattern
-const mapFiles = import.meta.glob('../assets/maps/*.mmap', { eager: false, as: 'url' })
+const mapFiles = import.meta.glob('../assets/maps/*.mmap', { query: '?url', import: 'default' })
 
 function getBaseName(path: string): string {
 	const filename = path.split('/').pop() || ''
@@ -15,27 +15,31 @@ Object.entries(mapFiles).forEach(([mapPath, importFn]) => {
 	mapMap[baseName] = importFn as () => Promise<string>
 })
 
+import { logger } from '../utils/logger'
+
 export async function importMap(
 	mapName: string,
 ): Promise<string | undefined> {
-	console.log(`[MAP DEBUG] Attempting to load map: ${mapName}`)
-	console.log(`[MAP DEBUG] Available maps:`, Object.keys(mapMap))
-	console.log(`[MAP DEBUG] Import functions:`, mapFiles)
+	logger.debug(`Attempting to load map: ${mapName}`)
+	logger.debug('Available maps', { maps: Object.keys(mapMap) })
 
 	const importFn = mapMap[mapName]
 	if (!importFn) {
-		console.error(`[MAP DEBUG] Map import function not found for: ${mapName}`)
+		logger.error(`Map import function not found for: ${mapName}`, {
+			requestedMap: mapName,
+			availableMaps: Object.keys(mapMap)
+		})
 		return undefined
 	}
 
-	console.log(`[MAP DEBUG] Found import function for: ${mapName}`)
+	logger.debug(`Found import function for map: ${mapName}`)
 
 	try {
 		const url = await importFn()
-		console.log(`[MAP DEBUG] Successfully loaded URL: ${url}`)
+		logger.debug(`Successfully loaded map URL`, { mapName, url })
 		return url
 	} catch (error) {
-		console.error(`[MAP DEBUG] Failed to load map ${mapName}:`, error)
+		logger.error(`Failed to load map ${mapName}`, { mapName, error })
 		throw error
 	}
 }

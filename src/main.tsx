@@ -6,36 +6,23 @@ import App from './app/App.js'
 import { persistor, store } from './store/store.ts'
 import './index.css'
 import { Application } from '@pixi/react'
+import { logger } from './utils/logger'
 
-// Capturar todos los errores JavaScript y loguearlos
+// Capturar errores JavaScript y loguearlos
 window.addEventListener('error', (event) => {
-	console.error('[JS ERROR]', event.error)
-	console.error('[JS ERROR] Message:', event.message)
-	console.error('[JS ERROR] Source:', event.filename, 'Line:', event.lineno, 'Column:', event.colno)
+	logger.error(`JavaScript Error: ${event.message}`, {
+		source: event.filename,
+		line: event.lineno,
+		column: event.colno
+	})
 })
 
 window.addEventListener('unhandledrejection', (event) => {
-	console.error('[UNHANDLED PROMISE REJECTION]', event.reason)
+	logger.error('Unhandled Promise Rejection', event.reason)
 })
 
-// Override console methods para asegurar que se muestren
-const originalConsole = {
-	log: console.log,
-	error: console.error,
-	warn: console.warn,
-}
-
-console.log = (...args: any[]) => {
-	originalConsole.log('[ARGENTUM LOG]', ...args)
-}
-
-console.error = (...args: any[]) => {
-	originalConsole.error('[ARGENTUM ERROR]', ...args)
-}
-
-console.warn = (...args: any[]) => {
-	originalConsole.warn('[ARGENTUM WARN]', ...args)
-}
+// Log de inicio de la aplicación
+logger.info('Argentum application started')
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
@@ -43,7 +30,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 			<PersistGate loading={null} persistor={persistor}>
 				<ReactReduxContext.Consumer>
 					{(contextValue) => (
-						<Application backgroundColor={0x000000}>
+						<Application preference='webgpu' backgroundColor={0x000000}>
 							<ReactReduxContext.Provider value={contextValue}>
 								<App />
 							</ReactReduxContext.Provider>
