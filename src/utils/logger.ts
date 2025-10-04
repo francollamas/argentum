@@ -1,24 +1,42 @@
-// Simple wrapper around Tauri's official logging plugin
+// Logger wrapper that uses Tauri's plugin in desktop/mobile and console in browser
 import { debug, error, info, warn } from '@tauri-apps/plugin-log'
+
+const isTauri = '__TAURI_INTERNALS__' in window
 
 export const logger = {
 	debug: (message: string, data?: unknown) => {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
-		debug(logMessage)
+		if (isTauri) {
+			debug(logMessage)
+		} else {
+			console.debug(logMessage)
+		}
 	},
 
 	info: (message: string, data?: unknown) => {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
-		info(logMessage)
+		if (isTauri) {
+			info(logMessage)
+		} else {
+			console.info(logMessage)
+		}
 	},
 
 	warn: (message: string, data?: unknown) => {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
-		warn(logMessage)
+		if (isTauri) {
+			warn(logMessage)
+		} else {
+			console.warn(logMessage)
+		}
 	},
 
 	error: (message: string, data?: unknown) => {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
-		error(logMessage)
+		if (isTauri) {
+			error(logMessage)
+		} else {
+			console.error(logMessage)
+		}
 	},
 }
