@@ -30,7 +30,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 			<PersistGate loading={null} persistor={persistor}>
 				<ReactReduxContext.Consumer>
 					{(contextValue) => (
-						<Application preference='webgpu' backgroundColor={0x000000}>
+						<Application preference='webgpu' backgroundColor={0xff0000}>
 							<ReactReduxContext.Provider value={contextValue}>
 								<App />
 							</ReactReduxContext.Provider>

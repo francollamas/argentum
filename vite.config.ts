@@ -1,15 +1,16 @@
 import react from '@vitejs/plugin-react'
-import { internalIpV4 } from 'internal-ip'
 import { defineConfig } from 'vite'
 
-// @ts-expect-error process is a nodejs global
-const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM)
+const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
 	base: './', // Esto asegura que las rutas sean relativas a la raíz del proyecto
 	build: {
 		assetsDir: 'assets', // Especifica la carpeta donde se colocarán los activos
+		target: process.env.TAURI_ENV_PLATFORM == 'windows' ? 'chrome105' : 'safari13', // Tauri uses Chromium on Windows and WebKit on macOS and Linux
+		minify: !process.env.TAURI_ENV_DEBUG ? 'esbuild' : false,
+		sourcemap: !!process.env.TAURI_ENV_DEBUG // produce sourcemaps for debug builds
 	},
 	assetsInclude: ['**/*.bin', '**/*.mmap'], // Incluye los archivos binarios
 
@@ -23,17 +24,20 @@ export default defineConfig(async () => ({
 	server: {
 		port: 1420,
 		strictPort: true,
-		host: mobile ? '0.0.0.0' : false,
-		hmr: mobile
+		host: host || false,
+		hmr: host
 			? {
-					protocol: 'ws',
-					host: await internalIpV4(),
-					port: 1421,
-				}
+				protocol: 'ws',
+				host,
+				port: 1421,
+			}
 			: undefined,
+
 		watch: {
-			// 3. tell vite to ignore watching `src-tauri`
+			// tell vite to ignore watching `src-tauri`
 			ignored: ['**/src-tauri/**'],
 		},
 	},
+	// Env variables starting with the item of `envPrefix` will be exposed in tauri's source code through `import.meta.env`.
+	envPrefix: ['VITE_', 'TAURI_ENV_*']
 }))
