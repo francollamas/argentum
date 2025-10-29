@@ -1,16 +1,17 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-const host = process.env.TAURI_DEV_HOST;
+const host = process.env.TAURI_DEV_HOST
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
 	base: './', // Esto asegura que las rutas sean relativas a la raíz del proyecto
 	build: {
 		assetsDir: 'assets', // Especifica la carpeta donde se colocarán los activos
-		target: process.env.TAURI_ENV_PLATFORM == 'windows' ? 'chrome105' : 'safari13', // Tauri uses Chromium on Windows and WebKit on macOS and Linux
+		target:
+			process.env.TAURI_ENV_PLATFORM === 'windows' ? 'chrome105' : 'safari13', // Tauri uses Chromium on Windows and WebKit on macOS and Linux
 		minify: !process.env.TAURI_ENV_DEBUG ? 'esbuild' : false,
-		sourcemap: !!process.env.TAURI_ENV_DEBUG // produce sourcemaps for debug builds
+		sourcemap: !!process.env.TAURI_ENV_DEBUG, // produce sourcemaps for debug builds
 	},
 	assetsInclude: ['**/*.bin', '**/*.mmap'], // Incluye los archivos binarios
 
@@ -27,10 +28,10 @@ export default defineConfig(async () => ({
 		host: host || false,
 		hmr: host
 			? {
-				protocol: 'ws',
-				host,
-				port: 1421,
-			}
+					protocol: 'ws',
+					host,
+					port: 1421,
+				}
 			: undefined,
 
 		watch: {
@@ -39,5 +40,5 @@ export default defineConfig(async () => ({
 		},
 	},
 	// Env variables starting with the item of `envPrefix` will be exposed in tauri's source code through `import.meta.env`.
-	envPrefix: ['VITE_', 'TAURI_ENV_*']
+	envPrefix: ['VITE_', 'TAURI_ENV_*'],
 }))

@@ -9,7 +9,7 @@ export const logger = {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
 		// ALWAYS log to console for Safari Web Inspector
 		console.debug(logMessage)
-/* 		if (isTauri) {
+		/* 		if (isTauri) {
 			debug(logMessage)
 		} */
 	},
@@ -18,7 +18,7 @@ export const logger = {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
 		// ALWAYS log to console for Safari Web Inspector
 		console.info(logMessage)
-/* 		if (isTauri) {
+		/* 		if (isTauri) {
 			info(logMessage)
 		} */
 	},
@@ -27,7 +27,7 @@ export const logger = {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
 		// ALWAYS log to console for Safari Web Inspector
 		console.warn(logMessage)
-/* 		if (isTauri) {
+		/* 		if (isTauri) {
 			warn(logMessage)
 		} */
 	},
@@ -36,7 +36,7 @@ export const logger = {
 		const logMessage = data ? `${message} ${JSON.stringify(data)}` : message
 		// ALWAYS log to console for Safari Web Inspector
 		console.error(logMessage)
-/* 		if (isTauri) {
+		/* 		if (isTauri) {
 			error(logMessage)
 		} */
 	},
