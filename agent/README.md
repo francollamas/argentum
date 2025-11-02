@@ -1,0 +1,1 @@
+Esta carpeta AGENT contiene archivos de planes o prompts con los que fui trabajando. Los dejo solo de referencia para armar nuevos prompts o planes pero en general no son útiles para el proyecto.
