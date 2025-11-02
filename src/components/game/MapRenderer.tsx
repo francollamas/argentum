@@ -22,7 +22,7 @@ export const MapRenderer: FC<MapRendererProps> = ({
 	cameraX,
 	cameraY,
 }) => {
-	const isInRoofTrigger = useIsInRoofTrigger()
+	const isInRoofTrigger = useIsInRoofTrigger(map)
 	const layer4ContainerRef = useRef<Container>(null)
 
 	// Handle roof fade animation
