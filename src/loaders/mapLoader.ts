@@ -14,7 +14,6 @@ const createEmptyTile = (): MapTile => ({
 	] as [TileLayer, TileLayer, TileLayer, TileLayer],
 	isBlocked: false,
 	trigger: null,
-	characterIndex: null,
 	objectSpriteId: null,
 	hasWater: false,
 })
