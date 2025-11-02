@@ -6,6 +6,23 @@ import App from './app/App.js'
 import { persistor, store } from './store/store.ts'
 import './index.css'
 import { Application } from '@pixi/react'
+import { logger } from './utils/logger'
+
+// Capturar errores JavaScript y loguearlos
+window.addEventListener('error', (event) => {
+	logger.error(`JavaScript Error: ${event.message}`, {
+		source: event.filename,
+		line: event.lineno,
+		column: event.colno,
+	})
+})
+
+window.addEventListener('unhandledrejection', (event) => {
+	logger.error('Unhandled Promise Rejection', event.reason)
+})
+
+// Log de inicio de la aplicación
+logger.info('Argentum application started')
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
@@ -13,7 +30,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 			<PersistGate loading={null} persistor={persistor}>
 				<ReactReduxContext.Consumer>
 					{(contextValue) => (
-						<Application backgroundColor={0x000000}>
+						<Application preference='webgpu' backgroundColor={0x000000}>
 							<ReactReduxContext.Provider value={contextValue}>
 								<App />
 							</ReactReduxContext.Provider>

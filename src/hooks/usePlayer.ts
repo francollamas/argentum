@@ -1,21 +1,29 @@
 import { useTick } from '@pixi/react'
 import { useRef, useState } from 'react'
-import { GAME_CONSTANTS } from '../constants/game'
 import { movementService } from '../services/movement'
 import { useAppSelector } from '../store/hooks'
+import type { GameMap } from '../types/map'
+import { tileToPixel } from '../utils/coordinates'
 
 export const usePlayerPosition = () => {
 	return useAppSelector((state) => state.player.position)
 }
 
-export const useIsInRoofTrigger = () => {
+export const useIsInRoofTrigger = (map?: GameMap) => {
 	const position = usePlayerPosition()
+
+	// Si no hay mapa, no estamos en un trigger
+	if (!map) return false
+
+	// Asegurarse de que el servicio tenga el mapa antes de usarlo
+	movementService.setMap(map)
+
 	return movementService.isRoofTrigger(position.tileX, position.tileY)
 }
 
-export const usePlayer = () => {
+export const usePlayer = (map?: GameMap) => {
 	const position = usePlayerPosition()
-	const isInRoofTrigger = useIsInRoofTrigger()
+	const isInRoofTrigger = useIsInRoofTrigger(map)
 
 	return {
 		position,
@@ -28,17 +36,9 @@ export const usePlayer = () => {
 export const usePlayerAnimatedPosition = () => {
 	const playerPosition = usePlayerPosition()
 
-	// Convertir posición de tile a pixels
-	const getPixelPosition = (tileX: number, tileY: number) => {
-		return {
-			x: (tileX - GAME_CONSTANTS.MAP.MIN_X) * GAME_CONSTANTS.TILE_SIZE,
-			y: (tileY - GAME_CONSTANTS.MAP.MIN_Y) * GAME_CONSTANTS.TILE_SIZE,
-		}
-	}
-
 	// Estado de la posición animada actual
 	const [animatedPosition, setAnimatedPosition] = useState(() =>
-		getPixelPosition(playerPosition.tileX, playerPosition.tileY),
+		tileToPixel(playerPosition.tileX, playerPosition.tileY),
 	)
 
 	// Referencias para tracking del movimiento
@@ -53,7 +53,7 @@ export const usePlayerAnimatedPosition = () => {
 		playerPosition.tileX !== previousPlayerPositionRef.current.tileX ||
 		playerPosition.tileY !== previousPlayerPositionRef.current.tileY
 	) {
-		targetPositionRef.current = getPixelPosition(
+		targetPositionRef.current = tileToPixel(
 			playerPosition.tileX,
 			playerPosition.tileY,
 		)

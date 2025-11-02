@@ -1,10 +1,8 @@
 import type { FC } from 'react'
 import { useMemo } from 'react'
 import type { GameMap } from '../../types/map'
-import {
-	getTilePositionInPixels,
-	type ViewportBounds,
-} from '../../utils/viewport'
+import { arrayIndexToPixel } from '../../utils/coordinates'
+import type { ViewportBounds } from '../../utils/viewport'
 import { CustomSprite } from '../common/CustomSprite'
 
 interface MapLayerRendererProps {
@@ -56,7 +54,7 @@ export const MapLayerRenderer: FC<MapLayerRendererProps> = ({
 
 				if (!spriteId) continue
 
-				const { x: tileX, y: tileY } = getTilePositionInPixels(x, y)
+				const { x: tileX, y: tileY } = arrayIndexToPixel(x, y)
 
 				tiles.push({
 					spriteId,

@@ -26,11 +26,11 @@ Object.keys(pngFiles).forEach((pngPath) => {
 	}
 })
 
-interface PngModule {
+type PngModule = {
 	default: string
 }
 
-interface JsonModule {
+type JsonModule = {
 	default: Record<string, unknown>
 }
 

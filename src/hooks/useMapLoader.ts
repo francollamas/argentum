@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getMap } from '../loaders/mapLoader'
+import { loadMap } from '../loaders/mapLoader'
 import type { GameMap } from '../types/map'
 
 export const useMapLoader = (mapNumber: number) => {
@@ -12,7 +12,7 @@ export const useMapLoader = (mapNumber: number) => {
 			try {
 				setLoading(true)
 				setError(null)
-				const loadedMap = await getMap(mapNumber)
+				const loadedMap = await loadMap(mapNumber)
 				setMap(loadedMap)
 			} catch (err) {
 				console.error('Failed to load map:', err)
