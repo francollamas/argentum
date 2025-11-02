@@ -1,4 +1,5 @@
 import type { GameMap } from '../types/map'
+import { worldTileToArrayIndex } from '../utils/coordinates'
 
 export class MovementService {
 	private map: GameMap | null = null
@@ -11,8 +12,7 @@ export class MovementService {
 		if (!this.map) return null
 
 		// Convert world coordinates to array indices
-		const arrayX = tileX - this.map.bounds.minX
-		const arrayY = tileY - this.map.bounds.minY
+		const { x: arrayX, y: arrayY } = worldTileToArrayIndex(tileX, tileY)
 
 		if (
 			arrayX < 0 ||

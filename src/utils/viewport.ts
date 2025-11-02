@@ -1,5 +1,6 @@
 import { GAME_CONSTANTS } from '../constants/game'
 import type { GameMap } from '../types/map'
+import { arrayIndexToPixel } from './coordinates'
 
 export interface ViewportBounds {
 	startX: number
@@ -52,7 +53,11 @@ export const calculateViewportBounds = (
 	}
 }
 
-export const getTilePositionInPixels = (tileX: number, tileY: number) => ({
-	x: tileX * GAME_CONSTANTS.TILE_SIZE,
-	y: tileY * GAME_CONSTANTS.TILE_SIZE,
-})
+/**
+ * @deprecated Use arrayIndexToPixel from utils/coordinates instead
+ * This function will be removed in a future version
+ */
+export const getTilePositionInPixels = (
+	arrayX: number,
+	arrayY: number,
+): { x: number; y: number } => arrayIndexToPixel(arrayX, arrayY)

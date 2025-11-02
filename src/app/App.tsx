@@ -3,7 +3,7 @@ import { Container } from 'pixi.js'
 import type { FC } from 'react'
 import { FPSCounter } from '../components/common/FPSCounter'
 import { Text } from '../components/common/Text'
-import { MapNavigator } from '../components/game/MapNavigator'
+import { GameView } from '../components/game/GameView'
 import { useResources } from '../hooks/useResources'
 
 extend({ Container })
@@ -18,7 +18,7 @@ const App: FC = () => {
 
 	return (
 		<pixiContainer>
-			<MapNavigator mapNumber={60} />
+			<GameView mapNumber={60} />
 			<FPSCounter />
 			<Text
 				text={`Renderer: ${app.app.renderer.type}`}

@@ -12,12 +12,16 @@ import { MapRenderer } from './MapRenderer'
 
 extend({ Container, Graphics })
 
-type MapNavigatorProps = {
+type GameViewProps = {
 	mapNumber: number
 }
 
-export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
-	const { map } = useMapLoader(mapNumber)
+/**
+ * Main game view component that orchestrates the game world rendering
+ * Handles map loading, camera positioning, and player movement
+ */
+export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
+	const { map, loading, error } = useMapLoader(mapNumber)
 	const { cameraX, cameraY } = useSmoothCamera()
 	usePlayerMovement({ map: map || undefined }) // Only need for side effects, not return values
 
@@ -30,6 +34,11 @@ export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
 			gameContainerRef.current.mask = maskRef.current
 		}
 	})
+
+	// Don't render anything until map is fully loaded
+	if (loading || error || !map) {
+		return null
+	}
 
 	return (
 		<pixiContainer>
@@ -44,18 +53,14 @@ export const MapNavigator: FC<MapNavigatorProps> = ({ mapNumber }) => {
 						GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH,
 						GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT,
 					)
-					g.fill(0xffffff)
+					g.fill(0x000000)
 				}}
 			/>
 
 			{/* Game content with camera transform and mask applied */}
 			<pixiContainer ref={gameContainerRef} x={cameraX} y={cameraY}>
-				<MapRenderer
-					mapNumber={mapNumber}
-					cameraX={cameraX}
-					cameraY={cameraY}
-				/>
-				{DEBUG_MODE && map && (
+				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
+				{DEBUG_MODE && (
 					<DebugOverlay map={map} cameraX={cameraX} cameraY={cameraY} />
 				)}
 			</pixiContainer>

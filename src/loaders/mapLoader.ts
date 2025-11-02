@@ -4,6 +4,37 @@ import { importMap } from '../importers/mapsImporter'
 import type { GameMap, MapTile, TileLayer } from '../types/map'
 
 const parserName = 'loadMaps'
+const CURRENT_MAP_CACHE_KEY = 'current_map'
+
+/**
+ * Loads a map by number. Only one map is kept in cache at a time.
+ * @param mapNumber - The map number to load
+ * @returns The loaded GameMap
+ */
+export const loadMap = async (mapNumber: number): Promise<GameMap> => {
+	const cacheKey = CURRENT_MAP_CACHE_KEY
+
+	// If we already have this exact map loaded, return it
+	if (Assets.cache.has(cacheKey)) {
+		const cachedMap = Assets.cache.get<GameMap>(cacheKey)
+		if (cachedMap && cachedMap.number === mapNumber) {
+			return cachedMap
+		}
+	}
+
+	// Load the new map
+	const importedMap = await importMap(mapNumber.toString())
+	if (!importedMap) {
+		throw new Error(`Map ${mapNumber} not found`)
+	}
+
+	const map = await Assets.load<GameMap>(importedMap)
+
+	// Replace whatever map was in cache with the new one
+	Assets.cache.set(cacheKey, map)
+
+	return map
+}
 
 const createEmptyTile = (): MapTile => ({
 	layers: [
@@ -120,20 +151,4 @@ export const mapsParser = {
 		)
 		return parseMapData(mapNumber, buffer)
 	},
-}
-
-export const getMap = async (mapNumber: number): Promise<GameMap> => {
-	const cacheKey = `map_${mapNumber}`
-	if (Assets.cache.has(cacheKey)) {
-		return Assets.cache.get(cacheKey)
-	}
-
-	const importedMap = await importMap(mapNumber.toString())
-	if (!importedMap) {
-		throw new Error(`Map ${mapNumber} not found`)
-	}
-
-	const map = await Assets.load(importedMap)
-	Assets.cache.set(cacheKey, map)
-	return map
 }

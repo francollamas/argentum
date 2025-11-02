@@ -1,8 +1,8 @@
 import { useTick } from '@pixi/react'
 import { useRef, useState } from 'react'
-import { GAME_CONSTANTS } from '../constants/game'
 import { movementService } from '../services/movement'
 import { useAppSelector } from '../store/hooks'
+import { tileToPixel } from '../utils/coordinates'
 
 export const usePlayerPosition = () => {
 	return useAppSelector((state) => state.player.position)
@@ -28,17 +28,9 @@ export const usePlayer = () => {
 export const usePlayerAnimatedPosition = () => {
 	const playerPosition = usePlayerPosition()
 
-	// Convertir posición de tile a pixels
-	const getPixelPosition = (tileX: number, tileY: number) => {
-		return {
-			x: (tileX - GAME_CONSTANTS.MAP.MIN_X) * GAME_CONSTANTS.TILE_SIZE,
-			y: (tileY - GAME_CONSTANTS.MAP.MIN_Y) * GAME_CONSTANTS.TILE_SIZE,
-		}
-	}
-
 	// Estado de la posición animada actual
 	const [animatedPosition, setAnimatedPosition] = useState(() =>
-		getPixelPosition(playerPosition.tileX, playerPosition.tileY),
+		tileToPixel(playerPosition.tileX, playerPosition.tileY),
 	)
 
 	// Referencias para tracking del movimiento
@@ -53,7 +45,7 @@ export const usePlayerAnimatedPosition = () => {
 		playerPosition.tileX !== previousPlayerPositionRef.current.tileX ||
 		playerPosition.tileY !== previousPlayerPositionRef.current.tileY
 	) {
-		targetPositionRef.current = getPixelPosition(
+		targetPositionRef.current = tileToPixel(
 			playerPosition.tileX,
 			playerPosition.tileY,
 		)
