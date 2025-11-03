@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@pixi/layout':
+        specifier: ^3.2.0
+        version: 3.2.0(@types/react@19.2.2)(pixi.js@8.14.0)(react@19.2.0)(yoga-layout@3.2.1)
       '@pixi/react':
         specifier: ^8.0.3
         version: 8.0.3(@types/react@19.2.2)(pixi.js@8.14.0)(react@19.2.0)
+      '@pixi/ui':
+        specifier: ^2.2.7
+        version: 2.2.7(pixi.js@8.14.0)
       '@reduxjs/toolkit':
         specifier: ^2.9.2
         version: 2.9.2(react-redux@9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1))(react@19.2.0)
@@ -396,11 +402,22 @@ packages:
   '@pixi/colord@2.9.6':
     resolution: {integrity: sha512-nezytU2pw587fQstUu1AsJZDVEynjskwOL+kibwcdxsMBFqPsFFNA7xl0ii/gXuDi6M0xj3mfRJj8pBSc2jCfA==}
 
+  '@pixi/layout@3.2.0':
+    resolution: {integrity: sha512-7TtDLHfaF65sTnYjrvRNqNJSQHMH109b04RtNgoy//BjR+pKWFUCgDMnUhs13fdNM0AkGccQW3UqCdylHuGvbA==}
+    peerDependencies:
+      pixi.js: ^8
+      yoga-layout: ^3
+
   '@pixi/react@8.0.3':
     resolution: {integrity: sha512-k0feY0Vj4WIWpaLaRQY8NBKlDqVCPPyEUu5EibQVqdtgdMx1brRWeJC+ruq7Im08vtZWx7iZwNGhgHNubO/OMQ==}
     peerDependencies:
       pixi.js: ^8.2.6
       react: '>=19.0.0'
+
+  '@pixi/ui@2.2.7':
+    resolution: {integrity: sha512-YMVx3WImhOc/8Navqj+d4SKVNAjyuHecvMGFIdh8NPIfzwgV3MoxIkwswHcuGpxQAljG1psMbMHVIAEKznN9oA==}
+    peerDependencies:
+      pixi.js: ^8.6.2
 
   '@reduxjs/toolkit@2.9.2':
     resolution: {integrity: sha512-ZAYu/NXkl/OhqTz7rfPaAhY0+e8Fr15jqNxte/2exKUxvHyQ/hcqmdekiN1f+Lcw3pE+34FCgX+26zcUE3duCg==}
@@ -1129,6 +1146,12 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  tweedle.js@2.1.0:
+    resolution: {integrity: sha512-0ReQgVjepoZkE6t0upWNgCRbplHkQJQYk1LStXugwSR728GLFmGDRuaQJlxeC/iBlxud6+P1RdODjaO25vHAqw==}
+
+  typed-signals@2.5.0:
+    resolution: {integrity: sha512-m9lHc3eBCJerXYdx+G0uWZihyUXdqTzzgOdqiDDsoUo75WjhFJH6vP5/6w/xhyu04zoxHUqgYhf9FEt85dk/Ng==}
+
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
@@ -1234,6 +1257,9 @@ packages:
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+
+  yoga-layout@3.2.1:
+    resolution: {integrity: sha512-0LPOt3AxKqMdFBZA3HBAt/t/8vIKq7VaQYbuA8WxCgung+p9TVyKRYdpvCb80HcdTN2NkbIKbhNwKUfm3tQywQ==}
 
 snapshots:
 
@@ -1489,6 +1515,16 @@ snapshots:
 
   '@pixi/colord@2.9.6': {}
 
+  '@pixi/layout@3.2.0(@types/react@19.2.2)(pixi.js@8.14.0)(react@19.2.0)(yoga-layout@3.2.1)':
+    dependencies:
+      pixi.js: 8.14.0
+      yoga-layout: 3.2.1
+    optionalDependencies:
+      '@pixi/react': 8.0.3(@types/react@19.2.2)(pixi.js@8.14.0)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react
+
   '@pixi/react@8.0.3(@types/react@19.2.2)(pixi.js@8.14.0)(react@19.2.0)':
     dependencies:
       its-fine: 2.0.0(@types/react@19.2.2)(react@19.2.0)
@@ -1497,6 +1533,12 @@ snapshots:
       react-reconciler: 0.31.0(react@19.2.0)
     transitivePeerDependencies:
       - '@types/react'
+
+  '@pixi/ui@2.2.7(pixi.js@8.14.0)':
+    dependencies:
+      pixi.js: 8.14.0
+      tweedle.js: 2.1.0
+      typed-signals: 2.5.0
 
   '@reduxjs/toolkit@2.9.2(react-redux@9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1))(react@19.2.0)':
     dependencies:
@@ -2160,6 +2202,10 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  tweedle.js@2.1.0: {}
+
+  typed-signals@2.5.0: {}
+
   typescript@5.9.3: {}
 
   undici-types@7.16.0: {}
@@ -2235,3 +2281,5 @@ snapshots:
       stackback: 0.0.2
 
   yallist@3.1.1: {}
+
+  yoga-layout@3.2.1: {}

@@ -173,3 +173,35 @@ The game loads original Argentum Online binary data files:
 - Asset files in `src/assets/` and generated types in `src/types/assets.d.ts` are ignored by Biome
 - Debug mode can be toggled via `src/config/debug.ts` for overlay features
 - Vite's glob imports enable dynamic asset loading without explicit imports
+
+## Coding Guidelines
+
+### PixiJS Integration Standards
+- **IMPORTANT**: This project uses PixiJS, @pixi/react, @pixi/layout, and @pixi/ui
+- **ALWAYS** create PixiJS components using JSX tags with @pixi/react - NEVER create PixiJS components manually using imperative code
+- When using `extend()` from @pixi/react (e.g., `extend({ Text })`, `extend({ Graphics })`), declare it **inside the component** that uses it, NOT in `main.tsx` or global scope
+- Study the existing codebase structure before adding new code to maintain architectural consistency
+
+### Code Quality and Readability
+- **NO CODE COMMENTS**: Code must be self-documenting through clear naming and structure
+- **Readability is paramount**: Prioritize code clarity above all else
+- Keep functions small and focused on a single responsibility
+- When functions become complex, extract them into separate utility files
+- Break down complex `useEffect` hooks into custom hooks in `src/hooks/`
+- All code must be written in English (variables, functions, comments if absolutely necessary)
+
+### Redux Toolkit Best Practices
+- **ALWAYS** use `useAppDispatch()` and `useAppSelector()` hooks from the store instead of the default `useDispatch` and `useSelector` from Redux
+
+### Component Architecture
+- **Check existing components first**: Before creating new UI components, verify if similar components already exist in `src/components/` (e.g., custom Text, Button, Label components)
+- Components must be small and focused on a single purpose
+- Design components to be reusable across different contexts
+- Follow SOLID principles and separation of concerns
+- Extract business logic from components into hooks or utility functions
+- Prefer composition over inheritance
+
+### Development Workflow
+- **When uncertain, ASK**: Never make assumptions about requirements or implementation details - always clarify with the developer first
+- Follow existing patterns and conventions found in the codebase
+- Maintain consistency with the established architecture

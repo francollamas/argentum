@@ -5,6 +5,9 @@ import { PersistGate } from 'redux-persist/integration/react'
 import App from './app/App.js'
 import { persistor, store } from './store/store.ts'
 import './index.css'
+// CRITICAL: Import layout BEFORE creating PixiJS Application
+import '@pixi/layout'
+import '@pixi/layout/react'
 import { Application } from '@pixi/react'
 import { logger } from './utils/logger'
 
@@ -30,7 +33,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 			<PersistGate loading={null} persistor={persistor}>
 				<ReactReduxContext.Consumer>
 					{(contextValue) => (
-						<Application preference='webgpu' backgroundColor={0x000000}>
+						<Application
+							preference='webgpu'
+							backgroundColor={0x000000}
+							width={800}
+							height={600}
+							//resizeTo={window}
+						>
 							<ReactReduxContext.Provider value={contextValue}>
 								<App />
 							</ReactReduxContext.Provider>

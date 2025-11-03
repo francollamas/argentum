@@ -12,16 +12,18 @@ import {
 import storage from 'redux-persist/lib/storage'
 import inputReducer from './slices/inputSlice'
 import playerReducer from './slices/playerSlice'
+import screenReducer from './slices/screenSlice'
 
 const persistConfig = {
 	key: 'root',
 	storage: storage,
-	whitelist: ['input', 'player'], // Only persist input preferences
+	whitelist: ['input', 'player', 'screen'], // Persist input preferences, player state, and current screen
 }
 
 const rootReducer = combineReducers({
 	input: inputReducer,
 	player: playerReducer,
+	screen: screenReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
