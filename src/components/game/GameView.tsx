@@ -7,9 +7,9 @@ import { GAME_CONSTANTS } from '../../constants/game'
 import { useMapLoader } from '../../hooks/useMapLoader'
 import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
+import { FPSCounter } from '../common/FPSCounter'
 import { DebugOverlay } from '../debug/DebugOverlay'
 import { MapRenderer } from './MapRenderer'
-import { FPSCounter } from '../common/FPSCounter'
 
 extend({ Container, Graphics })
 

@@ -18,7 +18,7 @@ This workflow automates the git commit process with linting and proper commit me
        - Auto-fix any fixable issues
        - Show the user the changes made by the linter
        - Ask for confirmation before proceeding
-       - If user confirms, stage the changes: `git add .`
+       - ** IMPORTANT ** > If user confirms, stage the changes: `git add .`
        - If user rejects, abort the commit
   3. Generate commit message:
      - Use `git diff --cached --name-status` to see staged changes
