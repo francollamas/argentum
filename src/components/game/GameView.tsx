@@ -9,6 +9,7 @@ import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
 import { DebugOverlay } from '../debug/DebugOverlay'
 import { MapRenderer } from './MapRenderer'
+import { FPSCounter } from '../common/FPSCounter'
 
 extend({ Container, Graphics })
 
@@ -64,6 +65,8 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 					<DebugOverlay map={map} cameraX={cameraX} cameraY={cameraY} />
 				)}
 			</pixiContainer>
+
+			<FPSCounter />
 		</pixiContainer>
 	)
 }
