@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <linearGradient id="buttonCircleHoverBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0883A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4752F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B85F1F;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="buttonCircleHoverBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0B87C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A87D5A;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="buttonCircleHoverHighlight" x1="0%" y1="0%" x2="0%" y2="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="25" cy="25" r="23" fill="url(#buttonCircleHoverBg)" stroke="url(#buttonCircleHoverBorder)" stroke-width="2"/>
+  <ellipse cx="25" cy="10" rx="15" ry="8" fill="url(#buttonCircleHoverHighlight)" stroke="none"/>
+</svg>

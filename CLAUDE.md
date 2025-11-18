@@ -54,6 +54,7 @@ pnpm linter          # Fix linting issues
 - **Readability first** - Prioritize clarity above all
 - Small, focused functions with single responsibility
 - Extract complex logic into separate utilities or custom hooks
+- **Complex useEffect()** - When components have multiple complex useEffect hooks that harm readability, extract them into separate custom hooks
 - All code in English
 
 ### Component Architecture

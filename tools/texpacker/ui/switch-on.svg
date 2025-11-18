@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="26" viewBox="0 0 50 26">
+  <defs>
+    <linearGradient id="switchOnBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3E2920;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2C1A14;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="switchOnBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#B38A6A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7A503A;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="switchOnThumb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F2D059;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D8962E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="46" height="22" rx="11" fill="url(#switchOnBg)" stroke="url(#switchOnBorder)" stroke-width="1.5"/>
+  <circle cx="37" cy="13" r="8" fill="url(#switchOnThumb)" stroke="#B87820" stroke-width="1"/>
+</svg>

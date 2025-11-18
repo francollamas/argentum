@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <linearGradient id="arrowGoldPressed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E8C28A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B38A6A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A07858;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <path d="M 24,15 L 6,24 L 6,6 Z"
+        fill="url(#arrowGoldPressed)"
+        stroke="#61402E"
+        stroke-width="1"/>
+</svg>

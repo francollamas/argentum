@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="50" viewBox="0 0 150 50">
+  <defs>
+    <linearGradient id="buttonMainHoverBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0883A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4752F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B85F1F;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="buttonMainHoverBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0B87C;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4A679;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A87D5A;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="buttonMainHoverHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.05" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.2" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="146" height="46" rx="4" fill="url(#buttonMainHoverBg)" stroke="url(#buttonMainHoverBorder)" stroke-width="2"/>
+  <rect x="3" y="3" width="144" height="44" rx="3.5" fill="url(#buttonMainHoverHighlight)" stroke="none"/>
+</svg>

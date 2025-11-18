@@ -28,7 +28,10 @@ jobs:
         run: pnpm add -g vercel@canary
 
       - name: Generate packed textures
-        run: pnpm run generate-assets
+        run: pnpm run generate-textures
+
+      - name: Generate UI textures
+        run: pnpm run generate-ui
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}

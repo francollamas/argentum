@@ -1,10 +1,11 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { uiWatcherPlugin } from './vite-plugins/ui-watcher-plugin'
 
 const host = process.env.TAURI_DEV_HOST
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => ({
+export default defineConfig({
 	base: './', // Esto asegura que las rutas sean relativas a la raíz del proyecto
 	build: {
 		assetsDir: 'assets', // Especifica la carpeta donde se colocarán los activos
@@ -15,7 +16,10 @@ export default defineConfig(async () => ({
 	},
 	assetsInclude: ['**/*.bin', '**/*.mmap'], // Incluye los archivos binarios
 
-	plugins: [react()],
+	plugins: [
+		react(),
+		uiWatcherPlugin()
+	],
 
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
 	//
@@ -28,10 +32,10 @@ export default defineConfig(async () => ({
 		host: host || false,
 		hmr: host
 			? {
-					protocol: 'ws',
-					host,
-					port: 1421,
-				}
+				protocol: 'ws',
+				host,
+				port: 1421,
+			}
 			: undefined,
 
 		watch: {
@@ -41,4 +45,4 @@ export default defineConfig(async () => ({
 	},
 	// Env variables starting with the item of `envPrefix` will be exposed in tauri's source code through `import.meta.env`.
 	envPrefix: ['VITE_', 'TAURI_ENV_*'],
-}))
+})

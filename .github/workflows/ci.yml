@@ -28,7 +28,10 @@ jobs:
               run: pnpm i
 
             - name: Generate packed textures
-              run: pnpm run generate-assets
+              run: pnpm run generate-textures
+
+            - name: Generate UI textures
+              run: pnpm run generate-ui
 
             - name: Build
               run: pnpm run build

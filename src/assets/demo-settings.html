@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Argentum Online - UI Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(135deg, #0a0604 0%, #1A0F0B 50%, #0a0604 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Courier New', monospace;
+      color: #E8C28A;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    .game-container {
+      width: 1200px;
+      height: 800px;
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      grid-template-rows: 80px 1fr 100px;
+      gap: 10px;
+    }
+
+    .panel {
+      background-image: url('svg/panel.svg');
+      background-size: 100% 100%;
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .title-ribbon {
+      width: 350px;
+      height: 80px;
+      background-image: url('svg/ribbon.svg');
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      color: #FFE8B0;
+    }
+
+    .center-view {
+      background-image: url('svg/parchment.svg');
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #603522;
+      font-style: italic;
+      padding: 60px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      border-radius: 3px;
+    }
+
+    /* Character Panel */
+    .character-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+    }
+
+    .character-avatar {
+      width: 80px;
+      height: 80px;
+      background-image: url('svg/circle.svg');
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .character-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .character-info {
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      padding-bottom: 10px;
+    }
+
+    .stat-bar {
+      margin: 12px 0;
+    }
+
+    .stat-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .bar-container {
+      position: relative;
+      width: 100%;
+      height: 25px;
+      background-image: url('svg/bar-container.svg');
+      background-size: 100% 100%;
+    }
+
+    .bar-fill {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      height: 17px;
+      transition: width 0.3s ease;
+      border-radius: 1px;
+    }
+
+    .bar-hp { background: linear-gradient(to bottom, #CC2C2A 0%, #A63722 50%, #8B2A1E 100%); }
+    .bar-mp { background: linear-gradient(to bottom, #2C4ECC 0%, #2440A6 50%, #1E348B 100%); }
+    .bar-sta { background: linear-gradient(to bottom, #2ECC4A 0%, #26A63C 50%, #1E8B32 100%); }
+    .bar-xp { background: linear-gradient(to bottom, #F2D059 0%, #D8962E 50%, #B87820 100%); }
+
+    /* Inventory */
+    .inventory-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 8px;
+    }
+
+    .inventory-slot {
+      width: 100%;
+      aspect-ratio: 1;
+      background-image: url('svg/inventory-slot-normal.svg');
+      background-size: 100% 100%;
+      cursor: pointer;
+      transition: background-image 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .inventory-slot:hover { background-image: url('svg/inventory-slot-hover.svg'); }
+    .inventory-slot.selected { background-image: url('svg/inventory-slot-selected.svg'); }
+
+    /* Settings Panel */
+    .settings-panel {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .setting-group {
+      margin: 12px 0;
+    }
+
+    .setting-label {
+      font-size: 10px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 30px;
+      background-image: url('svg/input-field.svg');
+      background-size: 100% 100%;
+      border: none;
+      padding: 0 12px;
+      color: #E8C28A;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      background-color: transparent;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .input-field:focus { outline: none; }
+    .input-field::placeholder { color: #7A503A; opacity: 0.7; }
+
+    /* Slider */
+    .slider-wrapper {
+      position: relative;
+      margin-top: 6px;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 25px;
+      background-image: url('svg/bar-container.svg');
+      background-size: 100% 100%;
+      cursor: pointer;
+    }
+
+    .slider-fill {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      height: 17px;
+      background: linear-gradient(to bottom, #F2D059 0%, #D8962E 50%, #B87820 100%);
+      border-radius: 1px;
+      pointer-events: none;
+    }
+
+    .slider-thumb {
+      position: absolute;
+      top: -1px;
+      width: 20px;
+      height: 28px;
+      background-image: url('svg/slider-thumb.svg');
+      background-size: 100% 100%;
+      cursor: grab;
+      z-index: 10;
+    }
+
+    .slider-thumb:active { cursor: grabbing; }
+
+    /* Switch */
+    .switch-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .switch {
+      width: 50px;
+      height: 26px;
+      background-size: 100% 100%;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background-image 0.2s;
+    }
+
+    .switch.off { background-image: url('svg/switch-off.svg'); }
+    .switch.on { background-image: url('svg/switch-on.svg'); }
+
+    /* Checkbox */
+    .checkbox-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      background-size: 100% 100%;
+      background-color: transparent;
+      flex-shrink: 0;
+    }
+
+    .checkbox.unchecked { background-image: url('svg/checkbox-unchecked.svg'); }
+    .checkbox.checked { background-image: url('svg/checkbox-checked.svg'); }
+
+    /* Radio */
+    .radio-group {
+      margin: 10px 0;
+    }
+
+    .radio-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    .radio {
+      width: 24px;
+      height: 24px;
+      background-size: 100% 100%;
+      background-color: transparent;
+      flex-shrink: 0;
+    }
+
+    .radio.unchecked { background-image: url('svg/radio-unchecked.svg'); }
+    .radio.checked { background-image: url('svg/radio-checked.svg'); }
+
+    /* Action Bar */
+    .bottom-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-slot {
+      width: 50px;
+      height: 50px;
+      background-image: url('svg/button-normal.svg');
+      background-size: 100% 100%;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background-image 0.1s;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      color: #FFE8B0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .action-slot:hover { background-image: url('svg/button-hover.svg'); }
+    .action-slot:active { background-image: url('svg/button-pressed.svg'); }
+
+    .arrow-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 40px);
+      grid-template-rows: repeat(3, 40px);
+      gap: 4px;
+    }
+
+    .arrow-btn {
+      width: 40px;
+      height: 40px;
+      background-size: 100% 100%;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background-image 0.1s;
+    }
+
+    .arrow-up { grid-column: 2; grid-row: 1; background-image: url('svg/arrow-up.svg'); }
+    .arrow-up:hover { background-image: url('svg/arrow-up-hover.svg'); }
+    .arrow-up:active { background-image: url('svg/arrow-up-pressed.svg'); }
+
+    .arrow-down { grid-column: 2; grid-row: 3; background-image: url('svg/arrow-down.svg'); }
+    .arrow-down:hover { background-image: url('svg/arrow-down-hover.svg'); }
+    .arrow-down:active { background-image: url('svg/arrow-down-pressed.svg'); }
+
+    .arrow-left { grid-column: 1; grid-row: 2; background-image: url('svg/arrow-left.svg'); }
+    .arrow-left:hover { background-image: url('svg/arrow-left-hover.svg'); }
+    .arrow-left:active { background-image: url('svg/arrow-left-pressed.svg'); }
+
+    .arrow-right { grid-column: 3; grid-row: 2; background-image: url('svg/arrow-right.svg'); }
+    .arrow-right:hover { background-image: url('svg/arrow-right-hover.svg'); }
+    .arrow-right:active { background-image: url('svg/arrow-right-pressed.svg'); }
+
+    .main-button {
+      min-width: 110px;
+      height: 50px;
+      padding: 0 20px;
+      background-image: url('svg/button-main-normal.svg');
+      background-size: 100% 100%;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      color: #FFE8B0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      transition: background-image 0.1s;
+    }
+
+    .main-button:hover { background-image: url('svg/button-main-hover.svg'); }
+    .main-button:active { background-image: url('svg/button-main-pressed.svg'); }
+
+    .circle-button {
+      width: 50px;
+      height: 50px;
+      background-image: url('svg/button-circle-normal.svg');
+      background-size: 100% 100%;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: bold;
+      color: #FFE8B0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      transition: background-image 0.1s;
+    }
+
+    .circle-button:hover { background-image: url('svg/button-circle-hover.svg'); }
+    .circle-button:active { background-image: url('svg/button-circle-pressed.svg'); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1A0F0B; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #7A503A; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #B38A6A; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="title-ribbon">ARGENTUM ONLINE</div>
+      <div style="display: flex; gap: 10px;">
+        <button class="main-button">Menu</button>
+        <button class="main-button">Help</button>
+      </div>
+    </div>
+
+    <!-- LEFT PANEL -->
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="panel character-panel">
+        <div class="character-avatar">⚔️</div>
+        <div class="character-name">Warrior Maximus</div>
+        <div class="character-info">
+          Level: 42<br>
+          Class: Guerrero<br>
+          Gold: 15,234
+        </div>
+      </div>
+
+      <div class="panel stats-panel">
+        <div class="stat-bar">
+          <div class="stat-label"><span>HP</span><span>850/1000</span></div>
+          <div class="bar-container"><div class="bar-fill bar-hp" style="width: 85%;"></div></div>
+        </div>
+        <div class="stat-bar">
+          <div class="stat-label"><span>MP</span><span>320/500</span></div>
+          <div class="bar-container"><div class="bar-fill bar-mp" style="width: 64%;"></div></div>
+        </div>
+        <div class="stat-bar">
+          <div class="stat-label"><span>STAMINA</span><span>450/600</span></div>
+          <div class="bar-container"><div class="bar-fill bar-sta" style="width: 75%;"></div></div>
+        </div>
+        <div class="stat-bar">
+          <div class="stat-label"><span>XP</span><span>7850/10000</span></div>
+          <div class="bar-container"><div class="bar-fill bar-xp" style="width: 78.5%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER VIEW -->
+    <div class="center-view">
+      <div>"Aquí se renderizaría el mundo del juego"<br><br><strong>Mapa • Personajes • NPCs • Objetos</strong></div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="panel inventory-panel">
+        <div class="panel-header">Inventario</div>
+        <div class="inventory-grid">
+          <div class="inventory-slot selected">⚔️</div>
+          <div class="inventory-slot">🛡️</div>
+          <div class="inventory-slot">🧪</div>
+          <div class="inventory-slot">📜</div>
+          <div class="inventory-slot">💎</div>
+          <div class="inventory-slot">🔑</div>
+          <div class="inventory-slot">🍖</div>
+          <div class="inventory-slot">🏹</div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+          <div class="inventory-slot"></div>
+        </div>
+      </div>
+
+      <div class="panel settings-panel">
+        <div class="panel-header">Opciones</div>
+
+        <div class="setting-group">
+          <div class="setting-label">Servidor</div>
+          <input type="text" class="input-field" value="Argentum.com.ar" placeholder="Ingrese servidor...">
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-label">
+            <span>Música</span>
+            <span style="float: right;" id="music-val">75%</span>
+          </div>
+          <div class="slider-wrapper">
+            <div class="slider-container" data-slider="music">
+              <div class="slider-fill" id="music-fill" style="width: 75%;"></div>
+              <div class="slider-thumb" id="music-thumb" style="left: calc(75% - 10px);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-label">
+            <span>Efectos</span>
+            <span style="float: right;" id="sfx-val">60%</span>
+          </div>
+          <div class="slider-wrapper">
+            <div class="slider-container" data-slider="sfx">
+              <div class="slider-fill" id="sfx-fill" style="width: 60%;"></div>
+              <div class="slider-thumb" id="sfx-thumb" style="left: calc(60% - 10px);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="switch-control">
+          <span class="setting-label" style="margin: 0;">VSync</span>
+          <button class="switch on" data-switch="vsync"></button>
+        </div>
+
+        <div class="switch-control">
+          <span class="setting-label" style="margin: 0;">Show FPS</span>
+          <button class="switch off" data-switch="fps"></button>
+        </div>
+
+        <div class="checkbox-control" data-checkbox="shadows">
+          <div class="checkbox checked"></div>
+          <span class="setting-label" style="margin: 0;">Habilitar Sombras</span>
+        </div>
+
+        <div class="checkbox-control" data-checkbox="particles">
+          <div class="checkbox checked"></div>
+          <span class="setting-label" style="margin: 0;">Efectos de Partículas</span>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-label">Calidad Gráfica</div>
+          <div class="radio-group" data-radio-group="quality">
+            <div class="radio-control" data-value="low">
+              <div class="radio unchecked"></div>
+              <span style="font-size: 10px;">Baja</span>
+            </div>
+            <div class="radio-control" data-value="medium">
+              <div class="radio checked"></div>
+              <span style="font-size: 10px;">Media</span>
+            </div>
+            <div class="radio-control" data-value="high">
+              <div class="radio unchecked"></div>
+              <span style="font-size: 10px;">Alta</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ACTION BAR -->
+    <div class="bottom-bar">
+      <div class="action-bar">
+        <button class="action-slot">1</button>
+        <button class="action-slot">2</button>
+        <button class="action-slot">3</button>
+        <button class="action-slot">4</button>
+        <button class="action-slot">5</button>
+        <button class="action-slot">6</button>
+        <button class="action-slot">7</button>
+        <button class="action-slot">8</button>
+      </div>
+
+      <div class="arrow-controls">
+        <button class="arrow-btn arrow-up"></button>
+        <button class="arrow-btn arrow-left"></button>
+        <button class="arrow-btn arrow-down"></button>
+        <button class="arrow-btn arrow-right"></button>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="main-button">Atacar</button>
+        <button class="main-button">Descansar</button>
+        <button class="main-button">Meditar</button>
+        <div style="display: flex; gap: 6px; margin-left: 10px;">
+          <button class="circle-button">⚔️</button>
+          <button class="circle-button">🛡️</button>
+          <button class="circle-button">🧪</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inventory slots
+    document.querySelectorAll('.inventory-slot').forEach(slot => {
+      slot.addEventListener('click', () => {
+        document.querySelectorAll('.inventory-slot').forEach(s => s.classList.remove('selected'));
+        slot.classList.add('selected');
+      });
+    });
+
+    // Switches
+    document.querySelectorAll('.switch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        if (sw.classList.contains('on')) {
+          sw.classList.remove('on');
+          sw.classList.add('off');
+        } else {
+          sw.classList.remove('off');
+          sw.classList.add('on');
+        }
+      });
+    });
+
+    // Checkboxes
+    document.querySelectorAll('.checkbox-control').forEach(control => {
+      control.addEventListener('click', () => {
+        const checkbox = control.querySelector('.checkbox');
+        if (checkbox.classList.contains('checked')) {
+          checkbox.classList.remove('checked');
+          checkbox.classList.add('unchecked');
+        } else {
+          checkbox.classList.remove('unchecked');
+          checkbox.classList.add('checked');
+        }
+      });
+    });
+
+    // Radio buttons
+    document.querySelectorAll('.radio-group').forEach(group => {
+      group.querySelectorAll('.radio-control').forEach(control => {
+        control.addEventListener('click', () => {
+          group.querySelectorAll('.radio').forEach(r => {
+            r.classList.remove('checked');
+            r.classList.add('unchecked');
+          });
+          const radio = control.querySelector('.radio');
+          radio.classList.remove('unchecked');
+          radio.classList.add('checked');
+        });
+      });
+    });
+
+    // Sliders
+    ['music', 'sfx'].forEach(id => {
+      const container = document.querySelector(`[data-slider="${id}"]`);
+      const thumb = document.getElementById(`${id}-thumb`);
+      const fill = document.getElementById(`${id}-fill`);
+      const label = document.getElementById(`${id}-val`);
+
+      let isDragging = false;
+
+      const updateSlider = (e) => {
+        const rect = container.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        x = Math.max(0, Math.min(x, rect.width));
+        const percent = (x / rect.width) * 100;
+
+        fill.style.width = percent + '%';
+        thumb.style.left = `calc(${percent}% - 10px)`;
+        label.textContent = Math.round(percent) + '%';
+      };
+
+      thumb.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      container.addEventListener('click', updateSlider);
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) updateSlider(e);
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+    });
+
+    // HP bar animation
+    setInterval(() => {
+      const hpBar = document.querySelector('.bar-hp');
+      if (hpBar) {
+        const current = parseFloat(hpBar.style.width);
+        const variation = (Math.random() - 0.5) * 2;
+        const newValue = Math.max(70, Math.min(95, current + variation));
+        hpBar.style.width = newValue + '%';
+      }
+    }, 2000);
+  </script>
+</body>
+</html>
