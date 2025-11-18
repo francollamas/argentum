@@ -15,39 +15,37 @@ async function generateUITextures() {
     const svgInputPath = path.join(texPackerPath, 'ui')
     const pngTempPath = path.join(texPackerPath, 'ui/png')
     const outputPath = path.join(__assetspath, 'ui')
-
-    // Step 1: Convert SVG to PNG using sharp
-    await fs.promises.mkdir(pngTempPath, { recursive: true })
-
-    const files = await fs.promises.readdir(svgInputPath)
-    const svgFiles = files.filter((file) => file.endsWith('.svg'))
-
-    for (const svgFile of svgFiles) {
-        const inputPath = path.join(svgInputPath, svgFile)
-        const outputFile = svgFile.replace('.svg', '.png')
-        const outputFilePath = path.join(pngTempPath, outputFile)
-
-        await sharp(inputPath).png().toFile(outputFilePath)
-    }
-
-    // Step 2: Pack textures (analogous to generatePackedTextures)
-    const projectPath = path.join(texPackerPath, 'ui.ftpp')
-    const projectFile = await fs.promises.readFile(projectPath, 'utf-8')
-
-    const projectData = JSON.parse(projectFile)
-    projectData.folders = [pngTempPath]
     const tempProjectPath = path.join(texPackerPath, 'temp-ui.ftpp')
-    await fs.promises.writeFile(tempProjectPath, JSON.stringify(projectData))
 
-    const execPromise = util.promisify(exec)
-    await execPromise(
-        `npx free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
-    )
+    try {
+        await fs.promises.mkdir(pngTempPath, { recursive: true })
 
-    await fs.promises.unlink(tempProjectPath)
+        const files = await fs.promises.readdir(svgInputPath)
+        const svgFiles = files.filter((file) => file.endsWith('.svg'))
 
-    // Step 3: Clean up temporary folder
-    await fs.promises.rm(pngTempPath, { recursive: true, force: true })
+        for (const svgFile of svgFiles) {
+            const inputPath = path.join(svgInputPath, svgFile)
+            const outputFile = svgFile.replace('.svg', '.png')
+            const outputFilePath = path.join(pngTempPath, outputFile)
+
+            await sharp(inputPath).png().toFile(outputFilePath)
+        }
+
+        const projectPath = path.join(texPackerPath, 'ui.ftpp')
+        const projectFile = await fs.promises.readFile(projectPath, 'utf-8')
+
+        const projectData = JSON.parse(projectFile)
+        projectData.folders = [pngTempPath]
+        await fs.promises.writeFile(tempProjectPath, JSON.stringify(projectData))
+
+        const execPromise = util.promisify(exec)
+        await execPromise(
+            `npx free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
+        )
+    } finally {
+        await fs.promises.unlink(tempProjectPath).catch(() => {})
+        await fs.promises.rm(pngTempPath, { recursive: true, force: true })
+    }
 }
 
 await generateUITextures()
