@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+<svg xmlns="http://www.w3.org/2000/svg" width="125" height="125" viewBox="0 0 125 125">
   <defs>
     <linearGradient id="slotHoverBg" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#3E2920;stop-opacity:1" />
@@ -17,6 +17,6 @@
     </linearGradient>
   </defs>
 
-  <rect x="2" y="2" width="46" height="46" rx="2" fill="url(#slotHoverBg)" stroke="url(#slotHoverBorder)" stroke-width="2"/>
-  <rect x="3" y="3" width="44" height="44" rx="1" fill="url(#slotHoverInnerShadow)" stroke="none"/>
+  <rect x="5" y="5" width="115" height="115" rx="5" fill="url(#slotHoverBg)" stroke="url(#slotHoverBorder)" stroke-width="5"/>
+  <rect x="8" y="8" width="110" height="110" rx="2" fill="url(#slotHoverInnerShadow)" stroke="none"/>
 </svg>

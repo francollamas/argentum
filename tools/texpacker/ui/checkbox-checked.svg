@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
   <defs>
     <linearGradient id="checkboxBg" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#2C1A14;stop-opacity:1" />
@@ -11,11 +11,11 @@
     </linearGradient>
   </defs>
 
-  <rect x="2" y="2" width="20" height="20" rx="2" fill="url(#checkboxBg)" stroke="url(#checkboxBorder)" stroke-width="1.5"/>
+  <rect x="4" y="4" width="40" height="40" rx="4" fill="url(#checkboxBg)" stroke="url(#checkboxBorder)" stroke-width="3"/>
 
-  <path d="M 7,12 L 10,16 L 17,8"
+  <path d="M 14,24 L 20,32 L 34,16"
         stroke="#D8962E"
-        stroke-width="2.5"
+        stroke-width="5"
         stroke-linecap="round"
         stroke-linejoin="round"
         fill="none"/>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+<svg xmlns="http://www.w3.org/2000/svg" width="125" height="125" viewBox="0 0 125 125">
   <defs>
     <linearGradient id="slotSelectedBg" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#3E2920;stop-opacity:1" />
@@ -17,7 +17,7 @@
     </linearGradient>
 
     <filter id="slotSelectedGlow">
-      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -25,6 +25,6 @@
     </filter>
   </defs>
 
-  <rect x="2" y="2" width="46" height="46" rx="2" fill="url(#slotSelectedBg)" stroke="url(#slotSelectedBorder)" stroke-width="3" filter="url(#slotSelectedGlow)"/>
-  <rect x="3" y="3" width="44" height="44" rx="1" fill="url(#slotSelectedInnerShadow)" stroke="none"/>
+  <rect x="5" y="5" width="115" height="115" rx="5" fill="url(#slotSelectedBg)" stroke="url(#slotSelectedBorder)" stroke-width="8" filter="url(#slotSelectedGlow)"/>
+  <rect x="8" y="8" width="110" height="110" rx="2" fill="url(#slotSelectedInnerShadow)" stroke="none"/>
 </svg>
