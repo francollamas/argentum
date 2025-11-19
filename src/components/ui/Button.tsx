@@ -59,7 +59,7 @@ export const Button: FC<ButtonProps> = ({
 			},
 		})
 
-		buttonText.anchor.set(0.5)
+		buttonText.anchor.set(1)
 		buttonText.x = buttonWidth / 2
 		buttonText.y = buttonHeight / 2
 

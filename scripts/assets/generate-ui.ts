@@ -75,7 +75,7 @@ async function generateUITextures() {
 
         await generateSpritesheetFile(outputPath)
     } finally {
-        await fs.promises.unlink(tempProjectPath).catch(() => {})
+        await fs.promises.unlink(tempProjectPath).catch(() => { })
         await fs.promises.rm(pngTempPath, { recursive: true, force: true })
     }
 }
