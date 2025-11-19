@@ -58,7 +58,7 @@ async function generateUITextures() {
             const outputFile = svgFile.replace('.svg', '.png')
             const outputFilePath = path.join(pngTempPath, outputFile)
 
-            await sharp(inputPath, { density: 72 * 2 }).png().toFile(outputFilePath)
+            await sharp(inputPath, { density: 72 / 2 }).png().toFile(outputFilePath)
         }
 
         const projectPath = path.join(texPackerPath, 'ui.ftpp')

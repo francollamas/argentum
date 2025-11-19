@@ -10,9 +10,9 @@ export const MainScreen: FC = () => {
 				text="Click me!"
 				x={100}
 				y={100}
-				width={200}
-				height={60}
-				nineSliceBorders={[10, 10, 10, 10]}
+				/* width={200}
+				height={60} */
+				/* nineSliceBorders={[10, 10, 10, 10]} */
 				onPress={() => console.log('Button pressed!')}
 			/>
 		</>

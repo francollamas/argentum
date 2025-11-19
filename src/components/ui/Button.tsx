@@ -1,11 +1,9 @@
 import { extend } from '@pixi/react'
 import { FancyButton } from '@pixi/ui'
-import { Assets, BitmapText, Container, NineSliceSprite, type Texture } from 'pixi.js'
+import { BitmapText, Container, Sprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useEffect, useRef, useState } from 'react'
-import buttonDefault from '../../assets/ui/svg/button-main-normal.svg'
-import buttonHover from '../../assets/ui/svg/button-main-hover.svg'
-import buttonPressed from '../../assets/ui/svg/button-main-pressed.svg'
+import { useEffect, useRef } from 'react'
+import { useUITexture } from '../../hooks/useUITexture'
 
 extend({ Container })
 
@@ -15,7 +13,6 @@ type ButtonProps = {
 	y: number
 	width?: number
 	height?: number
-	nineSliceBorders?: [number, number, number, number]
 	onPress?: () => void
 	textColor?: number
 }
@@ -24,66 +21,34 @@ export const Button: FC<ButtonProps> = ({
 	text,
 	x,
 	y,
-	width = 400,
-	height = 120,
-	nineSliceBorders = [255, 330, 255, 330],
+	width,
+	height,
 	onPress,
 	textColor = 0xffffff,
 }) => {
 	const containerRef = useRef<Container | null>(null)
-	const [textures, setTextures] = useState<Texture[] | null>(null)
+
+	const defaultTexture = useUITexture('button-main-normal')
+	const hoverTexture = useUITexture('button-main-hover')
+	const pressedTexture = useUITexture('button-main-pressed')
+
+	const buttonWidth = width ?? defaultTexture.width
+	const buttonHeight = height ?? defaultTexture.height
 
 	useEffect(() => {
-		const loadTextures = async () => {
-			const loadedTextures = await Assets.load([
-				buttonDefault,
-				buttonHover,
-				buttonPressed,
-			])
-			setTextures([
-				loadedTextures[buttonDefault],
-				loadedTextures[buttonHover],
-				loadedTextures[buttonPressed],
-			])
-		}
+		if (!containerRef.current) return
 
-		loadTextures()
-	}, [])
+		const defaultView = new Sprite(defaultTexture)
+		defaultView.width = buttonWidth
+		defaultView.height = buttonHeight
 
-	useEffect(() => {
-		if (!containerRef.current || !textures) return
+		const hoverView = new Sprite(hoverTexture)
+		hoverView.width = buttonWidth
+		hoverView.height = buttonHeight
 
-		const [defaultTexture, hoverTexture, pressedTexture] = textures
-
-		const defaultView = new NineSliceSprite({
-			texture: defaultTexture,
-			leftWidth: nineSliceBorders[0],
-			topHeight: nineSliceBorders[1],
-			rightWidth: nineSliceBorders[2],
-			bottomHeight: nineSliceBorders[3],
-			width,
-			height,
-		})
-
-		const hoverView = new NineSliceSprite({
-			texture: hoverTexture,
-			leftWidth: nineSliceBorders[0],
-			topHeight: nineSliceBorders[1],
-			rightWidth: nineSliceBorders[2],
-			bottomHeight: nineSliceBorders[3],
-			width,
-			height,
-		})
-
-		const pressedView = new NineSliceSprite({
-			texture: pressedTexture,
-			leftWidth: nineSliceBorders[0],
-			topHeight: nineSliceBorders[1],
-			rightWidth: nineSliceBorders[2],
-			bottomHeight: nineSliceBorders[3],
-			width,
-			height,
-		})
+		const pressedView = new Sprite(pressedTexture)
+		pressedView.width = buttonWidth
+		pressedView.height = buttonHeight
 
 		const buttonText = new BitmapText({
 			text,
@@ -95,8 +60,8 @@ export const Button: FC<ButtonProps> = ({
 		})
 
 		buttonText.anchor.set(0.5)
-		buttonText.x = width / 2
-		buttonText.y = height / 2
+		buttonText.x = buttonWidth / 2
+		buttonText.y = buttonHeight / 2
 
 		const fancyButton = new FancyButton({
 			defaultView,
@@ -117,7 +82,7 @@ export const Button: FC<ButtonProps> = ({
 			}
 			fancyButton.destroy()
 		}
-	}, [textures, nineSliceBorders, width, height, text, textColor, onPress])
+	}, [defaultTexture, hoverTexture, pressedTexture, buttonWidth, buttonHeight, text, textColor, onPress])
 
 	return <pixiContainer ref={containerRef} x={x} y={y} />
 }
