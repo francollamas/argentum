@@ -20,6 +20,6 @@ export const FONTS: Record<FontType, FontConfig> = {
 	},
 	general: {
 		fontFamily: 'crimsomtext-regular',
-		fontSize: 24,
+		fontSize: 30,
 	},
 }

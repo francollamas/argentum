@@ -1,9 +1,23 @@
 import type { FC } from 'react'
+import { useState } from 'react'
 import { Text } from '../common/Text'
-import { Button } from '../ui'
+import { Button, CheckBox, Panel, RadioGroup, Switch } from '../ui'
 
 export const MainScreen: FC = () => {
-	const buttons = [
+	const [normalChecked, setNormalChecked] = useState(false)
+	const [radioChecked, setRadioChecked] = useState(true)
+	const [selectedOption, setSelectedOption] = useState(0)
+	const [soundEnabled, setSoundEnabled] = useState(true)
+	const [musicEnabled, setMusicEnabled] = useState(false)
+
+	const buttons: Array<{
+		text: string
+		x: number
+		y: number
+		width: number
+		height: number
+		variant?: 'normal' | 'small'
+	}> = [
 		{
 			text: 'Small button',
 			x: 40,
@@ -53,6 +67,70 @@ export const MainScreen: FC = () => {
 					onPress={() => console.log(`Button pressed: ${button.text}`)}
 				/>
 			))}
+
+			<Panel x={100} y={300} width={300} height={200}>
+				<Button
+					text='Button in Panel'
+					x={75}
+					y={20}
+					width={150}
+					height={60}
+					variant='normal'
+					onPress={() => console.log('Panel button pressed')}
+				/>
+
+				<CheckBox
+					x={30}
+					y={100}
+					checked={normalChecked}
+					onChange={setNormalChecked}
+					variant='normal'
+					text='Enable feature'
+				/>
+
+				<CheckBox
+					x={30}
+					y={140}
+					checked={radioChecked}
+					onChange={setRadioChecked}
+					variant='radio'
+					text='Option A'
+				/>
+			</Panel>
+
+			<Panel x={450} y={300} width={300} height={250}>
+				<RadioGroup
+					x={30}
+					y={20}
+					selectedIndex={selectedOption}
+					onChange={setSelectedOption}
+					type='vertical'
+					items={[
+						{ text: 'Warrior' },
+						{ text: 'Mage' },
+						{ text: 'Archer' },
+						{ text: 'Rogue' },
+					]}
+				/>
+			</Panel>
+
+			<Panel x={800} y={300} width={300} height={200}>
+				<Switch
+					x={30}
+					y={30}
+					enabled={soundEnabled}
+					onChange={setSoundEnabled}
+					text='Sound Effects'
+				/>
+
+				<Switch
+					x={30}
+					y={80}
+					enabled={musicEnabled}
+					onChange={setMusicEnabled}
+					text='Background Music'
+				/>
+			</Panel>
 		</>
 	)
 }
