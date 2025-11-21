@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { uiWatcherPlugin } from './vite-plugins/ui-watcher-plugin'
+import { fontWatcherPlugin } from './vite-plugins/font-watcher-plugin'
 
 const host = process.env.TAURI_DEV_HOST
 
@@ -18,7 +19,8 @@ export default defineConfig({
 
 	plugins: [
 		react(),
-		uiWatcherPlugin()
+		uiWatcherPlugin(),
+		fontWatcherPlugin()
 	],
 
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
