@@ -1,6 +1,6 @@
 import { extend } from '@pixi/react'
 import { FancyButton } from '@pixi/ui'
-import { BitmapText, Container, NineSliceSprite } from 'pixi.js'
+import { BitmapText, Container, NineSliceSprite, Texture } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
@@ -15,6 +15,17 @@ type ButtonProps = {
 	height?: number
 	onPress?: () => void
 	textColor?: number
+}
+
+const BUTTON_STYLE = {
+	fontFamily: 'opensans',
+	fontSize: 32,
+	sliceSize: 14,
+	scale: 0.45,
+	horizontalPaddingRatio: 0.5,
+	verticalPaddingRatio: 0.4,
+	minHorizontalPadding: 14,
+	minVerticalPadding: 10,
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -35,53 +46,52 @@ export const Button: FC<ButtonProps> = ({
 	useEffect(() => {
 		if (!containerRef.current) return
 
+		const horizontalPadding = Math.max(
+			defaultTexture.height * BUTTON_STYLE.horizontalPaddingRatio,
+			BUTTON_STYLE.minHorizontalPadding,
+		)
+		const verticalPaddingValue = Math.max(
+			defaultTexture.height * BUTTON_STYLE.verticalPaddingRatio,
+			BUTTON_STYLE.minVerticalPadding,
+		)
+
 		const buttonText = new BitmapText({
 			text,
 			style: {
-				fontFamily: 'opensans',
-				fontSize: 36,
+				fontFamily: BUTTON_STYLE.fontFamily,
+				fontSize: BUTTON_STYLE.fontSize,
 				fill: textColor,
 			},
 		})
-
-		const horizontalPadding = 40
-
-		const buttonWidth = width ?? buttonText.width + horizontalPadding
-		const buttonHeight = height ?? defaultTexture.height
-
-		const sliceSize = 16
-
-		const defaultView = new NineSliceSprite({
-			texture: defaultTexture,
-			leftWidth: sliceSize,
-			topHeight: sliceSize,
-			rightWidth: sliceSize,
-			bottomHeight: sliceSize,
-			width: buttonWidth,
-			height: buttonHeight,
-		})
-
-		const hoverView = new NineSliceSprite({
-			texture: hoverTexture,
-			leftWidth: sliceSize,
-			topHeight: sliceSize,
-			rightWidth: sliceSize,
-			bottomHeight: sliceSize,
-			width: buttonWidth,
-			height: buttonHeight,
-		})
-
-		const pressedView = new NineSliceSprite({
-			texture: pressedTexture,
-			leftWidth: sliceSize,
-			topHeight: sliceSize,
-			rightWidth: sliceSize,
-			bottomHeight: sliceSize,
-			width: buttonWidth,
-			height: buttonHeight,
-		})
-
 		buttonText.anchor.set(0.5)
+		buttonText.roundPixels = true
+
+		const buttonWidth =
+			Math.max(
+				Math.ceil(buttonText.width + horizontalPadding * 2),
+				width ?? 0,
+			)
+		const buttonHeight = Math.max(
+			defaultTexture.height,
+			Math.ceil(buttonText.height + verticalPaddingValue * 2),
+			height ?? 0,
+		)
+
+		const createView = (texture: Texture) =>
+			new NineSliceSprite({
+				texture,
+				leftWidth: BUTTON_STYLE.sliceSize,
+				topHeight: BUTTON_STYLE.sliceSize,
+				rightWidth: BUTTON_STYLE.sliceSize,
+				bottomHeight: BUTTON_STYLE.sliceSize,
+				width: buttonWidth,
+				height: buttonHeight,
+			})
+
+		const defaultView = createView(defaultTexture)
+		const hoverView = createView(hoverTexture)
+		const pressedView = createView(pressedTexture)
+
 		buttonText.x = buttonWidth / 2
 		buttonText.y = buttonHeight / 2
 
@@ -90,7 +100,7 @@ export const Button: FC<ButtonProps> = ({
 			hoverView,
 			pressedView,
 			text: buttonText,
-			scale: 0.5
+			scale: BUTTON_STYLE.scale,
 		})
 
 		if (onPress) {
@@ -105,7 +115,16 @@ export const Button: FC<ButtonProps> = ({
 			}
 			fancyButton.destroy()
 		}
-	}, [defaultTexture, hoverTexture, pressedTexture, width, height, text, textColor, onPress])
+	}, [
+		defaultTexture,
+		height,
+		hoverTexture,
+		onPress,
+		pressedTexture,
+		text,
+		textColor,
+		width,
+	])
 
 	return <pixiContainer ref={containerRef} x={x} y={y} />
 }
