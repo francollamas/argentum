@@ -13,4 +13,20 @@ export const loadFonts = async () => {
 		alias: 'tahoma13-bold-border',
 		src: './fonts/tahoma13boldborder.fnt',
 	})
+	await Assets.load({
+		alias: 'tahoma',
+		src: './fonts/tahoma-regular.fnt',
+	})
+	await Assets.load({
+		alias: 'tahoma-bold',
+		src: './fonts/tahoma-bold.fnt',
+	})
+	await Assets.load({
+		alias: 'crimsomtext',
+		src: './fonts/crimsomtext.fnt',
+	})
+	await Assets.load({
+		alias: 'opensans',
+		src: './fonts/opensans.fnt',
+	})
 }

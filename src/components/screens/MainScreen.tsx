@@ -7,7 +7,7 @@ export const MainScreen: FC = () => {
 		<>
 			<Text text="Welcome to the Game" x={10} y={10} bold />
 			<Button
-				text="Click me!"
+				text={`I'm a Button!`}
 				x={100}
 				y={100}
 				/* width={200}
