@@ -3,6 +3,7 @@ import { FancyButton } from '@pixi/ui'
 import { BitmapText, Container, NineSliceSprite, Texture } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
+import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
 extend({ Container })
@@ -18,8 +19,6 @@ type ButtonProps = {
 }
 
 const BUTTON_STYLE = {
-	fontFamily: 'opensans-regular',
-	fontSize: 36,
 	sliceSize: 14,
 	scale: 0.45,
 	horizontalPaddingRatio: 0.5,
@@ -58,8 +57,8 @@ export const Button: FC<ButtonProps> = ({
 		const buttonText = new BitmapText({
 			text,
 			style: {
-				fontFamily: BUTTON_STYLE.fontFamily,
-				fontSize: BUTTON_STYLE.fontSize,
+				fontFamily: FONTS.button.fontFamily,
+				fontSize: FONTS.button.fontSize,
 				fill: textColor,
 			},
 		})
