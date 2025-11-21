@@ -71,6 +71,8 @@ async function generateSpritesheetFile() {
 	await fs.promises.writeFile(assetsFilePath, texMap)
 }
 
-await generatePackedTextures('normal')
-await generatePackedTextures('bigger')
-await generateSpritesheetFile()
+export async function generateTextures() {
+	await generatePackedTextures('normal')
+	await generatePackedTextures('bigger')
+	await generateSpritesheetFile()
+}

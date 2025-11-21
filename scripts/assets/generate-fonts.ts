@@ -50,7 +50,7 @@ async function createFontsManifest(fontAliases: string[]) {
 	console.log(`Generated fonts.json with ${fontAliases.length} fonts`)
 }
 
-async function main() {
+export async function generateMSDFFonts() {
 	console.log('Cleaning output directory...')
 	await cleanOutputDirectory()
 
@@ -62,8 +62,3 @@ async function main() {
 
 	console.log('Font generation complete!')
 }
-
-main().catch((error) => {
-	console.error('Error generating fonts:', error)
-	process.exit(1)
-})

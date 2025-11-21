@@ -40,7 +40,7 @@ async function generateSpritesheetFile(outputPath: string) {
     await fs.promises.writeFile(spritesheetsFilePath, texMap)
 }
 
-async function generateUITextures() {
+export async function generateUITextures() {
     const texPackerPath = path.join(__dirname, '../../tools/texpacker')
     const svgInputPath = path.join(texPackerPath, 'ui')
     const pngTempPath = path.join(texPackerPath, 'ui/png')
@@ -80,4 +80,3 @@ async function generateUITextures() {
     }
 }
 
-await generateUITextures()

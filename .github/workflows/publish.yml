@@ -65,11 +65,8 @@ jobs:
       - name: Install Free Tex Packer
         run: pnpm add -g free-tex-packer-cli
 
-      - name: Generate packed textures
-        run: pnpm run generate-textures
-
-      - name: Generate UI textures
-        run: pnpm run generate-ui
+      - name: Generate assets
+        run: pnpm run generate-assets
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
