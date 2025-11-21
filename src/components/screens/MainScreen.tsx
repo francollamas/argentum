@@ -10,6 +10,7 @@ export const MainScreen: FC = () => {
 			y: 60,
 			width: 120,
 			height: 40,
+			variant: 'small',
 		},
 		{
 			text: 'Wide button',
@@ -17,6 +18,7 @@ export const MainScreen: FC = () => {
 			y: 120,
 			width: 800,
 			height: 60,
+			variant: 'normal',
 		},
 		{
 			text: 'Tall button',
@@ -24,6 +26,7 @@ export const MainScreen: FC = () => {
 			y: 80,
 			width: 140,
 			height: 100,
+			variant: 'normal',
 		},
 		{
 			text: 'Compact bottom-right',
@@ -31,12 +34,13 @@ export const MainScreen: FC = () => {
 			y: 320,
 			width: 150,
 			height: 45,
+			variant: 'normal',
 		},
 	]
 
 	return (
 		<>
-			<Text text="Welcome to the Game" x={10} y={10} bold />
+			<Text text='Welcome to the Game' x={10} y={10} bold />
 			{buttons.map((button) => (
 				<Button
 					key={button.text}
@@ -45,6 +49,7 @@ export const MainScreen: FC = () => {
 					y={button.y}
 					width={button.width}
 					height={button.height}
+					variant={button.variant}
 					onPress={() => console.log(`Button pressed: ${button.text}`)}
 				/>
 			))}

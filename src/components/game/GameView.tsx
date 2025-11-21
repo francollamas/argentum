@@ -2,14 +2,11 @@ import { extend } from '@pixi/react'
 import { Container, Graphics } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
-import { DEBUG_MODE } from '../../config/debug'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useMapLoader } from '../../hooks/useMapLoader'
 import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
 import { FPSCounter } from '../common/FPSCounter'
-import { DebugOverlay } from '../debug/DebugOverlay'
-import { MapRenderer } from './MapRenderer'
 
 extend({ Container, Graphics })
 

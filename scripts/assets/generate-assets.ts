@@ -1,6 +1,6 @@
+import { generateMSDFFonts } from './generate-fonts'
 import { generateTextures } from './generate-textures'
 import { generateUITextures } from './generate-ui'
-import { generateMSDFFonts } from './generate-fonts'
 
 const args = process.argv.slice(2)
 const validTargets = ['textures', 'ui', 'fonts']
@@ -20,7 +20,7 @@ async function main() {
 
 		console.log('\n=== Asset generation complete! ===')
 	} else {
-		const invalidArgs = args.filter(arg => !validTargets.includes(arg))
+		const invalidArgs = args.filter((arg) => !validTargets.includes(arg))
 		if (invalidArgs.length > 0) {
 			console.error(`Invalid arguments: ${invalidArgs.join(', ')}`)
 			console.error(`Valid options: ${validTargets.join(', ')}`)

@@ -1,4 +1,4 @@
-export type FontType = 'button' | 'title' | 'general'
+export type FontType = 'button' | 'buttonSmall' | 'title' | 'general'
 
 type FontConfig = {
 	fontFamily: string
@@ -9,6 +9,10 @@ export const FONTS: Record<FontType, FontConfig> = {
 	button: {
 		fontFamily: 'medievalsharp-regular',
 		fontSize: 36,
+	},
+	buttonSmall: {
+		fontFamily: 'medievalsharp-regular',
+		fontSize: 30,
 	},
 	title: {
 		fontFamily: 'opensans-regular',

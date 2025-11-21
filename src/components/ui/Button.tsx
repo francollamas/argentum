@@ -1,12 +1,14 @@
 import { extend } from '@pixi/react'
 import { FancyButton } from '@pixi/ui'
-import { BitmapText, Container, NineSliceSprite, Texture } from 'pixi.js'
+import { BitmapText, Container, NineSliceSprite, type Texture } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
 extend({ Container })
+
+type ButtonVariant = 'normal' | 'small'
 
 type ButtonProps = {
 	text: string
@@ -16,15 +18,38 @@ type ButtonProps = {
 	height?: number
 	onPress?: () => void
 	textColor?: number
+	variant?: ButtonVariant
 }
 
-const BUTTON_STYLE = {
-	sliceSize: 14,
-	scale: 0.45,
-	horizontalPaddingRatio: 0.5,
-	verticalPaddingRatio: 0.4,
-	minHorizontalPadding: 14,
-	minVerticalPadding: 10,
+type ButtonStyleConfig = {
+	sliceSize: number
+	scale: number
+	horizontalPaddingRatio: number
+	verticalPaddingRatio: number
+	minHorizontalPadding: number
+	minVerticalPadding: number
+	fontType: 'button' | 'buttonSmall'
+}
+
+const BUTTON_STYLES: Record<ButtonVariant, ButtonStyleConfig> = {
+	normal: {
+		sliceSize: 14,
+		scale: 0.45,
+		horizontalPaddingRatio: 0.3,
+		verticalPaddingRatio: 0.25,
+		minHorizontalPadding: 10,
+		minVerticalPadding: 6,
+		fontType: 'button',
+	},
+	small: {
+		sliceSize: 14,
+		scale: 0.3,
+		horizontalPaddingRatio: 0.25,
+		verticalPaddingRatio: 0.2,
+		minHorizontalPadding: 8,
+		minVerticalPadding: 5,
+		fontType: 'buttonSmall',
+	},
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -35,6 +60,7 @@ export const Button: FC<ButtonProps> = ({
 	height,
 	onPress,
 	textColor = 0xffffff,
+	variant = 'normal',
 }) => {
 	const containerRef = useRef<Container | null>(null)
 
@@ -45,31 +71,34 @@ export const Button: FC<ButtonProps> = ({
 	useEffect(() => {
 		if (!containerRef.current) return
 
+		const style = BUTTON_STYLES[variant]
+
 		const horizontalPadding = Math.max(
-			defaultTexture.height * BUTTON_STYLE.horizontalPaddingRatio,
-			BUTTON_STYLE.minHorizontalPadding,
+			defaultTexture.height * style.horizontalPaddingRatio,
+			style.minHorizontalPadding,
 		)
 		const verticalPaddingValue = Math.max(
-			defaultTexture.height * BUTTON_STYLE.verticalPaddingRatio,
-			BUTTON_STYLE.minVerticalPadding,
+			defaultTexture.height * style.verticalPaddingRatio,
+			style.minVerticalPadding,
 		)
+
+		const fontConfig = FONTS[style.fontType]
 
 		const buttonText = new BitmapText({
 			text,
 			style: {
-				fontFamily: FONTS.button.fontFamily,
-				fontSize: FONTS.button.fontSize,
+				fontFamily: fontConfig.fontFamily,
+				fontSize: fontConfig.fontSize,
 				fill: textColor,
 			},
 		})
 		buttonText.anchor.set(0.5)
 		buttonText.roundPixels = true
 
-		const buttonWidth =
-			Math.max(
-				Math.ceil(buttonText.width + horizontalPadding * 2),
-				width ?? 0,
-			)
+		const buttonWidth = Math.max(
+			Math.ceil(buttonText.width + horizontalPadding * 2),
+			width ?? 0,
+		)
 		const buttonHeight = Math.max(
 			defaultTexture.height,
 			Math.ceil(buttonText.height + verticalPaddingValue * 2),
@@ -79,10 +108,10 @@ export const Button: FC<ButtonProps> = ({
 		const createView = (texture: Texture) =>
 			new NineSliceSprite({
 				texture,
-				leftWidth: BUTTON_STYLE.sliceSize,
-				topHeight: BUTTON_STYLE.sliceSize,
-				rightWidth: BUTTON_STYLE.sliceSize,
-				bottomHeight: BUTTON_STYLE.sliceSize,
+				leftWidth: style.sliceSize,
+				topHeight: style.sliceSize,
+				rightWidth: style.sliceSize,
+				bottomHeight: style.sliceSize,
 				width: buttonWidth,
 				height: buttonHeight,
 			})
@@ -99,7 +128,7 @@ export const Button: FC<ButtonProps> = ({
 			hoverView,
 			pressedView,
 			text: buttonText,
-			scale: BUTTON_STYLE.scale,
+			scale: style.scale,
 		})
 
 		if (onPress) {
@@ -123,6 +152,7 @@ export const Button: FC<ButtonProps> = ({
 		text,
 		textColor,
 		width,
+		variant,
 	])
 
 	return <pixiContainer ref={containerRef} x={x} y={y} />

@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { uiWatcherPlugin } from './vite-plugins/ui-watcher-plugin'
 import { fontWatcherPlugin } from './vite-plugins/font-watcher-plugin'
+import { uiWatcherPlugin } from './vite-plugins/ui-watcher-plugin'
 
 const host = process.env.TAURI_DEV_HOST
 
@@ -17,11 +17,7 @@ export default defineConfig({
 	},
 	assetsInclude: ['**/*.bin', '**/*.mmap'], // Incluye los archivos binarios
 
-	plugins: [
-		react(),
-		uiWatcherPlugin(),
-		fontWatcherPlugin()
-	],
+	plugins: [react(), uiWatcherPlugin(), fontWatcherPlugin()],
 
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
 	//
@@ -34,10 +30,10 @@ export default defineConfig({
 		host: host || false,
 		hmr: host
 			? {
-				protocol: 'ws',
-				host,
-				port: 1421,
-			}
+					protocol: 'ws',
+					host,
+					port: 1421,
+				}
 			: undefined,
 
 		watch: {

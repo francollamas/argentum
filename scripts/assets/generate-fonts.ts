@@ -46,7 +46,10 @@ async function generateFonts() {
 
 async function createFontsManifest(fontAliases: string[]) {
 	const manifestPath = path.join(fontsOutputPath, 'fonts.json')
-	await fs.promises.writeFile(manifestPath, JSON.stringify(fontAliases, null, 2))
+	await fs.promises.writeFile(
+		manifestPath,
+		JSON.stringify(fontAliases, null, 2),
+	)
 	console.log(`Generated fonts.json with ${fontAliases.length} fonts`)
 }
 
