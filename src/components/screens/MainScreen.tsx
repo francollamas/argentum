@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import { Text } from '../common/Text'
-import { Button, CheckBox, Panel, RadioGroup, Switch } from '../ui'
+import { Button, CheckBox, Label, Panel, RadioGroup, Switch } from '../ui'
 
 export const MainScreen: FC = () => {
 	const [normalChecked, setNormalChecked] = useState(false)
@@ -55,6 +55,7 @@ export const MainScreen: FC = () => {
 	return (
 		<>
 			<Text text='Welcome to the Game' x={10} y={10} bold />
+			<Label text='UI Components Demo' x={10} y={35} font='general' />
 			{buttons.map((button) => (
 				<Button
 					key={button.text}

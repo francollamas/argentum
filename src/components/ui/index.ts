@@ -1,5 +1,6 @@
 export { Button } from './Button'
 export { CheckBox } from './CheckBox'
+export { Label } from './Label'
 export { Panel } from './Panel'
 export { RadioGroup } from './RadioGroup'
 export { Switch } from './Switch'
