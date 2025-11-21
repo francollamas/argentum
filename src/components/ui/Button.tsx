@@ -18,7 +18,7 @@ type ButtonProps = {
 }
 
 const BUTTON_STYLE = {
-	fontFamily: 'opensans',
+	fontFamily: 'opensans-regular',
 	fontSize: 32,
 	sliceSize: 14,
 	scale: 0.45,

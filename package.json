@@ -13,7 +13,8 @@
 		"linter-check": "biome check .",
 		"linter": "biome check --fix --unsafe .",
 		"generate-textures": "npx tsx scripts/assets/generate-textures.ts",
-		"generate-ui": "npx tsx scripts/assets/generate-ui.ts"
+		"generate-ui": "npx tsx scripts/assets/generate-ui.ts",
+		"generate-fonts": "npx tsx scripts/assets/generate-fonts.ts"
 	},
 	"dependencies": {
 		"@pixi/react": "^8.0.3",
@@ -39,6 +40,7 @@
 		"free-tex-packer-cli": "^0.3.0",
 		"globals": "^16.4.0",
 		"internal-ip": "^8.0.1",
+		"msdf-bmfont-xml": "^2.8.0",
 		"sharp": "^0.34.5",
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
