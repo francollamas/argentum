@@ -13,131 +13,96 @@ import {
 } from '../ui'
 
 export const MainScreen: FC = () => {
-	const [normalChecked, setNormalChecked] = useState(false)
-	const [radioChecked, setRadioChecked] = useState(true)
-	const [selectedOption, setSelectedOption] = useState(0)
 	const [soundEnabled, setSoundEnabled] = useState(true)
 	const [musicEnabled, setMusicEnabled] = useState(false)
-	const [health, setHealth] = useState(750)
-	const [mana, setMana] = useState(180)
-	const [experience, setExperience] = useState(4500)
+	const [notifications, setNotifications] = useState(true)
+
+	const [selectedClass, setSelectedClass] = useState(0)
+	const [acceptTerms, setAcceptTerms] = useState(false)
+
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const [message, setMessage] = useState('')
 
-	const buttons: Array<{
-		text: string
-		x: number
-		y: number
-		width: number
-		height: number
-		variant?: 'normal' | 'small'
-	}> = [
-		{
-			text: 'Small button',
-			x: 40,
-			y: 60,
-			width: 120,
-			height: 40,
-			variant: 'small',
-		},
-		{
-			text: 'Wide button',
-			x: 220,
-			y: 120,
-			width: 800,
-			height: 60,
-			variant: 'normal',
-		},
-		{
-			text: 'Tall button',
-			x: 520,
-			y: 80,
-			width: 140,
-			height: 100,
-			variant: 'normal',
-		},
-		{
-			text: 'Compact bottom-right',
-			x: 640,
-			y: 320,
-			width: 150,
-			height: 45,
-			variant: 'normal',
-		},
-	]
+	const [health, setHealth] = useState(850)
+	const [mana, setMana] = useState(420)
+	const [experience, setExperience] = useState(6750)
 
 	return (
 		<>
-			<Text text='Welcome to the Game' x={10} y={10} bold />
-			<Label text='UI Components Demo' x={10} y={35} font='general' />
-			{buttons.map((button) => (
-				<Button
-					key={button.text}
-					text={button.text}
-					x={button.x}
-					y={button.y}
-					width={button.width}
-					height={button.height}
-					variant={button.variant}
-					onPress={() => {
-						setHealth(health + 10)
-						//setMana(Math.min(300, mana + 20))
-						//setExperience(Math.min(10000, experience + 500))
-					}}
-				/>
-			))}
+			<Text text='UI Components Showcase' x={20} y={20} bold />
 
-			<Panel x={100} y={300} width={300} height={200}>
-				<Button
-					text='Button in Panel'
-					x={75}
-					y={20}
-					width={150}
-					height={60}
-					variant='normal'
-					onPress={() => console.log('Panel button pressed')}
+			<Panel x={20} y={60} width={380} height={280}>
+				<Label text='Character Creation' x={20} y={15} font='general' />
+
+				<Label text='Username:' x={20} y={50} font='general' />
+				<Input
+					x={20}
+					y={75}
+					width={340}
+					height={35}
+					placeholder='Enter your username'
+					value={username}
+					onChange={setUsername}
+					maxLength={16}
 				/>
 
-				<CheckBox
-					x={30}
-					y={100}
-					checked={normalChecked}
-					onChange={setNormalChecked}
-					variant='normal'
-					text='Enable feature'
+				<Label text='Password:' x={20} y={120} font='general' />
+				<Input
+					x={20}
+					y={145}
+					width={340}
+					height={35}
+					placeholder='Enter your password'
+					value={password}
+					onChange={setPassword}
+					secure
 				/>
 
 				<CheckBox
-					x={30}
-					y={140}
-					checked={radioChecked}
-					onChange={setRadioChecked}
-					variant='radio'
-					text='Option A'
+					x={20}
+					y={200}
+					checked={acceptTerms}
+					onChange={setAcceptTerms}
+					variant='normal'
+					text='I accept the terms and conditions'
+				/>
+
+				<Button
+					text='Create Character'
+					x={105}
+					y={235}
+					width={170}
+					height={35}
+					variant='normal'
+					onPress={() => console.log('Character created:', username)}
 				/>
 			</Panel>
 
-			<Panel x={450} y={300} width={300} height={250}>
+			<Panel x={420} y={60} width={340} height={280}>
+				<Label text='Class Selection' x={20} y={15} font='general' />
+
 				<RadioGroup
-					x={30}
-					y={20}
-					selectedIndex={selectedOption}
-					onChange={setSelectedOption}
+					x={50}
+					y={50}
+					selectedIndex={selectedClass}
+					onChange={setSelectedClass}
 					type='vertical'
 					items={[
 						{ text: 'Warrior' },
 						{ text: 'Mage' },
-						{ text: 'Archer' },
-						{ text: 'Rogue' },
+						{ text: 'Cleric' },
+						{ text: 'Paladin' },
+						{ text: 'Assassin' },
 					]}
 				/>
 			</Panel>
 
-			<Panel x={800} y={300} width={300} height={200}>
+			<Panel x={780} y={60} width={340} height={280}>
+				<Label text='Game Settings' x={20} y={15} font='general' />
+
 				<Switch
 					x={30}
-					y={30}
+					y={60}
 					enabled={soundEnabled}
 					onChange={setSoundEnabled}
 					text='Sound Effects'
@@ -145,76 +110,105 @@ export const MainScreen: FC = () => {
 
 				<Switch
 					x={30}
-					y={80}
+					y={110}
 					enabled={musicEnabled}
 					onChange={setMusicEnabled}
 					text='Background Music'
 				/>
+
+				<Switch
+					x={30}
+					y={160}
+					enabled={notifications}
+					onChange={setNotifications}
+					text='Push Notifications'
+				/>
+
+				<Button
+					text='Apply Settings'
+					x={85}
+					y={220}
+					width={170}
+					height={35}
+					variant='normal'
+					onPress={() => console.log('Settings applied')}
+				/>
 			</Panel>
 
-			<Panel x={100} y={550} width={400} height={200}>
-				<Label text='Health (amount variant)' x={20} y={20} font='general' />
+			<Panel x={20} y={360} width={540} height={200}>
+				<Label text='Character Stats' x={20} y={15} font='general' />
+
+				<Label text='Health' x={20} y={50} font='general' />
 				<ProgressBar
 					x={20}
-					y={50}
-					width={360}
-					height={30}
+					y={75}
+					width={500}
+					height={28}
 					value={health}
-					max={1500}
-					fillColor={0xff4444}
+					max={1000}
+					fillColor={0xff3333}
 					textVariant='amount'
 				/>
 
-				<Label text='Mana (percentage variant)' x={20} y={100} font='general' />
+				<Label text='Mana' x={20} y={115} font='general' />
 				<ProgressBar
 					x={20}
-					y={130}
-					width={360}
-					height={30}
+					y={140}
+					width={500}
+					height={28}
 					value={mana}
-					max={300}
-					fillColor={0x4488ff}
+					max={500}
+					fillColor={0x3399ff}
 					textVariant='percentage'
 				/>
 			</Panel>
 
-			<Panel x={550} y={550} width={400} height={250}>
-				<Label text='Input Components' x={20} y={20} font='general' />
+			<Panel x={580} y={360} width={540} height={200}>
+				<Label text='Experience Progress' x={20} y={15} font='general' />
 
-				<Label text='Username:' x={20} y={50} font='general' />
-				<Input
+				<Label text='Level 12 → Level 13' x={20} y={50} font='general' />
+				<ProgressBar
 					x={20}
 					y={75}
-					width={360}
-					height={35}
-					placeholder='Enter username'
-					value={username}
-					onChange={setUsername}
-					maxLength={20}
+					width={500}
+					height={28}
+					value={experience}
+					max={10000}
+					fillColor={0xffaa00}
+					textVariant='amount'
 				/>
 
-				<Label text='Password:' x={20} y={120} font='general' />
-				<Input
-					x={20}
-					y={145}
-					width={360}
+				<Button
+					text='Small Action'
+					x={30}
+					y={135}
+					width={120}
 					height={35}
-					placeholder='Enter password'
-					value={password}
-					onChange={setPassword}
-					secure
+					variant='small'
+					onPress={() => setExperience(Math.min(10000, experience + 250))}
 				/>
 
-				<Label text='Message:' x={20} y={190} font='general' />
-				<Input
-					x={20}
-					y={215}
-					width={360}
-					height={35}
-					placeholder='Type a message...'
-					value={message}
-					onChange={setMessage}
-					onEnter={(val) => console.log('Message sent:', val)}
+				<Button
+					text='Gain Experience'
+					x={170}
+					y={130}
+					width={180}
+					height={45}
+					variant='normal'
+					onPress={() => setExperience(Math.min(10000, experience + 500))}
+				/>
+
+				<Button
+					text='Heal & Restore'
+					x={370}
+					y={130}
+					width={150}
+					height={45}
+					variant='normal'
+					onPress={() => {
+						setHealth(1000)
+						setMana(500)
+					}}
 				/>
 			</Panel>
 		</>
