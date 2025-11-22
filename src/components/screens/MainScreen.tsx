@@ -4,6 +4,7 @@ import { Text } from '../common/Text'
 import {
 	Button,
 	CheckBox,
+	Input,
 	Label,
 	Panel,
 	ProgressBar,
@@ -20,6 +21,9 @@ export const MainScreen: FC = () => {
 	const [health, setHealth] = useState(750)
 	const [mana, setMana] = useState(180)
 	const [experience, setExperience] = useState(4500)
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+	const [message, setMessage] = useState('')
 
 	const buttons: Array<{
 		text: string
@@ -171,6 +175,46 @@ export const MainScreen: FC = () => {
 					max={300}
 					fillColor={0x4488ff}
 					textVariant='percentage'
+				/>
+			</Panel>
+
+			<Panel x={550} y={550} width={400} height={250}>
+				<Label text='Input Components' x={20} y={20} font='general' />
+
+				<Label text='Username:' x={20} y={50} font='general' />
+				<Input
+					x={20}
+					y={75}
+					width={360}
+					height={35}
+					placeholder='Enter username'
+					value={username}
+					onChange={setUsername}
+					maxLength={20}
+				/>
+
+				<Label text='Password:' x={20} y={120} font='general' />
+				<Input
+					x={20}
+					y={145}
+					width={360}
+					height={35}
+					placeholder='Enter password'
+					value={password}
+					onChange={setPassword}
+					secure
+				/>
+
+				<Label text='Message:' x={20} y={190} font='general' />
+				<Input
+					x={20}
+					y={215}
+					width={360}
+					height={35}
+					placeholder='Type a message...'
+					value={message}
+					onChange={setMessage}
+					onEnter={(val) => console.log('Message sent:', val)}
 				/>
 			</Panel>
 		</>
