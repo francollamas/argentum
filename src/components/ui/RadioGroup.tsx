@@ -38,7 +38,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 	useEffect(() => {
 		if (!containerRef.current) return
 
-		const fontConfig = FONTS.general
+		const fontConfig = FONTS.checkbox
 
 		const checkboxes = items.map((item) => {
 			return new PixiCheckBox({

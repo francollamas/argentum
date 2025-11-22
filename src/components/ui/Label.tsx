@@ -31,7 +31,6 @@ export const Label: FC<LabelProps> = ({
 			x={x}
 			y={y}
 			anchor={anchor}
-			roundPixels={true}
 			style={{
 				fontFamily: fontConfig.fontFamily,
 				fontSize: fontConfig.fontSize,

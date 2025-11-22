@@ -35,7 +35,7 @@ export const Switch: FC<SwitchProps> = ({
 	useEffect(() => {
 		if (!containerRef.current) return
 
-		const fontConfig = FONTS.general
+		const fontConfig = FONTS.checkbox
 
 		const switchControl = new PixiSwitch({
 			checked: enabled,

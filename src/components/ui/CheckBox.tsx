@@ -40,7 +40,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
 	useEffect(() => {
 		if (!containerRef.current) return
 
-		const fontConfig = FONTS.general
+		const fontConfig = FONTS.checkbox
 
 		const checkbox = new PixiCheckBox({
 			checked,

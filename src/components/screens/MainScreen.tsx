@@ -1,7 +1,15 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import { Text } from '../common/Text'
-import { Button, CheckBox, Label, Panel, RadioGroup, Switch } from '../ui'
+import {
+	Button,
+	CheckBox,
+	Label,
+	Panel,
+	ProgressBar,
+	RadioGroup,
+	Switch,
+} from '../ui'
 
 export const MainScreen: FC = () => {
 	const [normalChecked, setNormalChecked] = useState(false)
@@ -9,6 +17,9 @@ export const MainScreen: FC = () => {
 	const [selectedOption, setSelectedOption] = useState(0)
 	const [soundEnabled, setSoundEnabled] = useState(true)
 	const [musicEnabled, setMusicEnabled] = useState(false)
+	const [health, setHealth] = useState(750)
+	const [mana, setMana] = useState(180)
+	const [experience, setExperience] = useState(4500)
 
 	const buttons: Array<{
 		text: string
@@ -65,7 +76,11 @@ export const MainScreen: FC = () => {
 					width={button.width}
 					height={button.height}
 					variant={button.variant}
-					onPress={() => console.log(`Button pressed: ${button.text}`)}
+					onPress={() => {
+						setHealth(health + 10)
+						//setMana(Math.min(300, mana + 20))
+						//setExperience(Math.min(10000, experience + 500))
+					}}
 				/>
 			))}
 
@@ -130,6 +145,32 @@ export const MainScreen: FC = () => {
 					enabled={musicEnabled}
 					onChange={setMusicEnabled}
 					text='Background Music'
+				/>
+			</Panel>
+
+			<Panel x={100} y={550} width={400} height={200}>
+				<Label text='Health (amount variant)' x={20} y={20} font='general' />
+				<ProgressBar
+					x={20}
+					y={50}
+					width={360}
+					height={30}
+					value={health}
+					max={1500}
+					fillColor={0xff4444}
+					textVariant='amount'
+				/>
+
+				<Label text='Mana (percentage variant)' x={20} y={100} font='general' />
+				<ProgressBar
+					x={20}
+					y={130}
+					width={360}
+					height={30}
+					value={mana}
+					max={300}
+					fillColor={0x4488ff}
+					textVariant='percentage'
 				/>
 			</Panel>
 		</>

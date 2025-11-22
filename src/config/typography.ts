@@ -1,4 +1,4 @@
-export type FontType = 'button' | 'buttonSmall' | 'title' | 'general'
+export type FontType = 'button' | 'buttonSmall' | 'title' | 'general' | 'checkbox'
 
 type FontConfig = {
 	fontFamily: string
@@ -20,6 +20,10 @@ export const FONTS: Record<FontType, FontConfig> = {
 	},
 	general: {
 		fontFamily: 'crimsomtext-regular',
-		fontSize: 30,
+		fontSize: 13,
+	},
+	checkbox: {
+		fontFamily: 'crimsomtext-regular',
+		fontSize: 36,
 	},
 }

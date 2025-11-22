@@ -60,7 +60,7 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 
 			{/* Game content with camera transform and mask applied */}
 			<pixiContainer ref={gameContainerRef} x={cameraX} y={cameraY}>
-{/* 				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
+				{/* 				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
 				{DEBUG_MODE && (
 					<DebugOverlay map={map} cameraX={cameraX} cameraY={cameraY} />
 				)} */}
