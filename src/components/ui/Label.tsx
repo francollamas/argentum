@@ -7,8 +7,8 @@ extend({ BitmapText })
 
 type LabelProps = {
 	text: string
-	x: number
-	y: number
+	x?: number
+	y?: number
 	font?: FontType
 	color?: number
 	anchor?: { x: number; y: number }
@@ -22,20 +22,31 @@ export const Label: FC<LabelProps> = ({
 	color = 0xffffff,
 	anchor = { x: 0, y: 0 },
 }) => {
-
 	const fontConfig = FONTS[font]
 
-	return (
-		<pixiBitmapText
-			text={text}
-			x={x}
-			y={y}
-			anchor={anchor}
-			style={{
-				fontFamily: fontConfig.fontFamily,
-				fontSize: fontConfig.fontSize,
-				fill: color,
-			}}
-		/>
+	const textElement = (
+		<layoutContainer layout={{ width: 'intrinsic', height: 'intrinsic' }}>
+			<pixiBitmapText
+				text={text}
+				x={x !== undefined ? x : undefined}
+				y={y !== undefined ? y : undefined}
+				anchor={anchor}
+				style={{
+					fontFamily: fontConfig.fontFamily,
+					fontSize: fontConfig.fontSize,
+					fill: color,
+				}}
+			/>
+		</layoutContainer>
 	)
+
+	if (x === undefined && y === undefined) {
+		return (
+			<layoutContainer layout={{ width: 'intrinsic', height: 'intrinsic' }}>
+				{textElement}
+			</layoutContainer>
+		)
+	}
+
+	// return textElement
 }

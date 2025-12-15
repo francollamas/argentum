@@ -18,6 +18,8 @@
 		"generate-fonts": "npx tsx scripts/assets/generate-assets.ts fonts"
 	},
 	"dependencies": {
+		"@pixi/devtools": "^2.0.1",
+		"@pixi/layout": "^3.2.0",
 		"@pixi/react": "^8.0.3",
 		"@pixi/ui": "^2.2.7",
 		"@reduxjs/toolkit": "^2.9.2",

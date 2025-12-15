@@ -1,4 +1,9 @@
-export type FontType = 'button' | 'buttonSmall' | 'title' | 'general' | 'checkbox'
+export type FontType =
+	| 'button'
+	| 'buttonSmall'
+	| 'title'
+	| 'general'
+	| 'checkbox'
 
 type FontConfig = {
 	fontFamily: string

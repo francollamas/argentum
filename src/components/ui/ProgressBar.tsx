@@ -35,10 +35,10 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 	height,
 	value = 0,
 	max = 100,
-	fillColor = 0xF2D059,
+	fillColor = 0xf2d059,
 	fillPaddings = { top: 2, right: 2, bottom: 2, left: 2 },
 	textVariant,
-	textColor = 0xFFFFFF,
+	textColor = 0xffffff,
 }) => {
 	const containerRef = useRef<Container | null>(null)
 	const progressBarRef = useRef<PixiProgressBar | null>(null)
@@ -46,7 +46,8 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 	const bgTexture = useUITexture('bar-container')
 	const fillTexture = useUITexture('bar-fill')
 
-	const progress = max === 0 ? 0 : Math.max(0, Math.min(100, (value / max) * 100))
+	const progress =
+		max === 0 ? 0 : Math.max(0, Math.min(100, (value / max) * 100))
 
 	useEffect(() => {
 		if (!containerRef.current) return
@@ -82,7 +83,7 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 			progressBarRef.current = null
 			progressBar.destroy()
 		}
-	}, [bgTexture, fillTexture, width, height, fillColor, fillPaddings])
+	}, [bgTexture, fillTexture, width, height, fillColor, fillPaddings, progress])
 
 	useEffect(() => {
 		if (progressBarRef.current) {

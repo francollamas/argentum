@@ -1,19 +1,18 @@
 import { extend } from '@pixi/react'
-import { FancyButton } from '@pixi/ui'
-import { BitmapText, Container, NineSliceSprite, type Texture } from 'pixi.js'
+import { BitmapText, Container, NineSliceSprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
+import { useMemo, useState } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
-extend({ Container })
+extend({ Container, NineSliceSprite, BitmapText })
 
 type ButtonVariant = 'normal' | 'small'
 
 type ButtonProps = {
 	text: string
-	x: number
-	y: number
+	x?: number
+	y?: number
 	width?: number
 	height?: number
 	onPress?: () => void
@@ -62,98 +61,109 @@ export const Button: FC<ButtonProps> = ({
 	textColor = 0xffffff,
 	variant = 'normal',
 }) => {
-	const containerRef = useRef<Container | null>(null)
+	const [isHovered, setIsHovered] = useState(false)
+	const [isPressed, setIsPressed] = useState(false)
 
 	const defaultTexture = useUITexture('button-main-normal')
 	const hoverTexture = useUITexture('button-main-hover')
 	const pressedTexture = useUITexture('button-main-pressed')
 
-	useEffect(() => {
-		if (!containerRef.current) return
+	const style = BUTTON_STYLES[variant]
+	const fontConfig = FONTS[style.fontType]
 
-		const style = BUTTON_STYLES[variant]
+	const { buttonWidth, buttonHeight } = useMemo(() => {
+		const tempText = new BitmapText({
+			text,
+			style: {
+				fontFamily: fontConfig.fontFamily,
+				fontSize: fontConfig.fontSize,
+			},
+		})
 
 		const horizontalPadding = Math.max(
 			defaultTexture.height * style.horizontalPaddingRatio,
 			style.minHorizontalPadding,
 		)
-		const verticalPaddingValue = Math.max(
+		const verticalPadding = Math.max(
 			defaultTexture.height * style.verticalPaddingRatio,
 			style.minVerticalPadding,
 		)
 
-		const fontConfig = FONTS[style.fontType]
-
-		const buttonText = new BitmapText({
-			text,
-			style: {
-				fontFamily: fontConfig.fontFamily,
-				fontSize: fontConfig.fontSize,
-				fill: textColor,
-			},
-		})
-		buttonText.anchor.set(0.5)
-		buttonText.roundPixels = true
-
 		const buttonWidth = Math.max(
-			Math.ceil(buttonText.width + horizontalPadding * 2),
+			Math.ceil(tempText.width + horizontalPadding * 2),
 			width ?? 0,
 		)
 		const buttonHeight = Math.max(
 			defaultTexture.height,
-			Math.ceil(buttonText.height + verticalPaddingValue * 2),
+			Math.ceil(tempText.height + verticalPadding * 2),
 			height ?? 0,
 		)
 
-		const createView = (texture: Texture) =>
-			new NineSliceSprite({
-				texture,
-				leftWidth: style.sliceSize,
-				topHeight: style.sliceSize,
-				rightWidth: style.sliceSize,
-				bottomHeight: style.sliceSize,
+		tempText.destroy()
+
+		return { buttonWidth, buttonHeight }
+	}, [text, fontConfig, defaultTexture, style, width, height])
+
+	const currentTexture = isPressed
+		? pressedTexture
+		: isHovered
+			? hoverTexture
+			: defaultTexture
+
+	return (
+		<pixiContainer
+			x={x}
+			y={y}
+			scale={style.scale}
+			eventMode="static"
+			cursor="pointer"
+			onPointerOver={() => setIsHovered(true)}
+			onPointerOut={() => {
+				setIsHovered(false)
+				setIsPressed(false)
+			}}
+			onPointerDown={() => setIsPressed(true)}
+			onPointerUp={() => {
+				setIsPressed(false)
+				if (isHovered && onPress) {
+					onPress()
+				}
+			}}
+			layout={{
 				width: buttonWidth,
 				height: buttonHeight,
-			})
-
-		const defaultView = createView(defaultTexture)
-		const hoverView = createView(hoverTexture)
-		const pressedView = createView(pressedTexture)
-
-		buttonText.x = buttonWidth / 2
-		buttonText.y = buttonHeight / 2
-
-		const fancyButton = new FancyButton({
-			defaultView,
-			hoverView,
-			pressedView,
-			text: buttonText,
-			scale: style.scale,
-		})
-
-		if (onPress) {
-			fancyButton.onPress.connect(onPress)
-		}
-
-		containerRef.current.addChild(fancyButton)
-
-		return () => {
-			if (onPress) {
-				fancyButton.onPress.disconnect(onPress)
-			}
-			fancyButton.destroy()
-		}
-	}, [
-		defaultTexture,
-		height,
-		hoverTexture,
-		onPress,
-		pressedTexture,
-		text,
-		textColor,
-		width,
-		variant,
-	])
-
-	return <pixiContainer ref={containerRef} x={x} y={y} />
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
+			<pixiNineSliceSprite
+				texture={currentTexture}
+				leftWidth={style.sliceSize}
+				topHeight={style.sliceSize}
+				rightWidth={style.sliceSize}
+				bottomHeight={style.sliceSize}
+				layout={{
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					width: buttonWidth,
+					height: buttonHeight,
+				}}
+			/>
+			<pixiBitmapText
+				text={text}
+				style={{
+					fontFamily: fontConfig.fontFamily,
+					fontSize: fontConfig.fontSize,
+					fill: textColor,
+				}}
+				anchor={0.5}
+				roundPixels
+				layout={{
+					width: 'intrinsic',
+					height: 'intrinsic',
+				}}
+			/>
+		</pixiContainer>
+	)
 }

@@ -108,6 +108,7 @@ export const Input: FC<InputProps> = ({
 		textColor,
 		onChange,
 		onEnter,
+		value,
 	])
 
 	useEffect(() => {

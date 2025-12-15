@@ -7,6 +7,7 @@ import { useMapLoader } from '../../hooks/useMapLoader'
 import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
 import { FPSCounter } from '../common/FPSCounter'
+
 /* import { DEBUG_MODE } from '../../config/debug'
 import { MapRenderer } from './MapRenderer'
 import { DebugOverlay } from '../debug/DebugOverlay' */

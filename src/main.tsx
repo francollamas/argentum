@@ -7,6 +7,8 @@ import { persistor, store } from './store/store.ts'
 import './index.css'
 import { Application } from '@pixi/react'
 import { logger } from './utils/logger'
+import '@pixi/layout/react'
+import '@pixi/layout'
 
 // Capturar errores JavaScript y loguearlos
 window.addEventListener('error', (event) => {
@@ -33,11 +35,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 						<Application
 							preference='webgpu'
 							backgroundColor={0x000000}
-							width={1280}
-							height={720}
 							resolution={window.devicePixelRatio}
 							autoDensity={true}
 							antialias={true}
+							resizeTo={window}
 						>
 							<ReactReduxContext.Provider value={contextValue}>
 								<App />

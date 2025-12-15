@@ -1,5 +1,8 @@
 import { extend } from '@pixi/react'
-import { CheckBox as PixiCheckBox, RadioGroup as PixiRadioGroup } from '@pixi/ui'
+import {
+	CheckBox as PixiCheckBox,
+	RadioGroup as PixiRadioGroup,
+} from '@pixi/ui'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
@@ -83,7 +86,15 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 		return () => {
 			radioGroup.destroy()
 		}
-	}, [items, onChange, radioCheckedTexture, radioUncheckedTexture, scale, selectedIndex, type])
+	}, [
+		items,
+		onChange,
+		radioCheckedTexture,
+		radioUncheckedTexture,
+		scale,
+		selectedIndex,
+		type,
+	])
 
 	return <pixiContainer ref={containerRef} x={x} y={y} />
 }
