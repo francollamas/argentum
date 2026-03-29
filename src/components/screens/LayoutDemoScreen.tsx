@@ -1,7 +1,7 @@
+import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { Button, Label } from '../ui'
-import { tw } from '@pixi/layout/tailwind';
 
 export const LayoutDemoScreen: FC = () => {
 	const [clickCount, setClickCount] = useState(0)
@@ -36,8 +36,9 @@ export const LayoutDemoScreen: FC = () => {
 					color={0xa0a0a0}
 				/>
 
-				<layoutContainer layout={tw`flex flex-col gap-15 items-center`}
-				/* layout={{
+				<layoutContainer
+					layout={tw`flex flex-col gap-15 items-center`}
+					/* layout={{
 					flexDirection: 'column',
 					gap: 15,
 					alignItems: 'center',

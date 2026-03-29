@@ -115,8 +115,8 @@ export const Button: FC<ButtonProps> = ({
 			x={x}
 			y={y}
 			scale={style.scale}
-			eventMode="static"
-			cursor="pointer"
+			eventMode='static'
+			cursor='pointer'
 			onPointerOver={() => setIsHovered(true)}
 			onPointerOut={() => {
 				setIsHovered(false)

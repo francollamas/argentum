@@ -1,9 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Provider, ReactReduxContext } from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
 import App from './app/App.js'
-import { persistor, store } from './store/store.ts'
 import './index.css'
 import { Application } from '@pixi/react'
 import { logger } from './utils/logger'
@@ -28,25 +25,15 @@ logger.info('Argentum application started')
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<React.StrictMode>
-		<Provider store={store}>
-			<PersistGate loading={null} persistor={persistor}>
-				<ReactReduxContext.Consumer>
-					{(contextValue) => (
-						<Application
-							preference='webgpu'
-							backgroundColor={0x000000}
-							resolution={window.devicePixelRatio}
-							autoDensity={true}
-							antialias={true}
-							resizeTo={window}
-						>
-							<ReactReduxContext.Provider value={contextValue}>
-								<App />
-							</ReactReduxContext.Provider>
-						</Application>
-					)}
-				</ReactReduxContext.Consumer>
-			</PersistGate>
-		</Provider>
+		<Application
+			preference='webgpu'
+			backgroundColor={0x000000}
+			resolution={window.devicePixelRatio}
+			autoDensity={true}
+			antialias={true}
+			resizeTo={window}
+		>
+			<App />
+		</Application>
 	</React.StrictMode>,
 )

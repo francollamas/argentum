@@ -1,12 +1,12 @@
 import { useTick } from '@pixi/react'
 import { useRef, useState } from 'react'
 import { movementService } from '../services/movement'
-import { useAppSelector } from '../store/hooks'
+import { usePlayerStore } from '../store/playerStore'
 import type { GameMap } from '../types/map'
 import { tileToPixel } from '../utils/coordinates'
 
 export const usePlayerPosition = () => {
-	return useAppSelector((state) => state.player.position)
+	return usePlayerStore((state) => state.position)
 }
 
 export const useIsInRoofTrigger = (map?: GameMap) => {

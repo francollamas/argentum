@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { movementService } from '../services/movement'
-import { useAppDispatch } from '../store/hooks'
-import { movePlayer } from '../store/slices/playerSlice'
+import { usePlayerStore } from '../store/playerStore'
 import { InputAction } from '../types/input'
 import type { GameMap } from '../types/map'
 import { useKeyPressed } from './useKeyPressed'
@@ -18,7 +17,7 @@ interface UsePlayerMovementProps {
 
 export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 	const { isActionPressed } = useKeyPressed()
-	const dispatch = useAppDispatch()
+	const movePlayer = usePlayerStore((state) => state.movePlayer)
 	const playerPosition = usePlayerPosition()
 
 	const lastMoveTime = useRef<number>(0)
@@ -59,18 +58,16 @@ export const usePlayerMovement = ({ map }: UsePlayerMovementProps = {}) => {
 				return false
 			}
 
-			// Update Redux with new position
-			dispatch(
-				movePlayer({
-					tileX: nextPosition.x,
-					tileY: nextPosition.y,
-				}),
-			)
+			// Update player position
+			movePlayer({
+				tileX: nextPosition.x,
+				tileY: nextPosition.y,
+			})
 
 			lastMoveTime.current = currentTime
 			return true
 		},
-		[playerPosition, dispatch],
+		[playerPosition, movePlayer],
 	)
 
 	// Movement polling system
