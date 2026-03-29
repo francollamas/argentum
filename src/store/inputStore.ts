@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import { InputAction, type KeybindMap } from '../types/input'
 
 const DEFAULT_KEYBINDS: KeybindMap = {
@@ -25,28 +25,40 @@ interface InputStore {
 }
 
 export const useInputStore = create<InputStore>()(
-	persist(
-		(set) => ({
-			keybinds: DEFAULT_KEYBINDS,
+	devtools(
+		persist(
+			(set) => ({
+				keybinds: DEFAULT_KEYBINDS,
 
-			updateKeybind: (action, keys) =>
-				set((state) => ({
-					keybinds: { ...state.keybinds, [action]: keys },
-				})),
+				updateKeybind: (action, keys) =>
+					set(
+						(state) => ({
+							keybinds: { ...state.keybinds, [action]: keys },
+						}),
+						false,
+						'updateKeybind',
+					),
 
-			resetKeybinds: () => set({ keybinds: DEFAULT_KEYBINDS }),
+				resetKeybinds: () =>
+					set({ keybinds: DEFAULT_KEYBINDS }, false, 'resetKeybinds'),
 
-			resetKeybind: (action) =>
-				set((state) => ({
-					keybinds: {
-						...state.keybinds,
-						[action]: DEFAULT_KEYBINDS[action],
-					},
-				})),
-		}),
-		{
-			name: 'input-storage',
-			storage: createJSONStorage(() => localStorage),
-		},
+				resetKeybind: (action) =>
+					set(
+						(state) => ({
+							keybinds: {
+								...state.keybinds,
+								[action]: DEFAULT_KEYBINDS[action],
+							},
+						}),
+						false,
+						'resetKeybind',
+					),
+			}),
+			{
+				name: 'input-storage',
+				storage: createJSONStorage(() => localStorage),
+			},
+		),
+		{ name: 'InputStore' },
 	),
 )

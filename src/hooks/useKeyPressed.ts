@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useInputStore } from '../store/inputStore'
+import { useInputStore } from '../store'
 import type { InputAction } from '../types/input'
 
 export const useKeyPressed = () => {

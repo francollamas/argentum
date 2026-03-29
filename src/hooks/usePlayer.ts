@@ -1,7 +1,7 @@
 import { useTick } from '@pixi/react'
 import { useRef, useState } from 'react'
 import { movementService } from '../services/movement'
-import { usePlayerStore } from '../store/playerStore'
+import { usePlayerStore } from '../store'
 import type { GameMap } from '../types/map'
 import { tileToPixel } from '../utils/coordinates'
 

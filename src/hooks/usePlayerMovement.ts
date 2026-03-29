@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { movementService } from '../services/movement'
-import { usePlayerStore } from '../store/playerStore'
+import { usePlayerStore } from '../store'
 import { InputAction } from '../types/input'
 import type { GameMap } from '../types/map'
 import { useKeyPressed } from './useKeyPressed'

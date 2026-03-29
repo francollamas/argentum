@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 export interface PlayerPosition {
 	tileX: number
@@ -13,15 +13,18 @@ interface PlayerStore {
 }
 
 export const usePlayerStore = create<PlayerStore>()(
-	persist(
-		(set) => ({
-			position: { tileX: 90, tileY: 40 },
-			setPosition: (position) => set({ position }),
-			movePlayer: (position) => set({ position }),
-		}),
-		{
-			name: 'player-storage',
-			storage: createJSONStorage(() => localStorage),
-		},
+	devtools(
+		persist(
+			(set) => ({
+				position: { tileX: 90, tileY: 40 },
+				setPosition: (position) => set({ position }, false, 'setPosition'),
+				movePlayer: (position) => set({ position }, false, 'movePlayer'),
+			}),
+			{
+				name: 'player-storage',
+				storage: createJSONStorage(() => localStorage),
+			},
+		),
+		{ name: 'PlayerStore' },
 	),
 )
