@@ -62,11 +62,11 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Install Free Tex Packer
-        run: pnpm add -g free-tex-packer-cli
+       - name: Install Free Tex Packer
+         run: pnpm add -g free-tex-packer-cli
 
-      - name: Generate assets
-        run: pnpm run generate-assets
+       - name: Generate assets
+         run: pnpm -C apps/client run generate-assets
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -110,11 +110,11 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Install Free Tex Packer
-        run: pnpm add -g free-tex-packer-cli
+       - name: Install Free Tex Packer
+         run: pnpm add -g free-tex-packer-cli
 
-      - name: Generate packed textures
-        run: pnpm run generate-assets
+       - name: Generate packed textures
+         run: pnpm -C apps/client run generate-assets
 
       - name: Setup Java
         uses: actions/setup-java@v4
