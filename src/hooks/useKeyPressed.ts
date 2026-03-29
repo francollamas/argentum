@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useAppSelector } from '../store/hooks'
+import { useInputStore } from '../store'
 import type { InputAction } from '../types/input'
 
 export const useKeyPressed = () => {
-	const keybinds = useAppSelector((state) => state.input.keybinds)
+	const keybinds = useInputStore((state) => state.keybinds)
 	const pressedKeys = useRef<Set<string>>(new Set())
 
 	const handleKeyDown = useCallback((event: KeyboardEvent) => {

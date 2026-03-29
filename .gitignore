@@ -12,6 +12,7 @@ coverage
 dist
 dist-ssr
 src/assets/textures/*
+src/assets/ui/*
 
 *.local
 

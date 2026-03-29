@@ -2,13 +2,15 @@ import { extend } from '@pixi/react'
 import { Container, Graphics } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
-import { DEBUG_MODE } from '../../config/debug'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useMapLoader } from '../../hooks/useMapLoader'
 import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
-import { DebugOverlay } from '../debug/DebugOverlay'
+import { FPSCounter } from '../common/FPSCounter'
+
+/* import { DEBUG_MODE } from '../../config/debug'
 import { MapRenderer } from './MapRenderer'
+import { DebugOverlay } from '../debug/DebugOverlay' */
 
 extend({ Container, Graphics })
 
@@ -59,11 +61,13 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 
 			{/* Game content with camera transform and mask applied */}
 			<pixiContainer ref={gameContainerRef} x={cameraX} y={cameraY}>
-				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
+				{/* 				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
 				{DEBUG_MODE && (
 					<DebugOverlay map={map} cameraX={cameraX} cameraY={cameraY} />
-				)}
+				)} */}
 			</pixiContainer>
+
+			<FPSCounter />
 		</pixiContainer>
 	)
 }

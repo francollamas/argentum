@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="200" viewBox="0 0 750 200">
+  <defs>
+    <linearGradient id="ribbonTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#CC2C2A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A63722;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B2A1E;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="ribbonBottom" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B2A1E;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6A2018;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A1810;stop-opacity:1" />
+    </linearGradient>
+
+    <filter id="ribbonShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="5" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.4"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <path d="M 50,38
+           Q 100,25 200,25
+           Q 375,25 550,25
+           Q 650,25 700,38
+           L 712,62
+           Q 725,88 712,112
+           L 700,138
+           Q 650,150 550,150
+           Q 375,150 200,150
+           Q 100,150 50,138
+           L 38,112
+           Q 25,88 38,62
+           Z"
+        fill="url(#ribbonTop)"
+        stroke="#8B2A1E"
+        stroke-width="2"
+        filter="url(#ribbonShadow)"/>
+
+  <path d="M 700,138
+           Q 688,150 675,162
+           L 662,188
+           L 650,175
+           Q 662,150 675,138
+           Z"
+        fill="url(#ribbonBottom)"/>
+
+  <path d="M 50,138
+           Q 62,150 75,162
+           L 88,188
+           L 100,175
+           Q 88,150 75,138
+           Z"
+        fill="url(#ribbonBottom)"/>
+</svg>

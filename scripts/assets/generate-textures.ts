@@ -8,7 +8,7 @@ import type { SpritesheetData } from 'pixi.js'
 // Get the current directory path
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const __assetspath = path.join(__dirname, '../src/assets')
+const __assetspath = path.join(__dirname, '../../src/assets')
 
 async function loadJSON<T>(filePath: string): Promise<T> {
 	const data = await fs.promises.readFile(filePath, 'utf-8')
@@ -17,7 +17,7 @@ async function loadJSON<T>(filePath: string): Promise<T> {
 }
 
 async function generatePackedTextures(projectName: string) {
-	const texPackerPath = path.join(__dirname, '../tools/texpacker')
+	const texPackerPath = path.join(__dirname, '../../tools/texpacker')
 	const projectPath = path.join(texPackerPath, `${projectName}.ftpp`)
 	const projectFile = await fs.promises.readFile(projectPath, 'utf-8')
 	const inputPath = path.join(texPackerPath, `textures-${projectName}`)
@@ -32,7 +32,7 @@ async function generatePackedTextures(projectName: string) {
 	// Execute the packer
 	const execPromise = util.promisify(exec)
 	await execPromise(
-		`free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
+		`npx free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
 	)
 
 	// Delete the temporary project file
@@ -71,6 +71,8 @@ async function generateSpritesheetFile() {
 	await fs.promises.writeFile(assetsFilePath, texMap)
 }
 
-await generatePackedTextures('normal')
-await generatePackedTextures('bigger')
-await generateSpritesheetFile()
+export async function generateTextures() {
+	await generatePackedTextures('normal')
+	await generatePackedTextures('bigger')
+	await generateSpritesheetFile()
+}

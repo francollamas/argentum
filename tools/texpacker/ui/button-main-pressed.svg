@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="100" viewBox="0 0 400 100">
+  <defs>
+    <linearGradient id="buttonMainPressedBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4A1F;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#9A4A1A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B85F1F;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="buttonMainPressedBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#A87D5A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4A679;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0B87C;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="buttonMainPressedShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:0.4" />
+      <stop offset="50%" style="stop-color:#000000;stop-opacity:0" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="392" height="92" rx="8" fill="url(#buttonMainPressedBg)" stroke="url(#buttonMainPressedBorder)" stroke-width="4"/>
+  <rect x="6" y="6" width="388" height="88" rx="7" fill="url(#buttonMainPressedShadow)" stroke="none"/>
+</svg>

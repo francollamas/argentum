@@ -27,7 +27,7 @@ jobs:
             - name: Install dependencies
               run: pnpm i
 
-            - name: Generate packed textures
+            - name: Generate assets
               run: pnpm run generate-assets
 
             - name: Build

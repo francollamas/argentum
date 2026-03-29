@@ -1,33 +1,37 @@
+import { initDevtools } from '@pixi/devtools'
+import { LayoutContainer } from '@pixi/layout/components'
 import { extend, useApplication } from '@pixi/react'
 import { Container } from 'pixi.js'
 import type { FC } from 'react'
-import { FPSCounter } from '../components/common/FPSCounter'
-import { Text } from '../components/common/Text'
-import { GameView } from '../components/game/GameView'
+// import { GameView } from '../components/game/GameView'
+import { LayoutResizer } from '../components/layout'
+// import { MainScreen } from '../components/screens/MainScreen'
+import { LayoutDemoScreen } from '../components/screens/LayoutDemoScreen'
 import { useResources } from '../hooks/useResources'
+import '@pixi/layout/devtools'
+import { useEffect } from 'react'
 
-extend({ Container })
+extend({ Container, LayoutContainer })
 
 const App: FC = () => {
-	const app = useApplication()
+	const { app } = useApplication()
 	const resourcesLoaded = useResources()
+
+	useEffect(() => {
+		if (!app) return
+		initDevtools({ app })
+	}, [app])
 
 	if (!resourcesLoaded) {
 		return null
 	}
 
 	return (
-		<pixiContainer>
-			<GameView mapNumber={60} />
-			<FPSCounter />
-			<Text
-				text={`Renderer: ${app.app.renderer.type}`}
-				x={10}
-				y={50}
-				bold
-				border
-			/>
-		</pixiContainer>
+		<LayoutResizer>
+			{/* <GameView mapNumber={60} /> */}
+			{/* <MainScreen /> */}
+			<LayoutDemoScreen />
+		</LayoutResizer>
 	)
 }
 

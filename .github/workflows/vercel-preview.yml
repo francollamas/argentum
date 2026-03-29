@@ -27,7 +27,7 @@ jobs:
       - name: Install Vercel
         run: pnpm add -g vercel@canary
 
-      - name: Generate packed textures
+      - name: Generate assets
         run: pnpm run generate-assets
 
       - name: Pull Vercel Environment Information

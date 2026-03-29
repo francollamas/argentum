@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="125" height="125" viewBox="0 0 125 125">
+  <defs>
+    <linearGradient id="slotSelectedBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3E2920;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2C1A14;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="slotSelectedBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F2D059;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFE8B0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F2D059;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="slotSelectedInnerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.1" />
+    </linearGradient>
+
+    <filter id="slotSelectedGlow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="5" y="5" width="115" height="115" rx="5" fill="url(#slotSelectedBg)" stroke="url(#slotSelectedBorder)" stroke-width="8" filter="url(#slotSelectedGlow)"/>
+  <rect x="8" y="8" width="110" height="110" rx="2" fill="url(#slotSelectedInnerShadow)" stroke="none"/>
+</svg>
