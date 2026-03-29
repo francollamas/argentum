@@ -57,6 +57,7 @@ export const Input: FC<InputProps> = ({
 		})
 
 		const input = new PixiInput({
+			// biome-ignore lint/suspicious/noExplicitAny: PixiInput internally supports NineSliceSprite for bg (see Input.d.ts:36,93) but InputOptions type definition doesn't include it
 			bg: bg as any,
 			textStyle: {
 				fontFamily: fontConfig.fontFamily,
