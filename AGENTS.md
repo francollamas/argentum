@@ -1,72 +1,82 @@
-# Repository Guidelines
+# Argentum Online - Reimplementacion desde Cero
 
-## Project Structure & Module Organization
-- `src/main.tsx` boots the React/Pixi client; `src/app/App.tsx` wires the root view and Redux persistence.
-- UI lives under `src/components` (`game` rendering, `screens` flows, `ui/common` primitives). Hooks are in `src/hooks`, runtime managers/loaders in `src/managers` and `src/loaders`, and Redux state in `src/store`.
-- Game data and generated atlases land in `src/assets`; avoid hand-editing anything generated there.
-- Tauri shell code and platform builds live in `src-tauri`; web build artifacts go to `dist/`.
-- Helper tools sit in `scripts/` (asset generation) and `tools/` (texture packer projects). `docs/` and `agent/` hold planning notes.
+## Que estamos haciendo
 
-## Build, Test, and Development Commands
-- Install deps: `pnpm install`
-- Web dev server: `pnpm dev` (Vite, hot reload)
-- Desktop/mobile dev via Tauri: `pnpm tauri dev`
-- Production web bundle: `pnpm build` → `dist/`
-- Native packages: `pnpm tauri build` (outputs to `src-tauri/target` or platform dirs)
-- Unit tests: `pnpm test`; coverage: `pnpm coverage`
-- Lint/format check: `pnpm linter-check`; auto-fix: `pnpm linter`
-- Asset pipelines: `pnpm generate-textures` and `pnpm generate-ui` (requires `tools/texpacker` inputs)
-- Texture atlas generation: `pnpm generate-assets` is mandatory after adding or updating textures
+Estamos construyendo un **Argentum Online nuevo**, con arquitectura moderna, desde cero. No es un refactor del codigo legacy — es una reimplantacion limpia que respeta las mecanicas del juego original pero implementa todo con patrones solidos, codigo testeable y features incrementales.
 
-## Project Overview & Tech Stack
-- Argentum is a multiplatform TypeScript/React/PixiJS/Tauri MMORPG client compatible with Argentum Online server v0.13.0
-- Core stack: React 19, PixiJS 8 (@pixi/react), Redux Toolkit, Vite, Biome, Vitest; Tauri v2 for desktop builds
+El objetivo: un servidor y cliente funcionales, sin spaghetti de IFs, sin deuda tecnica heredada, y con la posibilidad de evolucionar sin miedo.
 
-## Coding Style & Naming Conventions
-- TypeScript + React + Pixi; prefer functional components and Redux Toolkit slices.
-- Formatter/linter is Biome (tabs for indent, single quotes, semicolons only when required).
-- File names are PascalCase for components (`GameView.tsx`), camelCase for utilities (`logger.ts`), and `.ts`/`.tsx` modules stay colocated with their feature.
-- Hooks start with `use`, components with nouns, constants in `UPPER_SNAKE_CASE`, and types/interfaces in `PascalCase`.
-- Keep side effects isolated; favor pure helpers in `utils/` and typed state in `store/`.
-- Code must be self-documenting; avoid code comments and keep logic small, focused, and readable.
-- All code is written in English.
+## Filosofia de desarrollo
 
-## Architecture & Loading Principles
-- Texture atlases are generated via `pnpm generate-assets` using free-tex-packer-cli; avoid hand-editing generated outputs.
-- Binary loaders in `src/loaders/` register PixiJS parsers for proprietary formats (sprites.bin, .mmap, .dir.bin); register extensions before loading.
-- Asset loading is orchestrated through `useResources`, which must complete before rendering (enforced in `src/app/App.tsx`).
-- Dynamic asset imports rely on `import.meta.glob`.
-- PixiJS application wrapper prefers WebGPU and is configured in `src/main.tsx`.
-- Game view hierarchy flows `App.tsx` → `GameView.tsx` → map/player components; sprites go through `useSprite` and `CustomSprite` for texture loading/animation.
-- Redux Toolkit with redux-persist powers state; slices live in `src/store/slices/`, and typed hooks `useAppDispatch()`/`useAppSelector()` must be used.
-- Maps load on demand via `useMapLoader` with only one cached at a time; textures cache through `textureManager.ts`; binary assets are parsed through registered Pixi extensions.
+- **Features incrementales y testeables**: cada feature se implementa completa (server + cliente + tests) antes de pasar a la siguiente. En cualquier momento del proyecto, el juego deberia poder compilar y ejecutarse.
+- **Primero entender, despues codear**: la documentacion del juego (reglas, formulas, mecanicas) esta en los docs del server legacy. Leer antes de implementar.
+- **Arquitectura sobre velocidad**: preferir codigo claro y mantenible sobre codigo rapido de escribir. Usar Specification Pattern, Event Bus, y Rules Engine donde corresponda para evitar el infierno de IFs anidados del server original.
 
-## React-Pixi Integration Rules
-- Always use JSX with `@pixi/react`; avoid imperative PixiJS component creation.
-- When using `extend()`, declare it inside the component rather than globally.
-- Follow existing component patterns before introducing new implementations.
+## Estructura del proyecto
 
-## Component Architecture & Code Quality
-- Prefer small, reusable components and extract business logic into hooks or utilities; follow SOLID and composition over inheritance.
-- If components accumulate complex `useEffect` hooks, extract them into dedicated hooks to preserve readability.
-- Check existing components under `src/components/` before creating new ones.
+```
+.
+├── apps/
+│   ├── client/          # Cliente nuevo (React/PixiJS/Tauri — TypeScript)
+│   └── server/          # Servidor nuevo (a definir)
+├── context/
+│   └── reimplementacion/ # Planificacion y decisiones arquitectonicas
+│       ├── arquitectura-patrones.md   # Patrones recomendados (Specs, Events, Rules)
+│       └── consideraciones.md         # Decisiones pendientes y preguntas abiertas
+├── legacy/
+│   ├── legacy-server/   # Servidor original (documentacion de referencia)
+│   │   └── docs/wiki/   # TODA la documentacion del juego: mecanicas, combate, magia, NPCs, etc.
+│   ├── legacy-client-vb6/  # Cliente original en VB6 — completo y funcional
+│   └── legacy-client-java/ # Cliente Java (referencia principal para la reimplementacion)
+│                          # Mas moderno y mejor estructurado que el VB6, aunque incompleto
+```
 
-## Testing Guidelines
-- Vitest is configured; add colocated `*.test.ts(x)` files next to the code they cover.
-- Target at least happy-path coverage for new reducers, hooks, and rendering helpers; include edge-case stubs for asset loading failures.
-- Use `pnpm test` locally; run `pnpm coverage` when altering core rendering or networking paths.
+## Referencias legacy — como usarlas
 
-## Key Workflows
-- Adding textures: place assets in `tools/texpacker/textures-normal/` or `textures-bigger/`, then run `pnpm generate-assets` to refresh atlases.
-- Custom binary parsers: extend PixiJS asset loading with `ExtensionType.LoadParser` and register via `extensions.add()` before loading assets (see `src/loaders/`).
+### `legacy/legacy-server/docs/wiki/` — Fuente de verdad de las mecanicas
 
-## Important Constraints
-- Assets must be fully loaded before game render starts; App-level gating enforces this.
-- Map rendering uses four-layer rendering with viewport culling; only one map is cached for memory control.
-- Run `pnpm generate-assets` after texture changes to avoid build failures.
-- Debug mode toggles live in `src/config/debug.ts`.
+Aca esta TODA la documentacion del juego. Antes de implementar cualquier feature, leer el doc correspondiente:
 
-## Commit & Pull Request Guidelines
-- Match the existing short, imperative commit line style (e.g., `Add MSDF fonts`, `Improve UI scaling`); keep subjects <= 72 chars.
-- For PRs, include: short summary of scope, linked issues or task IDs, screenshots/GIFs for UI changes, and notes on testing (`pnpm test`, `pnpm linter-check`, relevant Tauri builds).
-- Keep PRs scoped and reviewable; prefer follow-up PRs for unrelated refactors.
+| Feature | Documento |
+|---|---|
+| Arquitectura general del server | `01-ARQUITECTURA-GENERAL.md` |
+| Personaje (stats, niveles, razas, clases) | `02-PERSONAJE.md` |
+| Combate (ataque, defensa, PvP, PK) | `03-COMBATE.md` |
+| Magia (hechizos, efectos) | `04-MAGIA.md` |
+| NPCs e IA | `05-NPCs-E-IA.md` |
+| Inventario y objetos | `06-INVENTARIO-Y-OBJETOS.md` |
+| Oficios (pesca, mineria, etc.) | `07-OFICIOS-Y-TRABAJO.md` |
+| Comercio y economia | `08-COMERCIO-Y-ECONOMIA.md` |
+| Clanes | `09-CLANES.md` |
+| Party | `10-PARTY.md` |
+| Facciones y Pretorianos | `11-FACCIONES-Y-PRETORIANOS.md` |
+| Mundo y mapas | `12-MUNDO-Y-MAPAS.md` |
+| Protocolo y red | `13-PROTOCOLO-Y-RED.md` |
+| Admin y seguridad | `14-ADMIN-Y-SEGURIDAD.md` |
+| Consideraciones reimplantacion | `90-CONSIDERACIONES-REIMPLEMENTACION.md` |
+
+### `legacy/legacy-client-java/` — Referencia principal del cliente
+
+Este es el cliente que usamos como **referencia principal** para la mayoria de cosas. Fue un intento mas moderno y mejor pensado que el VB6. La estructura de paquetes, la separacion de responsabilidades y las decisiones de diseno aca son un buen punto de partida. Ojo: esta incompleto y tiene interfaces vacias en muchos lados.
+
+### `legacy/legacy-client-vb6/` — Cliente original completo
+
+El cliente VB6 original, completo y funcional contra el server legacy. Se referencia para entender el comportamiento exacto del juego (flujos de UI, validaciones del cliente, manejo de paquetes). No como modelo arquitectonico, sino como documentacion viva del comportamiento esperado.
+
+## Decisiones arquitectonicas clave
+
+Las decisiones y consideraciones estan documentadas en `context/reimplementacion/`. Aqui vamos a ir plasmando ideas y las vamos a ir trabajando con el agente de IA
+
+## Al trabajar en el proyecto
+
+1. **Leer la documentacion** del mecanismo que vas a implementar en `legacy/legacy-server/docs/wiki/`
+2. **Revisar el cliente Java** (`legacy/legacy-client-java/`) como referencia de implementacion
+3. **Consultar `context/reimplementacion/`** para ver decisiones arquitectonicas y consideraciones
+4. **Implementar feature por feature**, con tests, manteniendo el juego siempre funcional
+5. **Documentar decisiones nuevas** en `context/reimplementacion/` cuando se tome una decision arquitectonica relevante
+
+## Stack del cliente nuevo
+
+El cliente nuevo (`apps/client/`) ya tiene stack definido: TypeScript, React 19, PixiJS 8, Redux Toolkit, Vite, Biome, Tauri v2. Ver `apps/client/AGENTS.md` para detalles de build, test y convenciones del cliente.
+
+El servidor (`apps/server/`) esta pendiente de definir stack.

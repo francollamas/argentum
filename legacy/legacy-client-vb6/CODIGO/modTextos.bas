@@ -1,0 +1,269 @@
+Attribute VB_Name = "mod_Textos"
+Option Explicit
+
+Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" _
+    (destination As Any, source As Any, ByVal length As Long)
+    
+Private Type CharVA
+    X As Integer
+    Y As Integer
+    W As Integer
+    H As Integer
+    
+    Tx1 As Single
+    Tx2 As Single
+    Ty1 As Single
+    Ty2 As Single
+End Type
+
+Private Type POINTAPI
+    X As Long
+    Y As Long
+End Type
+
+Private Type VFH
+    BitmapWidth As Long         'Size of the bitmap itself
+    BitmapHeight As Long
+    CellWidth As Long           'Size of the cells (area for each character)
+    CellHeight As Long
+    BaseCharOffset As Byte      'The character we start from
+    CharWidth(0 To 255) As Byte 'The actual factual width of each character
+    CharVA(0 To 255) As CharVA
+End Type
+
+Private Type D3DXIMAGE_INFO_A
+    Width As Long
+    Height As Long
+    Depth As Long
+    MipLevels As Long
+    Format As CONST_D3DFORMAT
+    ResourceType As CONST_D3DRESOURCETYPE
+    ImageFileFormat As Long
+End Type
+
+Private Type CustomFont
+    HeaderInfo As VFH           'Holds the header information
+    Texture As Direct3DTexture8 'Holds the texture of the text
+    RowPitch As Integer         'Number of characters per row
+    RowFactor As Single         'Percentage of the texture width each character takes
+    ColFactor As Single         'Percentage of the texture height each character takes
+    CharHeight As Byte          'Height to use for the text - easiest to start with CellHeight value, and keep lowering until you get a good value
+    TextureSize As POINTAPI     'Size of the texture
+End Type
+
+Private cfonts(1 To 2) As CustomFont ' _Default2 As CustomFont
+
+Public Function ColorToDX8(ByVal long_color As Long) As Long
+    Dim temp_color As String
+    Dim Red As Integer, Blue As Integer, Green As Integer
+    
+    temp_color = Hex$(long_color)
+    If Len(temp_color) < 6 Then
+        'Give is 6 digits for easy RGB conversion.
+        temp_color = String$(6 - Len(temp_color), "0") + temp_color
+    End If
+    
+    Red = CLng("&H" + mid$(temp_color, 1, 2))
+    Green = CLng("&H" + mid$(temp_color, 3, 2))
+    Blue = CLng("&H" + mid$(temp_color, 5, 2))
+    
+    ColorToDX8 = D3DColorXRGB(Red, Green, Blue)
+
+End Function
+
+Private Sub Engine_Render_Text(ByRef Batch As clsBatch, _
+                                ByRef UseFont As CustomFont, _
+                                ByVal Text As String, _
+                                ByVal X As Long, _
+                                ByVal Y As Long, _
+                                ByRef Color() As Long, _
+                                Optional ByVal Center As Boolean = False, _
+                                Optional ByVal Alpha As Byte = 255, _
+                                Optional Font As Integer = 1)
+                                
+'*****************************************************************
+'Render text with a custom font
+'*****************************************************************
+    Dim TempVA As CharVA
+    Dim tempstr() As String
+    Dim Count As Integer
+    Dim ascii() As Byte
+    Dim i As Long
+    Dim j As Long
+    Dim yOffset As Single
+    Dim TempColor As Long
+    Dim ResetColor As Byte
+    
+    'Check if we have the device
+    If DirectDevice.TestCooperativeLevel <> D3D_OK Then Exit Sub
+
+    'Check for valid text to render
+    If LenB(Text) = 0 Then Exit Sub
+    
+    'Get the text into arrays (split by vbCrLf)
+    tempstr = Split(Text, vbCrLf)
+
+    'Set the texture
+    Call Batch.SetTexture(UseFont.Texture)
+    
+    If Center Then
+        X = X - Engine_GetTextWidth(cfonts(Font), Text) * 0.5
+    End If
+    
+    'Loop through each line if there are line breaks (vbCrLf)
+    For i = 0 To UBound(tempstr)
+        If Len(tempstr(i)) > 0 Then
+            yOffset = i * UseFont.CharHeight
+            Count = 0
+        
+            'Convert the characters to the ascii value
+            ascii() = StrConv(tempstr(i), vbFromUnicode)
+        
+            'Loop through the characters
+            For j = 1 To Len(tempstr(i))
+
+                Call CopyMemory(TempVA, UseFont.HeaderInfo.CharVA(ascii(j - 1)), 24) 'this number represents the size of "CharVA" struct
+                
+                TempVA.X = X + Count
+                TempVA.Y = Y + yOffset
+                Call Batch.SetAlpha(False)
+                Call Batch.Draw(TempVA.X, TempVA.Y, TempVA.W, TempVA.H, Color, TempVA.Tx1, TempVA.Ty1, TempVA.Tx2, TempVA.Ty2)
+
+                'Shift over the the position to render the next character
+                Count = Count + UseFont.HeaderInfo.CharWidth(ascii(j - 1))
+                
+            Next j
+            
+        End If
+    Next i
+
+End Sub
+
+Public Function ARGBtoD3DCOLORVALUE(ByVal ARGB As Long, ByRef Color As D3DCOLORVALUE)
+Dim dest(3) As Byte
+CopyMemory dest(0), ARGB, 4
+Color.a = dest(3)
+Color.R = dest(2)
+Color.G = dest(1)
+Color.B = dest(0)
+End Function
+
+Private Function Engine_GetTextWidth(ByRef UseFont As CustomFont, ByVal Text As String) As Integer
+'***************************************************
+'Returns the width of text
+'More info: http://www.vbgore.com/GameClient.TileEngine.Engine_GetTextWidth
+'***************************************************
+Dim i As Integer
+Dim Len_text As Long
+
+    'Make sure we have text
+    If LenB(Text) = 0 Then Exit Function
+    
+    Len_text = Len(Text)
+    
+    'Loop through the text
+    For i = 1 To Len_text
+        
+        'Add up the stored character widths
+        Engine_GetTextWidth = Engine_GetTextWidth + UseFont.HeaderInfo.CharWidth(Asc(mid$(Text, i, 1)))
+        
+    Next i
+
+End Function
+
+Sub Engine_Init_FontTextures()
+On Error GoTo eDebug:
+'*****************************************************************
+'Init the custom font textures
+'More info: http://www.vbgore.com/GameClient.TileEngine.Engine_Init_FontTextures
+'*****************************************************************
+    Dim i As Long
+    Dim TexInfo As D3DXIMAGE_INFO_A
+
+    'Check if we have the device
+    If DirectDevice.TestCooperativeLevel <> D3D_OK Then Exit Sub
+
+    '*** Default font ***
+    For i = 1 To UBound(cfonts)
+    'Set the texture
+    Set cfonts(i).Texture = DirectD3D8.CreateTextureFromFileEx(DirectDevice, path(Graficos) & "font" & i & ".bmp", D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_POINT, _
+            &HFF000000, ByVal 0, ByVal 0)
+    'Store the size of the texture
+    cfonts(i).TextureSize.X = TexInfo.Width
+    cfonts(i).TextureSize.Y = TexInfo.Height
+    Next
+    Exit Sub
+eDebug:
+    If Err.number = "-2005529767" Then
+        MsgBox "Error en la textura de fuente utilizada " & path(Graficos) & "Font" & i & ".bmp.", vbCritical
+        End
+    End If
+    End
+
+End Sub
+
+Sub Engine_Init_FontSettings()
+    '*****************************************************************
+    'Init the custom font settings
+    'More info: http://www.vbgore.com/GameClient.TileEngine.Engine_Init_FontSettings
+    '*****************************************************************
+    Dim FileNum  As Byte
+    Dim LoopChar As Long
+    Dim Row      As Single
+    Dim u        As Single
+    Dim v        As Single
+    Dim i As Long
+    '*** Default font ***
+
+    'Load the header information
+    FileNum = FreeFile
+    For i = 1 To UBound(cfonts)
+        Open path(Graficos) & "Font" & i & ".dat" For Binary As #FileNum
+        Get #FileNum, , cfonts(i).HeaderInfo
+        Close #FileNum
+        
+        'Calculate some common values
+        cfonts(i).CharHeight = cfonts(i).HeaderInfo.CellHeight - 4
+        cfonts(i).RowPitch = cfonts(i).HeaderInfo.BitmapWidth \ cfonts(i).HeaderInfo.CellWidth
+        cfonts(i).ColFactor = cfonts(i).HeaderInfo.CellWidth / cfonts(i).HeaderInfo.BitmapWidth
+        cfonts(i).RowFactor = cfonts(i).HeaderInfo.CellHeight / cfonts(i).HeaderInfo.BitmapHeight
+        
+        'Cache the verticies used to draw the character (only requires setting the color and adding to the X/Y values)
+        For LoopChar = 0 To 255
+            
+            'tU and tV value (basically tU = BitmapXPosition / BitmapWidth, and height for tV)
+            Row = (LoopChar - cfonts(i).HeaderInfo.BaseCharOffset) \ cfonts(i).RowPitch
+            u = ((LoopChar - cfonts(i).HeaderInfo.BaseCharOffset) - (Row * cfonts(i).RowPitch)) * cfonts(i).ColFactor
+            v = Row * cfonts(i).RowFactor
+    
+            'Set the verticies
+            With cfonts(i).HeaderInfo.CharVA(LoopChar)
+                .X = 0
+                .Y = 0
+                .W = cfonts(i).HeaderInfo.CellWidth
+                .H = cfonts(i).HeaderInfo.CellHeight
+                .Tx1 = u
+                .Ty1 = v
+                .Tx2 = u + cfonts(i).ColFactor
+                .Ty2 = v + cfonts(i).RowFactor
+            End With
+            
+        Next LoopChar
+    Next i
+End Sub
+
+Public Sub DrawText(ByVal X As Integer, _
+                    ByVal Y As Integer, _
+                    ByVal Text As String, _
+                    ByVal Color As Long, _
+                    Optional Center As Boolean = False, Optional Font As Integer = 1)
+
+    Dim aux(3) As Long
+
+    Call Engine_Long_To_RGB_List(aux(), Color)
+    Call Engine_Render_Text(SpriteBatch, cfonts(Font), Text, X, Y, aux(), Center, , Font)
+
+End Sub
+
+
+

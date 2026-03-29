@@ -28,13 +28,13 @@ jobs:
               run: pnpm i
 
             - name: Generate assets
-              run: pnpm run generate-assets
+              run: pnpm -C apps/client run generate-assets
 
             - name: Build
-              run: pnpm run build
+              run: pnpm -C apps/client run build
 
             - name: Test
-              run: pnpm test
+              run: pnpm -C apps/client test
 
             - name: Linter and Format
-              run: npm run linter-check
+              run: pnpm -C apps/client run linter-check

@@ -1,0 +1,19 @@
+{
+	"React Pixi Component": {
+		"prefix": "pxc",
+		"body": [
+			"import type { FC } from 'react'",
+			"import { extend } from '@pixi/react'",
+			"import { Container } from 'pixi.js'",
+			"",
+			"extend({ Container })",
+			"",
+			"export const $1: FC = () => {",
+			"  return (",
+			"    <pixiContainer></pixiContainer>",
+			"  )",
+			"}",
+		],
+		"description": "Create a React Pixi component"
+	}
+}
