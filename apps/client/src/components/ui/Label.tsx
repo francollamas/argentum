@@ -24,29 +24,18 @@ export const Label: FC<LabelProps> = ({
 }) => {
 	const fontConfig = FONTS[font]
 
-	const textElement = (
-		<layoutContainer layout={{ width: 'intrinsic', height: 'intrinsic' }}>
-			<pixiBitmapText
-				text={text}
-				x={x !== undefined ? x : undefined}
-				y={y !== undefined ? y : undefined}
-				anchor={anchor}
-				style={{
-					fontFamily: fontConfig.fontFamily,
-					fontSize: fontConfig.fontSize,
-					fill: color,
-				}}
-			/>
-		</layoutContainer>
+	return (
+		<pixiBitmapText
+			text={text}
+			x={x}
+			y={y}
+			anchor={anchor}
+			layout={{ width: 'intrinsic', height: 'intrinsic' }}
+			style={{
+				fontFamily: fontConfig.fontFamily,
+				fontSize: fontConfig.fontSize,
+				fill: color,
+			}}
+		/>
 	)
-
-	if (x === undefined && y === undefined) {
-		return (
-			<layoutContainer layout={{ width: 'intrinsic', height: 'intrinsic' }}>
-				{textElement}
-			</layoutContainer>
-		)
-	}
-
-	// return textElement
 }

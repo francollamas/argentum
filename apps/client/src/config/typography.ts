@@ -25,7 +25,7 @@ export const FONTS: Record<FontType, FontConfig> = {
 	},
 	general: {
 		fontFamily: 'crimsomtext-regular',
-		fontSize: 13,
+		fontSize: 36,
 	},
 	checkbox: {
 		fontFamily: 'crimsomtext-regular',

@@ -21,8 +21,6 @@ export const LayoutResizer: FC<LayoutResizerProps> = ({ children }) => {
 			}
 		}
 
-		updateLayout()
-
 		app.renderer.on('resize', updateLayout)
 
 		return () => {
@@ -31,7 +29,10 @@ export const LayoutResizer: FC<LayoutResizerProps> = ({ children }) => {
 	}, [app])
 
 	return (
-		<pixiContainer ref={layoutRef} layout={{}}>
+		<pixiContainer
+			ref={layoutRef}
+			layout={{ width: app.screen.width, height: app.screen.height }}
+		>
 			{children}
 		</pixiContainer>
 	)

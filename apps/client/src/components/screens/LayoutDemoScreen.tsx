@@ -18,14 +18,17 @@ export const LayoutDemoScreen: FC = () => {
 		>
 			<layoutContainer
 				layout={{
-					width: 600,
-					height: 500,
+					width: '80%',
+					height: '85%',
+					maxWidth: 600,
+					maxHeight: 500,
 					backgroundColor: 0x16213e,
 					borderRadius: 16,
 					padding: 30,
 					flexDirection: 'column',
 					gap: 20,
 					alignItems: 'center',
+					overflow: 'hidden',
 				}}
 			>
 				<Label text='PixiJS Layout Demo' font='general' color={0xf0f0f0} />
