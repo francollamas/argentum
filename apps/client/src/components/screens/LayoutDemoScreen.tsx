@@ -1,119 +1,97 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Button, Label } from '../ui'
+import { Button, Colors, Label } from '../ui'
+
+const BUTTON_SIZES = {
+	normal: { width: 120, height: 40 },
+	small: { width: 200, height: 35 },
+}
 
 export const LayoutDemoScreen: FC = () => {
 	const [clickCount, setClickCount] = useState(0)
 
+	const handleIncrement = () => setClickCount((prev) => prev + 1)
+	const handleReset = () => setClickCount(0)
+
 	return (
 		<layoutContainer
 			layout={{
-				width: '100%',
-				height: '100%',
-				justifyContent: 'center',
-				alignItems: 'center',
-				backgroundColor: 0x1a1a2e,
+				...tw`w-full h-full justify-center items-center`,
+				backgroundColor: Colors.backgroundDark,
 			}}
 		>
 			<layoutContainer
 				layout={{
-					width: '80%',
+					...tw`w-4/5 max-w-150 p-7 flex-col gap-5 items-center`,
 					height: '85%',
-					maxWidth: 600,
 					maxHeight: 500,
-					backgroundColor: 0x16213e,
+					backgroundColor: Colors.backgroundPanel,
 					borderRadius: 16,
-					padding: 30,
-					flexDirection: 'column',
-					gap: 20,
-					alignItems: 'center',
 					overflow: 'hidden',
 				}}
 			>
-				<Label text='PixiJS Layout Demo' font='general' color={0xf0f0f0} />
+				<Label
+					text='PixiJS Layout Demo'
+					font='general'
+					color={Colors.backgroundParchment}
+				/>
 
 				<Label
 					text='Flexbox Container Example'
 					font='general'
-					color={0xa0a0a0}
+					color={Colors.silver}
 				/>
 
-				<layoutContainer
-					layout={tw`flex flex-col gap-15 items-center`}
-					/* layout={{
-					flexDirection: 'column',
-					gap: 15,
-					alignItems: 'center',
-					marginTop: 20,
-				}} */
-				>
+				<layoutContainer layout={tw`flex-col gap-15 items-center`}>
 					<Label
 						text={`Button Clicks: ${clickCount}`}
 						font='general'
-						color={0xffd700}
+						color={Colors.gold}
 					/>
 
-					<layoutContainer
-						layout={{
-							flexDirection: 'row',
-							gap: 15,
-							marginTop: 10,
-						}}
-					>
+					<layoutContainer layout={tw`flex-row gap-4 mt-3`}>
 						<Button
 							text='Click Me!'
-							width={120}
-							height={40}
+							{...BUTTON_SIZES.normal}
 							variant='normal'
-							onPress={() => setClickCount(clickCount + 1)}
+							onPress={handleIncrement}
 						/>
 
 						<Button
 							text='Reset'
-							width={120}
-							height={40}
+							{...BUTTON_SIZES.normal}
 							variant='normal'
-							onPress={() => setClickCount(0)}
+							onPress={handleReset}
 						/>
 					</layoutContainer>
 
-					<layoutContainer
-						layout={{
-							flexDirection: 'column',
-							gap: 10,
-							marginTop: 20,
-							alignItems: 'center',
-						}}
-					>
+					<layoutContainer layout={tw`flex-col gap-3 mt-5 items-center`}>
 						<Label
 							text='Vertical Layout Example'
 							font='general'
-							color={0xe94560}
+							color={Colors.buttonAlert}
 						/>
 
 						<Button
 							text='Button 1'
-							width={200}
-							height={35}
+							{...BUTTON_SIZES.small}
 							variant='small'
-							onPress={() => console.log('Button 1 pressed')}
+							onPress={() => {}}
 						/>
 
 						<Button
 							text='Button 2'
-							width={200}
-							height={35}
+							{...BUTTON_SIZES.small}
 							variant='small'
-							onPress={() => console.log('Button 2 pressed')}
+							onPress={() => {}}
 						/>
 
 						<Button
 							text='Button 3'
-							width={200}
-							height={35}
+							{...BUTTON_SIZES.small}
 							variant='small'
-							onPress={() => console.log('Button 3 pressed')}
+							onPress={() => {}}
 						/>
 					</layoutContainer>
 				</layoutContainer>
