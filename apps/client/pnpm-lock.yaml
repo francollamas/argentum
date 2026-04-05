@@ -17,9 +17,6 @@ importers:
       '@pixi/react':
         specifier: ^8.0.5
         version: 8.0.5(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)
-      '@pixi/ui':
-        specifier: ^2.3.2
-        version: 2.3.2(pixi.js@8.17.1)
       '@tauri-apps/api':
         specifier: '>=2.10.1'
         version: 2.10.1
@@ -644,11 +641,6 @@ packages:
     peerDependencies:
       pixi.js: ^8.2.6
       react: '>=19.0.0'
-
-  '@pixi/ui@2.3.2':
-    resolution: {integrity: sha512-HHQtAHxzirfl6bg9HgzyGGLIHqM/q3i0R+raQ9Wmp3VxLJTUviF655Syf9PWYC690xbS9uo0mRkXykoJNkHKhA==}
-    peerDependencies:
-      pixi.js: ^8.6.2
 
   '@pnpm/config.env-replace@1.1.0':
     resolution: {integrity: sha512-htyl8TWnKL7K/ESFa1oW2UB5lVDxuF5DpM7tBi6Hu2LNL3mWkIzNLG6N4zoCUP1lCKNxWy/3iu8mS8MvToGd6w==}
@@ -1937,18 +1929,12 @@ packages:
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
-  tweedle.js@2.1.0:
-    resolution: {integrity: sha512-0ReQgVjepoZkE6t0upWNgCRbplHkQJQYk1LStXugwSR728GLFmGDRuaQJlxeC/iBlxud6+P1RdODjaO25vHAqw==}
-
   tweetnacl@0.14.5:
     resolution: {integrity: sha512-KXXFFdAbFXY4geFIwoyNK+f5Z1b7swfXABfL7HXCmoIWMKU3dmS26672A4EeQtDzLKy7SXmfBu51JolvEKwtGA==}
 
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
-
-  typed-signals@2.5.0:
-    resolution: {integrity: sha512-m9lHc3eBCJerXYdx+G0uWZihyUXdqTzzgOdqiDDsoUo75WjhFJH6vP5/6w/xhyu04zoxHUqgYhf9FEt85dk/Ng==}
 
   typescript@6.0.2:
     resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
@@ -2621,12 +2607,6 @@ snapshots:
       react-reconciler: 0.31.0(react@19.2.4)
     transitivePeerDependencies:
       - '@types/react'
-
-  '@pixi/ui@2.3.2(pixi.js@8.17.1)':
-    dependencies:
-      pixi.js: 8.17.1
-      tweedle.js: 2.1.0
-      typed-signals: 2.5.0
 
   '@pnpm/config.env-replace@1.1.0': {}
 
@@ -3873,13 +3853,9 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  tweedle.js@2.1.0: {}
-
   tweetnacl@0.14.5: {}
 
   type-fest@4.41.0: {}
-
-  typed-signals@2.5.0: {}
 
   typescript@6.0.2: {}
 

@@ -1,16 +1,15 @@
 import { extend } from '@pixi/react'
-import { CheckBox as PixiSwitch } from '@pixi/ui'
-import { Container } from 'pixi.js'
+import { BitmapText, Graphics, Sprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
-extend({ Container })
+extend({ Sprite, BitmapText, Graphics })
 
 type SwitchProps = {
-	x: number
-	y: number
+	x?: number
+	y?: number
 	enabled?: boolean
 	onChange?: (enabled: boolean) => void
 	scale?: number
@@ -23,56 +22,61 @@ export const Switch: FC<SwitchProps> = ({
 	y,
 	enabled = false,
 	onChange,
-	scale = 0.4,
+	scale = 1,
 	text,
 	textColor = 0xffffff,
 }) => {
-	const containerRef = useRef<Container | null>(null)
-
 	const offTexture = useUITexture('switch-off')
 	const onTexture = useUITexture('switch-on')
 
-	useEffect(() => {
-		if (!containerRef.current) return
+	const fontConfig = FONTS.checkbox
+	const texture = enabled ? onTexture : offTexture
 
-		const fontConfig = FONTS.checkbox
+	const handleToggle = () => onChange?.(!enabled)
 
-		const switchControl = new PixiSwitch({
-			checked: enabled,
-			text,
-			style: {
-				unchecked: offTexture,
-				checked: onTexture,
-				text: {
-					fontFamily: fontConfig.fontFamily,
-					fontSize: fontConfig.fontSize,
-					fill: textColor,
-				},
-			},
-		})
+	const iconW = Math.round(texture.width * scale)
+	const iconH = Math.round(texture.height * scale)
+	const fontSize = Math.round(fontConfig.fontSize * scale)
+	const textW = text ? fontSize * text.length * 0.6 : 0
+	const gap = Math.round(8 * scale)
+	const layoutWidth = text ? iconW + gap + textW : iconW
+	const layoutHeight = iconH
 
-		switchControl.scale.set(scale)
+	const drawHitRect = useCallback(
+		(g: Graphics) => {
+			g.clear()
+			g.rect(0, 0, layoutWidth, layoutHeight).fill({
+				color: 0xffffff,
+				alpha: 0,
+			})
+		},
+		[layoutWidth, layoutHeight],
+	)
 
-		if (onChange) {
-			const handleChange = (state: number | boolean) => {
-				onChange(Boolean(state))
-			}
-			switchControl.onChange.connect(handleChange)
-
-			containerRef.current.addChild(switchControl)
-
-			return () => {
-				switchControl.onChange.disconnect(handleChange)
-				switchControl.destroy()
-			}
-		}
-
-		containerRef.current.addChild(switchControl)
-
-		return () => {
-			switchControl.destroy()
-		}
-	}, [enabled, onTexture, onChange, scale, text, textColor, offTexture])
-
-	return <pixiContainer ref={containerRef} x={x} y={y} />
+	return (
+		<pixiContainer
+			x={x}
+			y={y}
+			eventMode='static'
+			cursor='pointer'
+			onPointerDown={handleToggle}
+			layout={{ width: layoutWidth, height: layoutHeight }}
+		>
+			<pixiGraphics draw={drawHitRect} />
+			<pixiSprite texture={texture} width={iconW} height={iconH} />
+			{text && (
+				<pixiBitmapText
+					x={iconW + gap}
+					y={iconH / 2}
+					anchor={{ x: 0, y: 0.5 }}
+					text={text}
+					style={{
+						fontFamily: fontConfig.fontFamily,
+						fontSize: fontSize,
+						fill: textColor,
+					}}
+				/>
+			)}
+		</pixiContainer>
+	)
 }

@@ -1,18 +1,16 @@
 import { extend } from '@pixi/react'
-import { ProgressBar as PixiProgressBar } from '@pixi/ui'
-import { Container } from 'pixi.js'
+import { NineSliceSprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Label } from './Label'
 
-extend({ Container })
+extend({ NineSliceSprite })
 
 type ProgressBarTextVariant = 'amount' | 'percentage'
 
 type ProgressBarProps = {
-	x: number
-	y: number
+	x?: number
+	y?: number
 	width: number
 	height: number
 	value?: number
@@ -24,6 +22,10 @@ type ProgressBarProps = {
 		bottom?: number
 		left?: number
 	}
+	/** Stat name rendered inside the bar, left-aligned */
+	label?: string
+	labelColor?: number
+	/** Optional value text rendered centered inside the bar */
 	textVariant?: ProgressBarTextVariant
 	textColor?: number
 }
@@ -37,79 +39,79 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 	max = 100,
 	fillColor = 0xf2d059,
 	fillPaddings = { top: 2, right: 2, bottom: 2, left: 2 },
+	label,
+	labelColor = 0xffffff,
 	textVariant,
 	textColor = 0xffffff,
 }) => {
-	const containerRef = useRef<Container | null>(null)
-	const progressBarRef = useRef<PixiProgressBar | null>(null)
-
 	const bgTexture = useUITexture('bar-container')
 	const fillTexture = useUITexture('bar-fill')
 
 	const progress =
 		max === 0 ? 0 : Math.max(0, Math.min(100, (value / max) * 100))
 
-	useEffect(() => {
-		if (!containerRef.current) return
+	const padTop = fillPaddings.top ?? 2
+	const padRight = fillPaddings.right ?? 2
+	const padBottom = fillPaddings.bottom ?? 2
+	const padLeft = fillPaddings.left ?? 2
 
-		const bgSliceSize = Math.min(bgTexture.width, bgTexture.height) * 0.25
-		const fillSliceSize = Math.min(fillTexture.width, fillTexture.height) * 0.25
+	const bgSliceSize = Math.min(bgTexture.width, bgTexture.height) * 0.25
+	const fillSliceSize = Math.min(fillTexture.width, fillTexture.height) * 0.25
 
-		const progressBar = new PixiProgressBar({
-			bg: bgTexture,
-			fill: fillTexture,
-			fillPaddings,
-			nineSliceSprite: {
-				bg: [bgSliceSize, bgSliceSize, bgSliceSize, bgSliceSize],
-				fill: [fillSliceSize, fillSliceSize, fillSliceSize, fillSliceSize],
-			},
-			progress,
-		})
+	const fillInnerWidth = width - padLeft - padRight
+	const fillInnerHeight = height - padTop - padBottom
+	const fillWidth = Math.max(0, (progress / 100) * fillInnerWidth)
 
-		progressBar.width = width
-		progressBar.height = height
-
-		const fillSprite = progressBar.innerView.children.find(
-			(child) => child !== progressBar.innerView.children[0],
-		)
-		if (fillSprite) {
-			fillSprite.tint = fillColor
-		}
-
-		containerRef.current.addChild(progressBar)
-		progressBarRef.current = progressBar
-
-		return () => {
-			progressBarRef.current = null
-			progressBar.destroy()
-		}
-	}, [bgTexture, fillTexture, width, height, fillColor, fillPaddings, progress])
-
-	useEffect(() => {
-		if (progressBarRef.current) {
-			progressBarRef.current.progress = progress
-		}
-	}, [progress])
-
-	if (!textVariant) {
-		return <pixiContainer ref={containerRef} x={x} y={y} />
-	}
-
-	const displayText =
+	const valueText =
 		textVariant === 'amount'
 			? `${Math.round(value)} / ${Math.round(max)}`
-			: `${Math.round(progress)}%`
+			: textVariant === 'percentage'
+				? `${Math.round(progress)}%`
+				: null
 
 	return (
-		<>
-			<pixiContainer ref={containerRef} x={x} y={y} />
-			<Label
-				text={displayText}
-				x={x + width / 2}
-				y={y + height / 2}
-				anchor={{ x: 0.5, y: 0.5 }}
-				color={textColor}
+		<pixiContainer x={x} y={y} layout={{ width, height }}>
+			<pixiNineSliceSprite
+				texture={bgTexture}
+				leftWidth={bgSliceSize}
+				topHeight={bgSliceSize}
+				rightWidth={bgSliceSize}
+				bottomHeight={bgSliceSize}
+				width={width}
+				height={height}
 			/>
-		</>
+			{fillWidth > 0 && (
+				<pixiNineSliceSprite
+					texture={fillTexture}
+					leftWidth={fillSliceSize}
+					topHeight={fillSliceSize}
+					rightWidth={fillSliceSize}
+					bottomHeight={fillSliceSize}
+					x={padLeft}
+					y={padTop}
+					width={fillWidth}
+					height={fillInnerHeight}
+					tint={fillColor}
+				/>
+			)}
+			{label && (
+				<Label
+					text={label}
+					x={8}
+					y={height / 2}
+					anchor={{ x: 0, y: 0.5 }}
+					color={labelColor}
+				/>
+			)}
+			{valueText && (
+				<Label
+					text={valueText}
+					x={width / 2}
+					y={height / 2}
+					anchor={{ x: 0.5, y: 0.5 }}
+					color={textColor}
+				/>
+			)}
+		</pixiContainer>
 	)
 }

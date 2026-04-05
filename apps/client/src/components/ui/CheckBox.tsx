@@ -1,18 +1,17 @@
 import { extend } from '@pixi/react'
-import { CheckBox as PixiCheckBox } from '@pixi/ui'
-import { Container } from 'pixi.js'
+import { BitmapText, Graphics, Sprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
-extend({ Container })
+extend({ Sprite, BitmapText, Graphics })
 
 type CheckBoxVariant = 'normal' | 'radio'
 
 type CheckBoxProps = {
-	x: number
-	y: number
+	x?: number
+	y?: number
 	checked?: boolean
 	onChange?: (checked: boolean) => void
 	variant?: CheckBoxVariant
@@ -27,65 +26,62 @@ export const CheckBox: FC<CheckBoxProps> = ({
 	checked = false,
 	onChange,
 	variant = 'normal',
-	scale = 0.4,
+	scale = 1,
 	text,
 	textColor = 0xffffff,
 }) => {
-	const containerRef = useRef<Container | null>(null)
-
 	const prefix = variant === 'radio' ? 'radio' : 'checkbox'
 	const uncheckedTexture = useUITexture(`${prefix}-unchecked`)
 	const checkedTexture = useUITexture(`${prefix}-checked`)
 
-	useEffect(() => {
-		if (!containerRef.current) return
+	const fontConfig = FONTS.checkbox
+	const texture = checked ? checkedTexture : uncheckedTexture
 
-		const fontConfig = FONTS.checkbox
+	const handleToggle = () => onChange?.(!checked)
 
-		const checkbox = new PixiCheckBox({
-			checked,
-			text,
-			style: {
-				unchecked: uncheckedTexture,
-				checked: checkedTexture,
-				text: {
-					fontFamily: fontConfig.fontFamily,
-					fontSize: fontConfig.fontSize,
-					fill: textColor,
-				},
-			},
-		})
+	const iconW = Math.round(texture.width * scale)
+	const iconH = Math.round(texture.height * scale)
+	const fontSize = Math.round(fontConfig.fontSize * scale)
+	const textW = text ? fontSize * text.length * 0.6 : 0
+	const gap = Math.round(8 * scale)
+	const layoutWidth = text ? iconW + gap + textW : iconW
+	const layoutHeight = iconH
 
-		checkbox.scale.set(scale)
+	const drawHitRect = useCallback(
+		(g: Graphics) => {
+			g.clear()
+			g.rect(0, 0, layoutWidth, layoutHeight).fill({
+				color: 0xffffff,
+				alpha: 0,
+			})
+		},
+		[layoutWidth, layoutHeight],
+	)
 
-		if (onChange) {
-			const handleChange = (state: number | boolean) => {
-				onChange(Boolean(state))
-			}
-			checkbox.onChange.connect(handleChange)
-
-			containerRef.current.addChild(checkbox)
-
-			return () => {
-				checkbox.onChange.disconnect(handleChange)
-				checkbox.destroy()
-			}
-		}
-
-		containerRef.current.addChild(checkbox)
-
-		return () => {
-			checkbox.destroy()
-		}
-	}, [
-		checked,
-		checkedTexture,
-		onChange,
-		scale,
-		text,
-		textColor,
-		uncheckedTexture,
-	])
-
-	return <pixiContainer ref={containerRef} x={x} y={y} />
+	return (
+		<pixiContainer
+			x={x}
+			y={y}
+			eventMode='static'
+			cursor='pointer'
+			onPointerDown={handleToggle}
+			layout={{ width: layoutWidth, height: layoutHeight }}
+		>
+			<pixiGraphics draw={drawHitRect} />
+			<pixiSprite texture={texture} width={iconW} height={iconH} />
+			{text && (
+				<pixiBitmapText
+					x={iconW + gap}
+					y={iconH / 2}
+					anchor={{ x: 0, y: 0.5 }}
+					text={text}
+					style={{
+						fontFamily: fontConfig.fontFamily,
+						fontSize: fontSize,
+						fill: textColor,
+					}}
+				/>
+			)}
+		</pixiContainer>
+	)
 }

@@ -1,28 +1,24 @@
 import { extend } from '@pixi/react'
-import {
-	CheckBox as PixiCheckBox,
-	RadioGroup as PixiRadioGroup,
-} from '@pixi/ui'
-import { Container } from 'pixi.js'
+import { BitmapText, Sprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useEffect, useRef } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
-extend({ Container })
+extend({ Sprite, BitmapText })
 
 type RadioGroupItem = {
 	text: string
 }
 
 type RadioGroupProps = {
-	x: number
-	y: number
+	x?: number
+	y?: number
 	items: RadioGroupItem[]
 	selectedIndex?: number
 	onChange?: (selectedIndex: number) => void
 	scale?: number
 	type?: 'vertical' | 'horizontal'
+	elementsMargin?: number
 }
 
 export const RadioGroup: FC<RadioGroupProps> = ({
@@ -31,70 +27,67 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 	items,
 	selectedIndex = 0,
 	onChange,
-	scale = 0.4,
+	scale = 1,
 	type = 'vertical',
+	elementsMargin = 15,
 }) => {
-	const containerRef = useRef<Container | null>(null)
-	const radioUncheckedTexture = useUITexture('radio-unchecked')
-	const radioCheckedTexture = useUITexture('radio-checked')
+	const uncheckedTexture = useUITexture('radio-unchecked')
+	const checkedTexture = useUITexture('radio-checked')
 
-	useEffect(() => {
-		if (!containerRef.current) return
+	const fontConfig = FONTS.checkbox
+	const iconW = uncheckedTexture.width
+	const iconH = uncheckedTexture.height
+	const itemH = Math.max(iconH, fontConfig.fontSize)
+	const itemW = iconW + 8 + fontConfig.fontSize * 6
 
-		const fontConfig = FONTS.checkbox
+	// Pre-scale total bounding box so parent layout knows the occupied space
+	const totalWidth =
+		type === 'horizontal'
+			? items.length * itemW + (items.length - 1) * elementsMargin
+			: itemW
+	const totalHeight =
+		type === 'vertical'
+			? items.length * itemH + (items.length - 1) * elementsMargin
+			: itemH
 
-		const checkboxes = items.map((item) => {
-			return new PixiCheckBox({
-				text: item.text,
-				style: {
-					unchecked: radioUncheckedTexture,
-					checked: radioCheckedTexture,
-					text: {
-						fontFamily: fontConfig.fontFamily,
-						fontSize: fontConfig.fontSize,
-						fill: 0xffffff,
-					},
-				},
-			})
-		})
+	return (
+		<pixiContainer
+			x={x}
+			y={y}
+			scale={scale}
+			layout={{ width: totalWidth, height: totalHeight }}
+		>
+			{items.map((item, index) => {
+				const isSelected = index === selectedIndex
+				const texture = isSelected ? checkedTexture : uncheckedTexture
+				const offsetX =
+					type === 'horizontal' ? index * (itemW + elementsMargin) : 0
+				const offsetY =
+					type === 'vertical' ? index * (itemH + elementsMargin) : 0
 
-		const radioGroup = new PixiRadioGroup({
-			items: checkboxes,
-			type,
-			selectedItem: selectedIndex,
-			elementsMargin: 15,
-		})
-
-		radioGroup.scale.set(scale)
-
-		if (onChange) {
-			const handleChange = (selectedId: number) => {
-				onChange(selectedId)
-			}
-			radioGroup.onChange.connect(handleChange)
-
-			containerRef.current.addChild(radioGroup)
-
-			return () => {
-				radioGroup.onChange.disconnect(handleChange)
-				radioGroup.destroy()
-			}
-		}
-
-		containerRef.current.addChild(radioGroup)
-
-		return () => {
-			radioGroup.destroy()
-		}
-	}, [
-		items,
-		onChange,
-		radioCheckedTexture,
-		radioUncheckedTexture,
-		scale,
-		selectedIndex,
-		type,
-	])
-
-	return <pixiContainer ref={containerRef} x={x} y={y} />
+				return (
+					<pixiContainer
+						key={item.text}
+						x={offsetX}
+						y={offsetY}
+						eventMode='static'
+						cursor='pointer'
+						onPointerDown={() => onChange?.(index)}
+					>
+						<pixiSprite texture={texture} y={Math.round((itemH - iconH) / 2)} />
+						<pixiBitmapText
+							x={iconW + 8}
+							y={Math.round((itemH - fontConfig.fontSize) / 2)}
+							text={item.text}
+							style={{
+								fontFamily: fontConfig.fontFamily,
+								fontSize: fontConfig.fontSize,
+								fill: 0xffffff,
+							}}
+						/>
+					</pixiContainer>
+				)
+			})}
+		</pixiContainer>
+	)
 }
