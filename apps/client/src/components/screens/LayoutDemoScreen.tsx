@@ -5,7 +5,7 @@ import { Button, Colors, Label } from '../ui'
 
 const BUTTON_SIZES = {
 	normal: { width: 120, height: 40 },
-	small: { width: 200, height: 35 },
+	small: { width: 80, height: 35 },
 }
 
 export const LayoutDemoScreen: FC = () => {
