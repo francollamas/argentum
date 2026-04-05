@@ -21,33 +21,27 @@ type ButtonProps = {
 }
 
 type ButtonStyleConfig = {
-	sliceSize: number
 	scale: number
-	horizontalPaddingRatio: number
-	verticalPaddingRatio: number
-	minHorizontalPadding: number
-	minVerticalPadding: number
+	sliceSize: number
 	fontType: 'button' | 'buttonSmall'
+	paddingH: number
+	paddingV: number
 }
 
 const BUTTON_STYLES: Record<ButtonVariant, ButtonStyleConfig> = {
 	normal: {
-		sliceSize: 14,
 		scale: 0.45,
-		horizontalPaddingRatio: 0.3,
-		verticalPaddingRatio: 0.25,
-		minHorizontalPadding: 10,
-		minVerticalPadding: 6,
+		sliceSize: 14,
 		fontType: 'button',
+		paddingH: 30,
+		paddingV: 25,
 	},
 	small: {
-		sliceSize: 14,
 		scale: 0.3,
-		horizontalPaddingRatio: 0.25,
-		verticalPaddingRatio: 0.2,
-		minHorizontalPadding: 8,
-		minVerticalPadding: 5,
+		sliceSize: 14,
 		fontType: 'buttonSmall',
+		paddingH: 25,
+		paddingV: 20,
 	},
 }
 
@@ -71,7 +65,7 @@ export const Button: FC<ButtonProps> = ({
 	const style = BUTTON_STYLES[variant]
 	const fontConfig = FONTS[style.fontType]
 
-	const { buttonWidth, buttonHeight } = useMemo(() => {
+	const { buttonWidth, buttonHeight, textX, textY } = useMemo(() => {
 		const tempText = new BitmapText({
 			text,
 			style: {
@@ -80,28 +74,28 @@ export const Button: FC<ButtonProps> = ({
 			},
 		})
 
-		const horizontalPadding = Math.max(
-			defaultTexture.height * style.horizontalPaddingRatio,
-			style.minHorizontalPadding,
-		)
-		const verticalPadding = Math.max(
-			defaultTexture.height * style.verticalPaddingRatio,
-			style.minVerticalPadding,
-		)
+		// width/height are in final (post-scale) pixels — convert to pre-scale space
+		const minWidthPreScale = width != null ? Math.ceil(width / style.scale) : 0
+		const minHeightPreScale =
+			height != null ? Math.ceil(height / style.scale) : 0
 
 		const buttonWidth = Math.max(
-			Math.ceil(tempText.width + horizontalPadding * 2),
-			width ?? 0,
+			Math.ceil(tempText.width + style.paddingH * 2),
+			minWidthPreScale,
 		)
 		const buttonHeight = Math.max(
 			defaultTexture.height,
-			Math.ceil(tempText.height + verticalPadding * 2),
-			height ?? 0,
+			Math.ceil(tempText.height + style.paddingV * 2),
+			minHeightPreScale,
 		)
+
+		// Center text manually — avoids depending on flexbox + scale interaction
+		const textX = Math.round((buttonWidth - tempText.width) / 2)
+		const textY = Math.round((buttonHeight - tempText.height) / 2)
 
 		tempText.destroy()
 
-		return { buttonWidth, buttonHeight }
+		return { buttonWidth, buttonHeight, textX, textY }
 	}, [text, fontConfig, defaultTexture, style, width, height])
 
 	const currentTexture = isPressed
@@ -132,8 +126,6 @@ export const Button: FC<ButtonProps> = ({
 			layout={{
 				width: buttonWidth,
 				height: buttonHeight,
-				justifyContent: 'center',
-				alignItems: 'center',
 			}}
 		>
 			<pixiNineSliceSprite
@@ -142,27 +134,19 @@ export const Button: FC<ButtonProps> = ({
 				topHeight={style.sliceSize}
 				rightWidth={style.sliceSize}
 				bottomHeight={style.sliceSize}
-				layout={{
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					width: buttonWidth,
-					height: buttonHeight,
-				}}
+				width={buttonWidth}
+				height={buttonHeight}
 			/>
 			<pixiBitmapText
+				x={textX}
+				y={textY}
 				text={text}
 				style={{
 					fontFamily: fontConfig.fontFamily,
 					fontSize: fontConfig.fontSize,
 					fill: textColor,
 				}}
-				anchor={0.5}
 				roundPixels
-				layout={{
-					width: 'intrinsic',
-					height: 'intrinsic',
-				}}
 			/>
 		</pixiContainer>
 	)
