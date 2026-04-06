@@ -1,8 +1,8 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `src/main.tsx` boots the React/Pixi client; `src/app/App.tsx` wires the root view and Redux persistence.
-- UI lives under `src/components` (`game` rendering, `screens` flows, `ui/common` primitives). Hooks are in `src/hooks`, runtime managers/loaders in `src/managers` and `src/loaders`, and Redux state in `src/store`.
+- `src/main.tsx` boots the React/Pixi client; `src/app/App.tsx` wires the root view and Zustand stores.
+- UI lives under `src/components` (`game` rendering, `screens` flows, `ui/common` primitives). Hooks are in `src/hooks`, runtime managers/loaders in `src/managers` and `src/loaders`, and Zustand stores in `src/store`.
 - Game data and generated atlases land in `src/assets`; avoid hand-editing anything generated there.
 - Tauri shell code and platform builds live in `src-tauri`; web build artifacts go to `dist/`.
 - Helper tools sit in `scripts/` (asset generation) and `tools/` (texture packer projects). `docs/` and `agent/` hold planning notes.
@@ -19,15 +19,15 @@
 - Texture atlas generation: `pnpm generate-assets` is mandatory after adding or updating textures
 
 ## Project Overview & Tech Stack
-- Argentum is a multiplatform TypeScript/React/PixiJS/Tauri MMORPG client compatible with Argentum Online server v0.13.0
-- Core stack: React 19, PixiJS 8 (@pixi/react), Redux Toolkit, Vite, Biome, Vitest; Tauri v2 for desktop builds
+- Argentum is a multiplatform TypeScript/React/PixiJS/Tauri MMORPG client targeting the new custom server (currently in development — features requiring server interaction are built alongside their matching server counterpart)
+- Core stack: React 19, PixiJS 8 (@pixi/react, @pixi/layout), Zustand, Vite, Biome, Vitest; Tauri v2 for desktop builds
 
 ## Coding Style & Naming Conventions
-- TypeScript + React + Pixi; prefer functional components and Redux Toolkit slices.
+- TypeScript + React + Pixi; prefer functional components and Zustand stores.
 - Formatter/linter is Biome (tabs for indent, single quotes, semicolons only when required).
 - File names are PascalCase for components (`GameView.tsx`), camelCase for utilities (`logger.ts`), and `.ts`/`.tsx` modules stay colocated with their feature.
 - Hooks start with `use`, components with nouns, constants in `UPPER_SNAKE_CASE`, and types/interfaces in `PascalCase`.
-- Keep side effects isolated; favor pure helpers in `utils/` and typed state in `store/`.
+- Keep side effects isolated; favor pure helpers in `utils/` and Zustand stores in `src/store/`.
 - Code must be self-documenting; avoid code comments and keep logic small, focused, and readable.
 - All code is written in English.
 
@@ -38,13 +38,17 @@
 - Dynamic asset imports rely on `import.meta.glob`.
 - PixiJS application wrapper prefers WebGPU and is configured in `src/main.tsx`.
 - Game view hierarchy flows `App.tsx` → `GameView.tsx` → map/player components; sprites go through `useSprite` and `CustomSprite` for texture loading/animation.
-- Redux Toolkit with redux-persist powers state; slices live in `src/store/slices/`, and typed hooks `useAppDispatch()`/`useAppSelector()` must be used.
+- Zustand powers client state; stores live in `src/store/` and are consumed directly via store hooks (no dispatch/selector boilerplate).
 - Maps load on demand via `useMapLoader` with only one cached at a time; textures cache through `textureManager.ts`; binary assets are parsed through registered Pixi extensions.
 
 ## React-Pixi Integration Rules
 - Always use JSX with `@pixi/react`; avoid imperative PixiJS component creation.
+- Use `@pixi/layout` for UI layout (flexbox-style via Yoga) — it integrates directly with `@pixi/react`.
 - When using `extend()`, declare it inside the component rather than globally.
 - Follow existing component patterns before introducing new implementations.
+- Two agent skills exist for this stack and are strong candidates whenever building UI or game scenes:
+  - **pixi-react** (`.agents/skills/pixi-react/`) — generating components, sprites, graphics, text, and interactive elements with `@pixi/react`
+  - **pixi-layout** (`.agents/skills/pixi-layout/`) — building flexbox UI layouts with `@pixi/layout` inside PixiJS
 
 ## Component Architecture & Code Quality
 - Prefer small, reusable components and extract business logic into hooks or utilities; follow SOLID and composition over inheritance.
@@ -53,7 +57,7 @@
 
 ## Testing Guidelines
 - Vitest is configured; add colocated `*.test.ts(x)` files next to the code they cover.
-- Target at least happy-path coverage for new reducers, hooks, and rendering helpers; include edge-case stubs for asset loading failures.
+- Target at least happy-path coverage for new stores, hooks, and rendering helpers; include edge-case stubs for asset loading failures.
 - Use `pnpm test` locally; run `pnpm coverage` when altering core rendering or networking paths.
 
 ## Key Workflows
@@ -65,6 +69,7 @@
 - Map rendering uses four-layer rendering with viewport culling; only one map is cached for memory control.
 - Run `pnpm generate-assets` after texture changes to avoid build failures.
 - Debug mode toggles live in `src/config/debug.ts`.
+- Features that require server interaction must be developed together with their matching server implementation; purely client-side features (UI, rendering, local state) can ship independently.
 
 ## Commit & Pull Request Guidelines
 - Match the existing short, imperative commit line style (e.g., `Add MSDF fonts`, `Improve UI scaling`); keep subjects <= 72 chars.
