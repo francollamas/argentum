@@ -1,6 +1,8 @@
 import { tw } from '@pixi/layout/tailwind'
+import type { Container } from 'pixi.js'
+import { NineSliceSprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
@@ -22,20 +24,23 @@ type ButtonStyleConfig = {
 	fontType: 'button' | 'buttonSm'
 	paddingH: number
 	paddingV: number
+	minHeight: number
 }
 
 const BUTTON_STYLES: Record<ButtonVariant, ButtonStyleConfig> = {
 	normal: {
 		sliceSize: 14,
 		fontType: 'button',
-		paddingH: 16,
-		paddingV: 8,
+		paddingH: 14,
+		paddingV: 11,
+		minHeight: 45,
 	},
 	small: {
 		sliceSize: 14,
 		fontType: 'buttonSm',
-		paddingH: 12,
+		paddingH: 8,
 		paddingV: 6,
+		minHeight: 30,
 	},
 }
 
@@ -51,6 +56,7 @@ export const Button: FC<ButtonProps> = ({
 }) => {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
+	const containerRef = useRef<Container>(null)
 
 	const defaultTexture = useUITexture('button-main-normal')
 	const hoverTexture = useUITexture('button-main-hover')
@@ -66,12 +72,61 @@ export const Button: FC<ButtonProps> = ({
 				? hoverTexture
 				: defaultTexture
 
+	const bgSprite = useMemo(
+		() =>
+			new NineSliceSprite({
+				texture: defaultTexture,
+				leftWidth: style.sliceSize,
+				topHeight: style.sliceSize,
+				rightWidth: style.sliceSize,
+				bottomHeight: style.sliceSize,
+			}),
+		[defaultTexture, style.sliceSize],
+	)
+
+	useEffect(() => {
+		bgSprite.texture = currentTexture
+	}, [bgSprite, currentTexture])
+
+	const containerRefCallback = useCallback(
+		(node: Container | null) => {
+			const prev = containerRef.current
+
+			if (prev) {
+				prev.off('layout', onLayout)
+				if (bgSprite.parent === prev) {
+					prev.removeChild(bgSprite)
+				}
+			}
+
+			containerRef.current = node
+
+			if (node) {
+				node.addChildAt(bgSprite, 0)
+				node.on('layout', onLayout)
+			}
+
+			function onLayout() {
+				if (!node?.layout) return
+				const { width: cw, height: ch } = node.layout.computedLayout
+				const textureLogicalH = defaultTexture.height
+				const uniformScale = ch / textureLogicalH
+				bgSprite.width = cw / uniformScale
+				bgSprite.height = textureLogicalH
+				bgSprite.scale.set(uniformScale)
+			}
+		},
+		[bgSprite, defaultTexture],
+	)
+
 	return (
 		<layoutContainer
+			ref={containerRefCallback}
 			layout={{
 				...tw`items-center justify-center`,
 				...(width != null ? { width } : {}),
 				...(height != null ? { height } : {}),
+				minHeight: style.minHeight,
 				paddingLeft: style.paddingH,
 				paddingRight: style.paddingH,
 				paddingTop: style.paddingV,
@@ -94,18 +149,6 @@ export const Button: FC<ButtonProps> = ({
 				}
 			}}
 		>
-			<pixiNineSliceSprite
-				texture={currentTexture}
-				leftWidth={style.sliceSize}
-				topHeight={style.sliceSize}
-				rightWidth={style.sliceSize}
-				bottomHeight={style.sliceSize}
-				layout={{
-					position: 'absolute',
-					width: '100%',
-					height: '100%',
-				}}
-			/>
 			<pixiBitmapText
 				text={text}
 				style={{

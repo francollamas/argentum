@@ -40,6 +40,23 @@ async function generateSpritesheetFile(outputPath: string) {
 	await fs.promises.writeFile(spritesheetsFilePath, texMap)
 }
 
+async function patchSpritesheetResolution(
+	outputPath: string,
+	resolution: number,
+) {
+	const files = await fs.promises.readdir(outputPath)
+	const jsonFiles = files.filter(
+		(file) => file.endsWith('.json') && file !== 'spritesheets.json',
+	)
+
+	for (const jsonFile of jsonFiles) {
+		const jsonPath = path.join(outputPath, jsonFile)
+		const data = await loadJSON<{ meta: { scale: number } }>(jsonPath)
+		data.meta.scale = resolution
+		await fs.promises.writeFile(jsonPath, JSON.stringify(data, null, 2))
+	}
+}
+
 export async function generateUITextures() {
 	const texPackerPath = path.join(__dirname, '../../tools/texpacker')
 	const svgInputPath = path.join(texPackerPath, 'ui')
@@ -58,7 +75,7 @@ export async function generateUITextures() {
 			const outputFile = svgFile.replace('.svg', '.png')
 			const outputFilePath = path.join(pngTempPath, outputFile)
 
-			await sharp(inputPath, { density: 72 }).png().toFile(outputFilePath)
+			await sharp(inputPath, { density: 144 }).png().toFile(outputFilePath)
 		}
 
 		const projectPath = path.join(texPackerPath, 'ui.ftpp')
@@ -73,6 +90,7 @@ export async function generateUITextures() {
 			`npx free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
 		)
 
+		await patchSpritesheetResolution(outputPath, 2)
 		await generateSpritesheetFile(outputPath)
 	} finally {
 		await fs.promises.unlink(tempProjectPath).catch(() => {})
