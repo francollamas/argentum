@@ -1,9 +1,8 @@
 import { tw } from '@pixi/layout/tailwind'
-import type { Container } from 'pixi.js'
-import { NineSliceSprite } from 'pixi.js'
 import type { FC } from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FONTS } from '../../config/typography'
+import { useNineSliceBackground } from '../../hooks/useNineSliceBackground'
 import { useUITexture } from '../../hooks/useUITexture'
 
 type ButtonVariant = 'normal' | 'small'
@@ -56,7 +55,6 @@ export const Button: FC<ButtonProps> = ({
 }) => {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
-	const containerRef = useRef<Container>(null)
 
 	const defaultTexture = useUITexture('button-main-normal')
 	const hoverTexture = useUITexture('button-main-hover')
@@ -72,52 +70,14 @@ export const Button: FC<ButtonProps> = ({
 				? hoverTexture
 				: defaultTexture
 
-	const bgSprite = useMemo(
-		() =>
-			new NineSliceSprite({
-				texture: defaultTexture,
-				leftWidth: style.sliceSize,
-				topHeight: style.sliceSize,
-				rightWidth: style.sliceSize,
-				bottomHeight: style.sliceSize,
-			}),
-		[defaultTexture, style.sliceSize],
-	)
+	const { containerRefCallback, setTexture } = useNineSliceBackground({
+		texture: defaultTexture,
+		sliceSize: style.sliceSize,
+	})
 
 	useEffect(() => {
-		bgSprite.texture = currentTexture
-	}, [bgSprite, currentTexture])
-
-	const containerRefCallback = useCallback(
-		(node: Container | null) => {
-			const prev = containerRef.current
-
-			if (prev) {
-				prev.off('layout', onLayout)
-				if (bgSprite.parent === prev) {
-					prev.removeChild(bgSprite)
-				}
-			}
-
-			containerRef.current = node
-
-			if (node) {
-				node.addChildAt(bgSprite, 0)
-				node.on('layout', onLayout)
-			}
-
-			function onLayout() {
-				if (!node?.layout) return
-				const { width: cw, height: ch } = node.layout.computedLayout
-				const textureLogicalH = defaultTexture.height
-				const uniformScale = ch / textureLogicalH
-				bgSprite.width = cw / uniformScale
-				bgSprite.height = textureLogicalH
-				bgSprite.scale.set(uniformScale)
-			}
-		},
-		[bgSprite, defaultTexture],
-	)
+		setTexture(currentTexture)
+	}, [currentTexture, setTexture])
 
 	return (
 		<layoutContainer
