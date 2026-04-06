@@ -1,8 +1,4 @@
-import { extend } from '@pixi/react'
-import { BitmapText } from 'pixi.js'
 import type { FC, JSX } from 'react'
-
-extend({ BitmapText })
 
 type TextProps = {
 	text: string

@@ -1,9 +1,5 @@
-import { extend } from '@pixi/react'
-import { Graphics } from 'pixi.js'
 import type { FC } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
-
-extend({ Graphics })
 
 type BlockedTileIndicatorProps = {
 	pixelX: number

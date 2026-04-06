@@ -1,11 +1,8 @@
-import { extend } from '@pixi/react'
-import { BitmapText, Graphics, Sprite } from 'pixi.js'
+import type { Graphics } from 'pixi.js'
 import type { FC } from 'react'
 import { useCallback } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
-
-extend({ Sprite, BitmapText, Graphics })
 
 type SwitchProps = {
 	x?: number
@@ -29,7 +26,7 @@ export const Switch: FC<SwitchProps> = ({
 	const offTexture = useUITexture('switch-off')
 	const onTexture = useUITexture('switch-on')
 
-	const fontConfig = FONTS.checkbox
+	const fontConfig = FONTS.label
 	const texture = enabled ? onTexture : offTexture
 
 	const handleToggle = () => onChange?.(!enabled)

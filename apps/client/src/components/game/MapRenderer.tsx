@@ -1,5 +1,4 @@
-import { extend } from '@pixi/react'
-import { Container } from 'pixi.js'
+import type { Container } from 'pixi.js'
 import type { FC } from 'react'
 import { useRef } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
@@ -8,8 +7,6 @@ import { useRoofAnimation } from '../../hooks/useRoofAnimation'
 import type { GameMap } from '../../types/map'
 import { calculateViewportBounds } from '../../utils/viewport'
 import { MapLayerRenderer } from './MapTileRenderer'
-
-extend({ Container })
 
 type MapRendererProps = {
 	map: GameMap

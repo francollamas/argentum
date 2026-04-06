@@ -1,9 +1,5 @@
-import { extend } from '@pixi/react'
-import { BitmapText } from 'pixi.js'
 import type { FC } from 'react'
 import { FONTS, type FontType } from '../../config/typography'
-
-extend({ BitmapText })
 
 type LabelProps = {
 	text: string
@@ -18,7 +14,7 @@ export const Label: FC<LabelProps> = ({
 	text,
 	x,
 	y,
-	font = 'general',
+	font = 'body',
 	color = 0xffffff,
 	anchor = { x: 0, y: 0 },
 }) => {

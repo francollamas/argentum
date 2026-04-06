@@ -1,11 +1,8 @@
-import { extend } from '@pixi/react'
-import { BitmapText, Container, NineSliceSprite } from 'pixi.js'
+import { BitmapText } from 'pixi.js'
 import type { FC } from 'react'
 import { useMemo, useState } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
-
-extend({ Container, NineSliceSprite, BitmapText })
 
 type ButtonVariant = 'normal' | 'small'
 
@@ -23,7 +20,7 @@ type ButtonProps = {
 type ButtonStyleConfig = {
 	scale: number
 	sliceSize: number
-	fontType: 'button' | 'buttonSmall'
+	fontType: 'button' | 'buttonSm'
 	paddingH: number
 	paddingV: number
 }
@@ -39,7 +36,7 @@ const BUTTON_STYLES: Record<ButtonVariant, ButtonStyleConfig> = {
 	small: {
 		scale: 0.3,
 		sliceSize: 14,
-		fontType: 'buttonSmall',
+		fontType: 'buttonSm',
 		paddingH: 25,
 		paddingV: 20,
 	},

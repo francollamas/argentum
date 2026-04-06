@@ -1,17 +1,11 @@
 import { initDevtools } from '@pixi/devtools'
-import { LayoutContainer } from '@pixi/layout/components'
-import { extend, useApplication } from '@pixi/react'
-import { Container } from 'pixi.js'
+import { useApplication } from '@pixi/react'
 import type { FC } from 'react'
-// import { GameView } from '../components/game/GameView'
+import { useEffect } from 'react'
 import { LayoutResizer } from '../components/layout'
-// import { MainScreen } from '../components/screens/MainScreen'
-import { LayoutDemoScreen } from '../components/screens/LayoutDemoScreen'
+import { DemoHubScreen } from '../components/screens/DemoHubScreen'
 import { useResources } from '../hooks/useResources'
 import '@pixi/layout/devtools'
-import { useEffect } from 'react'
-
-extend({ Container, LayoutContainer })
 
 const App: FC = () => {
 	const { app } = useApplication()
@@ -28,9 +22,7 @@ const App: FC = () => {
 
 	return (
 		<LayoutResizer>
-			{/* <GameView mapNumber={60} /> */}
-			{/* <MainScreen /> */}
-			<LayoutDemoScreen />
+			<DemoHubScreen />
 		</LayoutResizer>
 	)
 }

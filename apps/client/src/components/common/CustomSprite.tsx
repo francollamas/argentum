@@ -1,11 +1,8 @@
-import { extend } from '@pixi/react'
-import { AnimatedSprite, Sprite, type Texture } from 'pixi.js'
+import type { AnimatedSprite, Texture } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useSprite } from '../../hooks/useSprite'
-
-extend({ Sprite, AnimatedSprite })
 
 type CustomSpriteProps = {
 	id: string

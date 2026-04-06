@@ -1,11 +1,8 @@
-import { extend, useApplication } from '@pixi/react'
-import { NineSliceSprite } from 'pixi.js'
+import { useApplication } from '@pixi/react'
 import type { FC } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
-
-extend({ NineSliceSprite })
 
 type InputProps = {
 	x?: number
@@ -44,7 +41,7 @@ export const Input: FC<InputProps> = ({
 	const [internalValue, setInternalValue] = useState(value)
 
 	const inputTexture = useUITexture('input-field')
-	const fontConfig = FONTS.general
+	const fontConfig = FONTS.body
 
 	// Keep callback refs fresh without triggering DOM re-creation
 	onChangeRef.current = onChange

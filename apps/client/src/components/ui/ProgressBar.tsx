@@ -1,10 +1,6 @@
-import { extend } from '@pixi/react'
-import { NineSliceSprite } from 'pixi.js'
 import type { FC } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Label } from './Label'
-
-extend({ NineSliceSprite })
 
 type ProgressBarTextVariant = 'amount' | 'percentage'
 

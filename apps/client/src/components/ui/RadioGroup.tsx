@@ -1,10 +1,6 @@
-import { extend } from '@pixi/react'
-import { BitmapText, Sprite } from 'pixi.js'
 import type { FC } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
-
-extend({ Sprite, BitmapText })
 
 type RadioGroupItem = {
 	text: string
@@ -34,7 +30,7 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 	const uncheckedTexture = useUITexture('radio-unchecked')
 	const checkedTexture = useUITexture('radio-checked')
 
-	const fontConfig = FONTS.checkbox
+	const fontConfig = FONTS.label
 	const iconW = uncheckedTexture.width
 	const iconH = uncheckedTexture.height
 	const itemH = Math.max(iconH, fontConfig.fontSize)

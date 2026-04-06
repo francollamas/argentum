@@ -1,11 +1,7 @@
-import { extend } from '@pixi/react'
-import { BitmapText } from 'pixi.js'
 import type { FC } from 'react'
 import { GAME_CONSTANTS } from '../../constants/game'
 import { useFPS } from '../../hooks/useFPS'
 import { Text } from '../common/Text'
-
-extend({ BitmapText })
 
 export const FPSCounter: FC = () => {
 	const fps = useFPS()

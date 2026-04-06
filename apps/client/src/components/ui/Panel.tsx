@@ -1,9 +1,5 @@
-import { extend } from '@pixi/react'
-import { NineSliceSprite } from 'pixi.js'
 import type { FC, ReactNode } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
-
-extend({ NineSliceSprite })
 
 type PanelProps = {
 	children?: ReactNode

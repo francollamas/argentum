@@ -1,41 +1,54 @@
 export type FontType =
-	| 'button'
-	| 'buttonSmall'
+	| 'titleLg'
 	| 'title'
-	| 'general'
-	| 'checkbox'
+	| 'titleSm'
+	| 'body'
+	| 'bodySm'
+	| 'label'
+	| 'labelSm'
+	| 'button'
+	| 'buttonSm'
 
 type FontConfig = {
 	fontFamily: string
 	fontSize: number
-	/** Visual cap height of the glyph in pixels (used for vertical centering calculations). */
-	capHeight: number
 }
 
 export const FONTS: Record<FontType, FontConfig> = {
-	button: {
-		fontFamily: 'medievalsharp-regular',
-		fontSize: 36,
-		capHeight: 26,
-	},
-	buttonSmall: {
-		fontFamily: 'medievalsharp-regular',
-		fontSize: 30,
-		capHeight: 22,
+	titleLg: {
+		fontFamily: 'opensans-regular',
+		fontSize: 48,
 	},
 	title: {
 		fontFamily: 'opensans-regular',
-		fontSize: 48,
-		capHeight: 35,
-	},
-	general: {
-		fontFamily: 'crimsomtext-regular',
 		fontSize: 36,
-		capHeight: 26,
 	},
-	checkbox: {
+	titleSm: {
+		fontFamily: 'opensans-regular',
+		fontSize: 24,
+	},
+	body: {
 		fontFamily: 'crimsomtext-regular',
-		fontSize: 36,
-		capHeight: 26,
+		fontSize: 18,
+	},
+	bodySm: {
+		fontFamily: 'crimsomtext-regular',
+		fontSize: 14,
+	},
+	label: {
+		fontFamily: 'crimsomtext-regular',
+		fontSize: 16,
+	},
+	labelSm: {
+		fontFamily: 'crimsomtext-regular',
+		fontSize: 12,
+	},
+	button: {
+		fontFamily: 'medievalsharp-regular',
+		fontSize: 18,
+	},
+	buttonSm: {
+		fontFamily: 'medievalsharp-regular',
+		fontSize: 14,
 	},
 }

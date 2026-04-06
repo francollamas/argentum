@@ -1,5 +1,3 @@
-import { extend } from '@pixi/react'
-import { BitmapText, Container } from 'pixi.js'
 import type { FC } from 'react'
 import { DEBUG_CONFIG } from '../../config/debug'
 import { useDebugVisibleTiles } from '../../hooks/useDebugVisibleTiles'
@@ -9,8 +7,6 @@ import { Text } from '../common/Text'
 import { BlockedTileIndicator } from './BlockedTileIndicator'
 import { PlayerPositionIndicator } from './PlayerPositionIndicator'
 import { TriggerNumberDisplay } from './TriggerNumberDisplay'
-
-extend({ Container, BitmapText })
 
 type DebugOverlayProps = {
 	map: GameMap

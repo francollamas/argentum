@@ -1,11 +1,8 @@
-import { extend } from '@pixi/react'
-import { BitmapText, Graphics, Sprite } from 'pixi.js'
+import type { Graphics } from 'pixi.js'
 import type { FC } from 'react'
 import { useCallback } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
-
-extend({ Sprite, BitmapText, Graphics })
 
 type CheckBoxVariant = 'normal' | 'radio'
 
@@ -34,7 +31,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
 	const uncheckedTexture = useUITexture(`${prefix}-unchecked`)
 	const checkedTexture = useUITexture(`${prefix}-checked`)
 
-	const fontConfig = FONTS.checkbox
+	const fontConfig = FONTS.label
 	const texture = checked ? checkedTexture : uncheckedTexture
 
 	const handleToggle = () => onChange?.(!checked)

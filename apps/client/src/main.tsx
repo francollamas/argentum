@@ -1,11 +1,13 @@
+import '@pixi/layout'
+import '@pixi/layout/react'
+import './config/pixiExtensions'
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './app/App.js'
 import './index.css'
 import { Application } from '@pixi/react'
 import { logger } from './utils/logger'
-import '@pixi/layout/react'
-import '@pixi/layout'
 
 // Capturar errores JavaScript y loguearlos
 window.addEventListener('error', (event) => {
