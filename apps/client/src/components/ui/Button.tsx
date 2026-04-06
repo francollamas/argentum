@@ -1,6 +1,6 @@
-import { BitmapText } from 'pixi.js'
+import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
 
@@ -8,17 +8,16 @@ type ButtonVariant = 'normal' | 'small'
 
 type ButtonProps = {
 	text: string
-	x?: number
-	y?: number
 	width?: number
 	height?: number
 	onPress?: () => void
 	textColor?: number
 	variant?: ButtonVariant
+	disabled?: boolean
+	layoutStyle?: Record<string, unknown>
 }
 
 type ButtonStyleConfig = {
-	scale: number
 	sliceSize: number
 	fontType: 'button' | 'buttonSm'
 	paddingH: number
@@ -27,30 +26,28 @@ type ButtonStyleConfig = {
 
 const BUTTON_STYLES: Record<ButtonVariant, ButtonStyleConfig> = {
 	normal: {
-		scale: 0.45,
 		sliceSize: 14,
 		fontType: 'button',
-		paddingH: 30,
-		paddingV: 25,
+		paddingH: 16,
+		paddingV: 8,
 	},
 	small: {
-		scale: 0.3,
 		sliceSize: 14,
 		fontType: 'buttonSm',
-		paddingH: 25,
-		paddingV: 20,
+		paddingH: 12,
+		paddingV: 6,
 	},
 }
 
 export const Button: FC<ButtonProps> = ({
 	text,
-	x,
-	y,
 	width,
 	height,
 	onPress,
 	textColor = 0xffffff,
 	variant = 'normal',
+	disabled = false,
+	layoutStyle,
 }) => {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
@@ -62,52 +59,28 @@ export const Button: FC<ButtonProps> = ({
 	const style = BUTTON_STYLES[variant]
 	const fontConfig = FONTS[style.fontType]
 
-	const { buttonWidth, buttonHeight, textX, textY } = useMemo(() => {
-		const tempText = new BitmapText({
-			text,
-			style: {
-				fontFamily: fontConfig.fontFamily,
-				fontSize: fontConfig.fontSize,
-			},
-		})
-
-		// width/height are in final (post-scale) pixels — convert to pre-scale space
-		const minWidthPreScale = width != null ? Math.ceil(width / style.scale) : 0
-		const minHeightPreScale =
-			height != null ? Math.ceil(height / style.scale) : 0
-
-		const buttonWidth = Math.max(
-			Math.ceil(tempText.width + style.paddingH * 2),
-			minWidthPreScale,
-		)
-		const buttonHeight = Math.max(
-			defaultTexture.height,
-			Math.ceil(tempText.height + style.paddingV * 2),
-			minHeightPreScale,
-		)
-
-		// Center text manually — avoids depending on flexbox + scale interaction
-		const textX = Math.round((buttonWidth - tempText.width) / 2)
-		const textY = Math.round((buttonHeight - tempText.height) / 2)
-
-		tempText.destroy()
-
-		return { buttonWidth, buttonHeight, textX, textY }
-	}, [text, fontConfig, defaultTexture, style, width, height])
-
-	const currentTexture = isPressed
-		? pressedTexture
-		: isHovered
-			? hoverTexture
-			: defaultTexture
+	const currentTexture =
+		disabled || isPressed
+			? pressedTexture
+			: isHovered
+				? hoverTexture
+				: defaultTexture
 
 	return (
-		<pixiContainer
-			x={x}
-			y={y}
-			scale={style.scale}
-			eventMode='static'
-			cursor='pointer'
+		<layoutContainer
+			layout={{
+				...tw`items-center justify-center`,
+				...(width != null ? { width } : {}),
+				...(height != null ? { height } : {}),
+				paddingLeft: style.paddingH,
+				paddingRight: style.paddingH,
+				paddingTop: style.paddingV,
+				paddingBottom: style.paddingV,
+				...layoutStyle,
+			}}
+			eventMode={disabled ? 'none' : 'static'}
+			cursor={disabled ? 'default' : 'pointer'}
+			alpha={disabled ? 0.5 : 1}
 			onPointerOver={() => setIsHovered(true)}
 			onPointerOut={() => {
 				setIsHovered(false)
@@ -120,10 +93,6 @@ export const Button: FC<ButtonProps> = ({
 					onPress()
 				}
 			}}
-			layout={{
-				width: buttonWidth,
-				height: buttonHeight,
-			}}
 		>
 			<pixiNineSliceSprite
 				texture={currentTexture}
@@ -131,20 +100,26 @@ export const Button: FC<ButtonProps> = ({
 				topHeight={style.sliceSize}
 				rightWidth={style.sliceSize}
 				bottomHeight={style.sliceSize}
-				width={buttonWidth}
-				height={buttonHeight}
+				layout={{
+					position: 'absolute',
+					width: '100%',
+					height: '100%',
+				}}
 			/>
 			<pixiBitmapText
-				x={textX}
-				y={textY}
 				text={text}
 				style={{
 					fontFamily: fontConfig.fontFamily,
 					fontSize: fontConfig.fontSize,
 					fill: textColor,
 				}}
+				layout={{
+					width: 'intrinsic',
+					height: 'intrinsic',
+					flexShrink: 0,
+				}}
 				roundPixels
 			/>
-		</pixiContainer>
+		</layoutContainer>
 	)
 }

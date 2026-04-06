@@ -124,7 +124,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 2: Button
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Remove `scale`-based sizing entirely. Button renders at actual pixel size.

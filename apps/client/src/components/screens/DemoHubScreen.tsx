@@ -2,6 +2,7 @@ import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { Colors } from '../ui'
+import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
 
 type DemoScreen = {
@@ -12,7 +13,7 @@ type DemoScreen = {
 const DEMOS: DemoScreen[] = [
 	{ label: 'Label', component: LabelDemoScreen },
 	{ label: 'Panel', component: null },
-	{ label: 'Button', component: null },
+	{ label: 'Button', component: ButtonDemoScreen },
 	{ label: 'CheckBox', component: null },
 	{ label: 'Switch', component: null },
 	{ label: 'RadioGroup', component: null },
