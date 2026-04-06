@@ -1,6 +1,6 @@
 import type { FC } from 'react'
+import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
-import { Label } from './Label'
 
 type ProgressBarTextVariant = 'amount' | 'percentage'
 
@@ -90,22 +90,31 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 					tint={fillColor}
 				/>
 			)}
+			{/* TODO: Refactor in Step 7 — using raw pixiBitmapText with manual positioning for now */}
 			{label && (
-				<Label
+				<pixiBitmapText
 					text={label}
 					x={8}
 					y={height / 2}
 					anchor={{ x: 0, y: 0.5 }}
-					color={labelColor}
+					style={{
+						fontFamily: FONTS.label.fontFamily,
+						fontSize: FONTS.label.fontSize,
+						fill: labelColor,
+					}}
 				/>
 			)}
 			{valueText && (
-				<Label
+				<pixiBitmapText
 					text={valueText}
 					x={width / 2}
 					y={height / 2}
 					anchor={{ x: 0.5, y: 0.5 }}
-					color={textColor}
+					style={{
+						fontFamily: FONTS.body.fontFamily,
+						fontSize: FONTS.body.fontSize,
+						fill: textColor,
+					}}
 				/>
 			)}
 		</pixiContainer>

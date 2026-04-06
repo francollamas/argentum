@@ -3,30 +3,28 @@ import { FONTS, type FontType } from '../../config/typography'
 
 type LabelProps = {
 	text: string
-	x?: number
-	y?: number
 	font?: FontType
 	color?: number
-	anchor?: { x: number; y: number }
+	layoutStyle?: Record<string, unknown>
 }
 
 export const Label: FC<LabelProps> = ({
 	text,
-	x,
-	y,
 	font = 'body',
 	color = 0xffffff,
-	anchor = { x: 0, y: 0 },
+	layoutStyle,
 }) => {
 	const fontConfig = FONTS[font]
 
 	return (
 		<pixiBitmapText
 			text={text}
-			x={x}
-			y={y}
-			anchor={anchor}
-			layout={{ width: 'intrinsic', height: 'intrinsic' }}
+			layout={{
+				width: 'intrinsic',
+				height: 'intrinsic',
+				flexShrink: 0,
+				...layoutStyle,
+			}}
 			style={{
 				fontFamily: fontConfig.fontFamily,
 				fontSize: fontConfig.fontSize,

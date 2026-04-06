@@ -28,6 +28,30 @@ Refactor all existing UI components and build new ones so that:
   - `pixi-react` — generating components, sprites, graphics, text, and interactive elements with `@pixi/react`
   - `pixi-layout` — building flexbox UI layouts with `@pixi/layout` inside PixiJS. **Load these skills at the start of each session.**
 
+## Viewport & Scaling Strategy
+
+The client uses an **Adaptive / Expand Viewport** — no fixed design resolution, no letterboxing, no stretching.
+
+- **Application**: `resizeTo={window}`, `resolution={window.devicePixelRatio}`, `autoDensity={true}`. The canvas fills the window. Coordinates are in CSS pixels.
+- **LayoutResizer**: Sets the root layout container to `app.screen.width` x `app.screen.height` (actual screen dimensions). On resize, updates layout dimensions. No scaling is applied.
+- **UI components**: Use `@pixi/layout` flexbox to adapt to available space. Panels anchor to edges (top-left, bottom-center, etc.), content centers. Text stays at fixed pixel size — **never scales**.
+- **Game world** (future): Expandable viewport — camera centered on player, more tiles visible on bigger screens. Separate container from UI overlay. The game world can have its own scale for tile rendering.
+
+### Text scaling rule
+
+`@pixi/layout` defaults text to `flexShrink: 1` + `objectFit: 'scale-down'`, which causes text to shrink when the parent container is too small. **All text nodes must use `flexShrink: 0`** to prevent unwanted scaling. If text overflows, the parent container handles it (`overflow: 'hidden'` or `overflow: 'scroll'`).
+
+### Layer architecture (target)
+
+```
+Stage (no layout)
+  └── LayoutResizer (layout root, actual screen dimensions)
+        ├── WorldContainer (map, camera, tiles) — expandable, own scale
+        └── UIOverlay (HUD, anchored to edges via flex)
+```
+
+Non-game screens (login, character creation, etc.) replace the WorldContainer with their own centered layout content.
+
 ---
 
 ## Demo Screen Architecture
@@ -465,6 +489,74 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 10. Mark step status as `done` in this file.
 11. Move to next step (or end session if context is getting large).
 
+## Layout Considerations
+
+These guidelines apply to all steps and demo screens. They complement the Component API Principles below.
+
+### Spacing: prefer `gap` on parent containers over `margin` on children
+
+When elements need spacing between them, the parent container should define it via `gap` — not each child via `margin`. This keeps spacing decisions in one place and makes the layout predictable.
+
+**Do this** — parent owns the rhythm:
+```tsx
+<layoutContainer layout={tw`flex-col gap-6`}>
+  <SectionA />
+  <SectionB />
+  <SectionC />
+</layoutContainer>
+```
+
+**Avoid this** — children managing their own spacing:
+```tsx
+<layoutContainer layout={tw`flex-col`}>
+  <SectionA />
+  <SectionB layoutStyle={{ marginTop: 16 }} />
+  <SectionC layoutStyle={{ marginTop: 16 }} />
+</layoutContainer>
+```
+
+When spacing is **not uniform** (e.g., sections need more separation than items within a section), group related elements into sub-containers, each with its own `gap`, and use the parent's `gap` for inter-section spacing:
+
+```tsx
+<layoutContainer layout={tw`flex-col gap-6`}>       {/* between sections */}
+  <layoutContainer layout={tw`flex-col gap-3`}>      {/* within section */}
+    <Label text="Section Title" font="titleSm" />
+    <Label text="Item 1" font="body" />
+    <Label text="Item 2" font="body" />
+  </layoutContainer>
+  <layoutContainer layout={tw`flex-col gap-3`}>
+    <Label text="Another Section" font="titleSm" />
+    <Label text="Item A" font="body" />
+  </layoutContainer>
+</layoutContainer>
+```
+
+### Child self-alignment: `alignSelf` is fine on the child
+
+`alignSelf` is part of the flexbox spec — it exists for a child to override the parent's `alignItems` as an exception. This is not a hack; it's idiomatic flexbox. No need to wrap in a container just for alignment.
+
+```tsx
+<layoutContainer layout={tw`flex-col items-start`}>
+  <Label text="Left" font="body" />
+  <Label text="Centered" font="body" layoutStyle={{ alignSelf: 'center' }} />
+</layoutContainer>
+```
+
+### Intrinsic size props: `width`/`height` on children are fine
+
+When a child has a specific intrinsic size requirement (e.g., a fixed-width label column in a table-like row, or a color swatch square), setting `width`/`height` directly on the child is correct. No wrapper needed — it's a property of the element, not of the surrounding layout.
+
+### Rule of thumb
+
+| What you need | Who decides | How |
+|---------------|-------------|-----|
+| Spacing between siblings | Parent container | `gap` |
+| Non-uniform section spacing | Parent + sub-containers | Nested `gap` at different levels |
+| One child aligned differently | The child itself | `alignSelf` |
+| Fixed size of an element | The element itself | `width` / `height` in layout |
+
+---
+
 ## Component API Principles
 
 These rules apply to ALL UI components going forward:
@@ -479,3 +571,4 @@ These rules apply to ALL UI components going forward:
 - **Fonts via typography variants** — no raw font sizes in components, always reference a variant name.
 - **Colors via `Colors` object** — centralized palette in `src/components/ui/colors.ts`.
 - **NineSliceSprite backgrounds** use `position: 'absolute'`, `width: '100%'`, `height: '100%'` inside a layout container.
+- **`flexShrink: 0` on all text nodes** — prevents text from scaling down when parent containers shrink. Text must always render at its intended pixel size.
