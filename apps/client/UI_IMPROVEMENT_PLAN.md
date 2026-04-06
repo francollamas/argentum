@@ -104,7 +104,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 1: Label
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Remove `anchor` prop (ignored by layout). Use layout alignment from parent instead.
@@ -123,30 +123,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 2: Panel
-**Status**: `pending`
-
-**What**:
-- Panel becomes a **flex layout container** with NineSliceSprite background.
-- NineSliceSprite is positioned with `position: 'absolute'` inside the layout container, filling the full area (`width: '100%'`, `height: '100%'`).
-- Panel accepts layout-related props: `padding`, `gap`, `flexDirection` (defaulting to `column`, `padding: 16`, `gap: 8`).
-- Also accepts `width` and `height` (number or string like `'auto'`).
-- Children are direct flex children — **no need for inner `layoutContainer` wrapper** in consumers.
-- The root element should be a `layoutContainer` (not `pixiContainer`) so it can participate in layout properly.
-
-**API after refactor**:
-```tsx
-<Panel padding={16} gap={8} flexDirection="column" width={300}>
-  <Label text="Title" font="title" />
-  <Label text="Content goes here" font="body" />
-</Panel>
-```
-
-**Verify**: Create `src/components/screens/demos/PanelDemoScreen.tsx`. Show Panels with various configurations: different padding/gap, column vs row, auto-height vs fixed, nested panels. Add button to DemoHub. Screenshot review with user.
-
----
-
-### Step 3: Button
+### Step 2: Button
 **Status**: `pending`
 
 **What**:
@@ -170,7 +147,56 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 4: CheckBox
+### Step 3: Panel
+**Status**: `pending`
+
+**What**:
+- Panel becomes a **flex layout container** with NineSliceSprite background.
+- NineSliceSprite is positioned with `position: 'absolute'` inside the layout container, filling the full area (`width: '100%'`, `height: '100%'`).
+- Panel accepts layout-related props: `padding`, `gap`, `flexDirection` (defaulting to `column`, `padding: 16`, `gap: 8`).
+- Also accepts `width` and `height` (number or string like `'auto'`).
+- Children are direct flex children — **no need for inner `layoutContainer` wrapper** in consumers.
+- The root element should be a `layoutContainer` (not `pixiContainer`) so it can participate in layout properly.
+
+**API after refactor**:
+```tsx
+<Panel padding={16} gap={8} flexDirection="column" width={300}>
+  <Label text="Title" font="title" />
+  <Label text="Content goes here" font="body" />
+</Panel>
+```
+
+**Verify**: Create `src/components/screens/demos/PanelDemoScreen.tsx`. Show Panels with various configurations: different padding/gap, column vs row, auto-height vs fixed, nested panels. **Include Buttons inside panels** to verify Button works correctly as a Panel child. Add button to DemoHub. Screenshot review with user.
+
+---
+
+### Step 4: Update DemoHubScreen with new components
+**Status**: `pending`
+
+**What**:
+- Refactor `DemoHubScreen.tsx` to use the refactored components (Label, Button, Panel) instead of raw `pixiBitmapText` and `layoutContainer` hacks.
+- Title and subtitle should use `<Label>` with appropriate font variants and colors.
+- The demo list buttons should use `<Button>` components instead of manually styled `layoutContainer` boxes with `pixiBitmapText`.
+- Group the button grid inside a `<Panel>` to showcase Panel as a layout container.
+- Keep the same routing logic (useState with screen name), just replace the rendering primitives with proper UI components.
+- Disabled/unavailable demos (component: null) should render as visually distinct Buttons (e.g., different tint or a `disabled` prop if Button supports it, otherwise a muted color Label fallback).
+
+**API example**:
+```tsx
+<Label text="UI Component Demos" font="title" color={Colors.gold} />
+<Label text="Select a component to test" font="body" color={Colors.silver} />
+<Panel padding={16} gap={8} flexDirection="row" flexWrap="wrap" width="80%">
+  {DEMOS.map(demo => (
+    <Button key={demo.label} text={demo.label} onPress={() => setActiveDemo(demo.label)} />
+  ))}
+</Panel>
+```
+
+**Verify**: DemoHub renders using Label, Button, and Panel. All demo navigation still works. Visual review with user. `pnpm linter-check` passes.
+
+---
+
+### Step 5: CheckBox
 **Status**: `pending`
 
 **What**:
@@ -191,7 +217,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 5: Switch
+### Step 6: Switch
 **Status**: `pending`
 
 **What**:
@@ -209,7 +235,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 6: RadioGroup
+### Step 7: RadioGroup
 **Status**: `pending`
 
 **What**:
@@ -234,7 +260,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 7: ProgressBar
+### Step 8: ProgressBar
 **Status**: `pending`
 
 **What**:
@@ -254,7 +280,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 8: Input
+### Step 9: Input
 **Status**: `pending`
 
 **What**:
@@ -276,7 +302,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 9: Divider (NEW)
+### Step 10: Divider (NEW)
 **Status**: `pending`
 
 **What**:
@@ -294,7 +320,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 10: Slider (NEW)
+### Step 11: Slider (NEW)
 **Status**: `pending`
 
 **What**:
@@ -313,7 +339,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 11: IconButton (NEW)
+### Step 12: IconButton (NEW)
 **Status**: `pending`
 
 **What**:
@@ -331,7 +357,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 12: TabBar (NEW)
+### Step 13: TabBar (NEW)
 **Status**: `pending`
 
 **What**:
@@ -353,7 +379,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 13: ScrollView (NEW)
+### Step 14: ScrollView (NEW)
 **Status**: `pending`
 
 **What**:
@@ -373,7 +399,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 14: Dropdown/Select (NEW)
+### Step 15: Dropdown/Select (NEW)
 **Status**: `pending`
 
 **What**:
@@ -397,7 +423,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 15: Tooltip (NEW)
+### Step 16: Tooltip (NEW)
 **Status**: `pending`
 
 **What**:
@@ -418,7 +444,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 16: Dialog/Modal (NEW)
+### Step 17: Dialog/Modal (NEW)
 **Status**: `pending`
 
 **What**:
@@ -447,7 +473,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 17: Full Integration Demo
+### Step 18: Full Integration Demo
 **Status**: `pending`
 
 **What**:
@@ -461,7 +487,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 18: Final Cleanup
+### Step 19: Final Cleanup
 **Status**: `pending`
 
 **What**:
