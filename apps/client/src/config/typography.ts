@@ -16,39 +16,39 @@ type FontConfig = {
 
 export const FONTS: Record<FontType, FontConfig> = {
 	titleLg: {
-		fontFamily: 'opensans-regular',
+		fontFamily: 'spacegrotesk-regular',
 		fontSize: 48,
 	},
 	title: {
-		fontFamily: 'opensans-regular',
+		fontFamily: 'spacegrotesk-regular',
 		fontSize: 36,
 	},
 	titleSm: {
-		fontFamily: 'opensans-regular',
+		fontFamily: 'spacegrotesk-regular',
 		fontSize: 24,
 	},
 	body: {
-		fontFamily: 'crimsomtext-regular',
+		fontFamily: 'inter',
 		fontSize: 18,
 	},
 	bodySm: {
-		fontFamily: 'crimsomtext-regular',
+		fontFamily: 'inter',
 		fontSize: 14,
 	},
 	label: {
-		fontFamily: 'crimsomtext-regular',
+		fontFamily: 'inter',
 		fontSize: 16,
 	},
 	labelSm: {
-		fontFamily: 'crimsomtext-regular',
+		fontFamily: 'inter',
 		fontSize: 12,
 	},
 	button: {
-		fontFamily: 'medievalsharp-regular',
+		fontFamily: 'spacegrotesk-regular',
 		fontSize: 18,
 	},
 	buttonSm: {
-		fontFamily: 'medievalsharp-regular',
+		fontFamily: 'spacegrotesk-regular',
 		fontSize: 14,
 	},
 }

@@ -53,7 +53,7 @@ export const DemoHubScreen: FC = () => {
 			<pixiBitmapText
 				text='UI Component Demos'
 				style={{
-					fontFamily: 'opensans-regular',
+					fontFamily: 'inter',
 					fontSize: 36,
 					fill: Colors.gold,
 				}}
