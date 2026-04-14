@@ -46,9 +46,11 @@
 - Use `@pixi/layout` for UI layout (flexbox-style via Yoga) — it integrates directly with `@pixi/react`.
 - When using `extend()`, declare it inside the component rather than globally.
 - Follow existing component patterns before introducing new implementations.
-- Two agent skills exist for this stack and are strong candidates whenever building UI or game scenes:
+- For documentation lookups, do not search inside `.node_modules`; use the Context7 MCP instead.
+- Three agent skills exist for this stack and are strong candidates whenever building UI or game scenes:
   - **pixi-react** (`.agents/skills/pixi-react/`) — generating components, sprites, graphics, text, and interactive elements with `@pixi/react`
   - **pixi-layout** (`.agents/skills/pixi-layout/`) — building flexbox UI layouts with `@pixi/layout` inside PixiJS
+  - **pixi-doc-router** (`.agents/skills/pixi-doc-router/`) — routing PixiJS requests to the right local skill or official PixiJS docs before building custom solutions
 
 ## Component Architecture & Code Quality
 - Prefer small, reusable components and extract business logic into hooks or utilities; follow SOLID and composition over inheritance.
