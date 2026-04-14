@@ -3,7 +3,7 @@
 ## Document Status
 
 - Plan version: `v2`
-- Overall status: `pending`
+- Overall status: `review`
 - Last updated: `2026-04-14`
 - Owner: `apps/client`
 
@@ -311,19 +311,19 @@ Transition rules:
 
 | Step | Name | Status |
 |---|---|---|
-| 0 | Create shared viewport metrics model | `pending` |
-| 1 | Replace `LayoutResizer` with `ScreenRoot` | `pending` |
-| 2 | Introduce `UIScreen` and `ContentFrame` | `pending` |
-| 3 | Move `DemoHubScreen` to the new UI architecture | `pending` |
-| 4 | Add map demo entry and route shell | `pending` |
-| 5 | Build `GameMapDemoScreen` with explicit world/UI layers | `pending` |
-| 6 | Add initial responsive HUD | `pending` |
-| 7 | Replace fixed world viewport dimensions | `pending` |
-| 8 | Refactor camera centering and clamping | `pending` |
-| 9 | Make the map mask dynamic | `pending` |
-| 10 | Add programmatic world zoom | `pending` |
-| 11 | Make visible tile bounds depend on viewport and zoom | `pending` |
-| 12 | Tune padding and edge behavior | `pending` |
+| 0 | Create shared viewport metrics model | `done` |
+| 1 | Replace `LayoutResizer` with `ScreenRoot` | `done` |
+| 2 | Introduce `UIScreen` and `ContentFrame` | `done` |
+| 3 | Move `DemoHubScreen` to the new UI architecture | `done` |
+| 4 | Add map demo entry and route shell | `done` |
+| 5 | Build `GameMapDemoScreen` with explicit world/UI layers | `done` |
+| 6 | Add initial responsive HUD | `done` |
+| 7 | Replace fixed world viewport dimensions | `done` |
+| 8 | Refactor camera centering and clamping | `done` |
+| 9 | Make the map mask dynamic | `done` |
+| 10 | Add programmatic world zoom | `done` |
+| 11 | Make visible tile bounds depend on viewport and zoom | `done` |
+| 12 | Tune padding and edge behavior | `review` |
 | 13 | Final responsive verification pass | `pending` |
 
 ## Implementation Strategy
@@ -346,7 +346,7 @@ Default execution mode is autonomous.
 
 ## Step 0: Create Shared Viewport Metrics Model
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -408,7 +408,7 @@ Create one source of truth for screen, UI, and world viewport metrics.
 
 ## Step 1: Replace `LayoutResizer` with `ScreenRoot`
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -454,7 +454,7 @@ Replace the current root layout wrapper with a real full-screen root that syncs 
 
 ## Step 2: Introduce `UIScreen` and `ContentFrame`
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -497,7 +497,7 @@ Create the two UI layout primitives used by menu screens and HUD screens.
 
 ## Step 3: Move `DemoHubScreen` To The New UI Architecture
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -541,7 +541,7 @@ Create a consistent screen shell so `DemoHubScreen` becomes the first real consu
 
 ## Step 4: Add Map Demo Entry And Route Shell
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -580,7 +580,7 @@ Add deterministic navigation from the hub to a dedicated map demo route shell.
 
 ## Step 5: Build `GameMapDemoScreen` With Explicit World/UI Layers
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -635,7 +635,7 @@ UIScreen
 
 ## Step 6: Add Initial Responsive HUD
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -678,7 +678,7 @@ Validate full-screen UI overlay behavior with a small real HUD.
 
 ## Step 7: Replace Fixed World Viewport Dimensions
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -724,7 +724,7 @@ Remove active dependence on fixed viewport width and height in world rendering c
 
 ## Step 8: Refactor Camera Centering And Clamping
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -768,7 +768,7 @@ Keep camera behavior correct with dynamic viewport size.
 
 ## Step 9: Make The Map Mask Dynamic
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -805,7 +805,7 @@ Preserve clipping behavior while matching the real world viewport rectangle.
 
 ## Step 10: Add Programmatic World Zoom
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -851,7 +851,7 @@ Apply real world zoom without affecting UI layers.
 
 ## Step 11: Make Visible Tile Bounds Depend On Viewport And Zoom
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
@@ -896,7 +896,7 @@ Render the correct set of visible tiles for the current viewport and zoom.
 
 ## Step 12: Tune Padding And Edge Behavior
 
-**Status**: `pending`
+**Status**: `review`
 
 ### Goal
 

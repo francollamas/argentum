@@ -2,6 +2,7 @@ import type { FC } from 'react'
 import { DEBUG_CONFIG } from '../../config/debug'
 import { useDebugVisibleTiles } from '../../hooks/useDebugVisibleTiles'
 import { usePlayerPosition } from '../../hooks/usePlayer'
+import { useWorldViewportMetrics } from '../../store/viewportStore'
 import type { GameMap } from '../../types/map'
 import { Text } from '../common/Text'
 import { BlockedTileIndicator } from './BlockedTileIndicator'
@@ -25,6 +26,7 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 }) => {
 	const { tileX: playerTileX, tileY: playerTileY } = usePlayerPosition()
 	const visibleTiles = useDebugVisibleTiles(cameraX, cameraY, map)
+	const { worldZoom } = useWorldViewportMetrics()
 
 	return (
 		<pixiContainer>
@@ -69,8 +71,8 @@ export const DebugOverlay: FC<DebugOverlayProps> = ({
 					text={`[${playerTileX.toString().padStart(2, '0')} ; ${playerTileY
 						.toString()
 						.padStart(2, '0')}]`}
-					x={10 - cameraX}
-					y={10 - cameraY}
+					x={(10 - cameraX) / worldZoom}
+					y={(10 - cameraY) / worldZoom}
 					bold
 					border
 				/>

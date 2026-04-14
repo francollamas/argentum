@@ -13,16 +13,60 @@ export interface ViewportBounds {
 	viewportBottom: number
 }
 
+type VisibleWorldBoundsInput = {
+	cameraX: number
+	cameraY: number
+	viewportWidth: number
+	viewportHeight: number
+	worldZoom: number
+}
+
+type ViewportBoundsInput = VisibleWorldBoundsInput & {
+	map: GameMap
+	padding?: number
+}
+
+export const calculateVisibleWorldBounds = ({
+	cameraX,
+	cameraY,
+	viewportWidth,
+	viewportHeight,
+	worldZoom,
+}: VisibleWorldBoundsInput) => {
+	const safeZoom = worldZoom <= 0 ? 1 : worldZoom
+	const viewportLeft = -cameraX / safeZoom
+	const viewportTop = -cameraY / safeZoom
+	const viewportRight = viewportLeft + viewportWidth / safeZoom
+	const viewportBottom = viewportTop + viewportHeight / safeZoom
+
+	return {
+		viewportLeft,
+		viewportTop,
+		viewportRight,
+		viewportBottom,
+	}
+}
+
 export const calculateViewportBounds = (
-	cameraX: number,
-	cameraY: number,
-	map: GameMap,
-	padding: number = 0,
+	input: ViewportBoundsInput,
 ): ViewportBounds => {
-	const viewportLeft = -cameraX
-	const viewportTop = -cameraY
-	const viewportRight = viewportLeft + GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH
-	const viewportBottom = viewportTop + GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT
+	const {
+		cameraX,
+		cameraY,
+		map,
+		padding = 0,
+		viewportWidth,
+		viewportHeight,
+		worldZoom,
+	} = input
+	const { viewportLeft, viewportTop, viewportRight, viewportBottom } =
+		calculateVisibleWorldBounds({
+			cameraX,
+			cameraY,
+			viewportWidth,
+			viewportHeight,
+			worldZoom,
+		})
 
 	const startX = Math.max(
 		0,

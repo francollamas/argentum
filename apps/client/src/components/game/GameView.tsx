@@ -1,11 +1,13 @@
 import type { Container, Graphics } from 'pixi.js'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
-import { GAME_CONSTANTS } from '../../constants/game'
+import { DEBUG_MODE } from '../../config/debug'
 import { useMapLoader } from '../../hooks/useMapLoader'
 import { usePlayerMovement } from '../../hooks/usePlayerMovement'
 import { useSmoothCamera } from '../../hooks/useSmoothCamera'
-import { FPSCounter } from '../common/FPSCounter'
+import { useWorldViewportMetrics } from '../../store/viewportStore'
+import { DebugOverlay } from '../debug/DebugOverlay'
+import { MapRenderer } from './MapRenderer'
 
 type GameViewProps = {
 	mapNumber: number
@@ -17,7 +19,13 @@ type GameViewProps = {
  */
 export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 	const { map, loading, error } = useMapLoader(mapNumber)
-	const { cameraX, cameraY } = useSmoothCamera()
+	const { cameraX, cameraY, worldZoom } = useSmoothCamera(map || undefined)
+	const {
+		worldViewportHeight,
+		worldViewportWidth,
+		worldViewportX,
+		worldViewportY,
+	} = useWorldViewportMetrics()
 	usePlayerMovement({ map: map || undefined }) // Only need for side effects, not return values
 
 	const maskRef = useRef<Graphics>(null)
@@ -43,24 +51,27 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 				draw={(g) => {
 					g.clear()
 					g.rect(
-						0,
-						0,
-						GAME_CONSTANTS.VIEWPORT.DEFAULT_WIDTH,
-						GAME_CONSTANTS.VIEWPORT.DEFAULT_HEIGHT,
+						worldViewportX,
+						worldViewportY,
+						worldViewportWidth,
+						worldViewportHeight,
 					)
 					g.fill(0x000000)
 				}}
 			/>
 
 			{/* Game content with camera transform and mask applied */}
-			<pixiContainer ref={gameContainerRef} x={cameraX} y={cameraY}>
-				{/* 				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
+			<pixiContainer
+				ref={gameContainerRef}
+				x={cameraX}
+				y={cameraY}
+				scale={worldZoom}
+			>
+				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
 				{DEBUG_MODE && (
 					<DebugOverlay map={map} cameraX={cameraX} cameraY={cameraY} />
-				)} */}
+				)}
 			</pixiContainer>
-
-			<FPSCounter />
 		</pixiContainer>
 	)
 }

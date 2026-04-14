@@ -2,7 +2,7 @@ import { initDevtools } from '@pixi/devtools'
 import { useApplication } from '@pixi/react'
 import type { FC } from 'react'
 import { useEffect } from 'react'
-import { LayoutResizer } from '../components/layout'
+import { ScreenRoot } from '../components/layout'
 import { DemoHubScreen } from '../components/screens/DemoHubScreen'
 import { usePixelDensitySync } from '../hooks/usePixelDensitySync'
 import { useResources } from '../hooks/useResources'
@@ -23,9 +23,9 @@ const App: FC = () => {
 	}
 
 	return (
-		<LayoutResizer>
+		<ScreenRoot>
 			<DemoHubScreen />
-		</LayoutResizer>
+		</ScreenRoot>
 	)
 }
 

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useWorldViewportMetrics } from '../store/viewportStore'
 import type { GameMap } from '../types/map'
 import { arrayIndexToPixel, arrayIndexToWorldTile } from '../utils/coordinates'
 import { calculateViewportBounds } from '../utils/viewport'
@@ -28,7 +29,17 @@ export const useDebugVisibleTiles = (
 	map: GameMap,
 	padding: number = 2,
 ): DebugTileInfo[] => {
-	const bounds = calculateViewportBounds(cameraX, cameraY, map, padding)
+	const { worldViewportHeight, worldViewportWidth, worldZoom } =
+		useWorldViewportMetrics()
+	const bounds = calculateViewportBounds({
+		cameraX,
+		cameraY,
+		map,
+		padding,
+		viewportWidth: worldViewportWidth,
+		viewportHeight: worldViewportHeight,
+		worldZoom,
+	})
 
 	return useMemo(() => {
 		const tiles: DebugTileInfo[] = []

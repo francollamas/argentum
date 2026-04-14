@@ -9,7 +9,6 @@ export const ButtonDemoScreen: FC = () => {
 				...tw`flex-col items-center justify-center`,
 				width: '100%',
 				height: '100%',
-				backgroundColor: Colors.backgroundDark,
 				padding: 32,
 			}}
 		>
