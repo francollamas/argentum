@@ -3,7 +3,7 @@
 ## Document Status
 
 - Plan version: `v2`
-- Overall status: `review`
+- Overall status: `done`
 - Last updated: `2026-04-14`
 - Owner: `apps/client`
 
@@ -323,8 +323,8 @@ Transition rules:
 | 9 | Make the map mask dynamic | `done` |
 | 10 | Add programmatic world zoom | `done` |
 | 11 | Make visible tile bounds depend on viewport and zoom | `done` |
-| 12 | Tune padding and edge behavior | `review` |
-| 13 | Final responsive verification pass | `pending` |
+| 12 | Tune padding and edge behavior | `done` |
+| 13 | Final responsive verification pass | `done` |
 
 ## Implementation Strategy
 
@@ -896,7 +896,7 @@ Render the correct set of visible tiles for the current viewport and zoom.
 
 ## Step 12: Tune Padding And Edge Behavior
 
-**Status**: `review`
+**Status**: `done`
 
 ### Goal
 
@@ -935,7 +935,7 @@ Validate and adjust object padding and edge behavior only where real visual evid
 
 ## Step 13: Final Responsive Verification Pass
 
-**Status**: `pending`
+**Status**: `done`
 
 ### Goal
 
