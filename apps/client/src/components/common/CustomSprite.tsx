@@ -49,7 +49,7 @@ export const CustomSprite: FC<CustomSpriteProps> = ({
 			adjustedY = originalY - spriteHeight + GAME_CONSTANTS.TILE_SIZE
 		}
 
-		return { x: adjustedX, y: adjustedY }
+		return { x: Math.round(adjustedX), y: Math.round(adjustedY) }
 	}
 
 	if (textures.length === 1) {
@@ -64,6 +64,7 @@ export const CustomSprite: FC<CustomSpriteProps> = ({
 				{...props}
 				x={centeredPos.x}
 				y={centeredPos.y}
+				roundPixels
 			/>
 		)
 	}
@@ -81,6 +82,7 @@ export const CustomSprite: FC<CustomSpriteProps> = ({
 			{...props}
 			x={centeredPos.x}
 			y={centeredPos.y}
+			roundPixels
 		/>
 	)
 }

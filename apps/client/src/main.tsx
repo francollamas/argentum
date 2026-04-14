@@ -32,7 +32,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 			backgroundColor={0x000000}
 			resolution={window.devicePixelRatio}
 			autoDensity={true}
-			antialias={true}
+			antialias={false}
 			resizeTo={window}
 		>
 			<App />

@@ -40,7 +40,20 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 
 	// Don't render anything until map is fully loaded
 	if (loading || error || !map) {
-		return null
+		return (
+			<pixiGraphics
+				draw={(g) => {
+					g.clear()
+					g.rect(
+						worldViewportX,
+						worldViewportY,
+						worldViewportWidth,
+						worldViewportHeight,
+					)
+					g.fill(0x120c09)
+				}}
+			/>
+		)
 	}
 
 	return (
@@ -66,6 +79,7 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 				x={cameraX}
 				y={cameraY}
 				scale={worldZoom}
+				roundPixels
 			>
 				<MapRenderer map={map} cameraX={cameraX} cameraY={cameraY} />
 				{DEBUG_MODE && (

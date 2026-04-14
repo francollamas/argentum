@@ -28,6 +28,7 @@ export class TextureManager {
 			}
 
 			const imageTexture = await Assets.load(textureData.png)
+			imageTexture.source.scaleMode = 'nearest'
 
 			const spritesheet = new Spritesheet(
 				imageTexture,

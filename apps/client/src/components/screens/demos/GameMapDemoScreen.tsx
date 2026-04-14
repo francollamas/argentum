@@ -8,13 +8,20 @@ type GameMapDemoScreenProps = {
 	onBack: () => void
 }
 
-const DEMO_MAP_NUMBER = 2
+const DEMO_MAP_NUMBER = 1
 
 export const GameMapDemoScreen: FC<GameMapDemoScreenProps> = ({ onBack }) => {
 	return (
 		<>
 			<GameView mapNumber={DEMO_MAP_NUMBER} />
 			<UIScreen>
+				<layoutContainer
+					layout={{
+						width: '100%',
+						height: '100%',
+						backgroundColor: 0x120c09,
+					}}
+				/>
 				<MapHud onBack={onBack} />
 				<FPSCounter />
 			</UIScreen>
