@@ -21,9 +21,6 @@ Object.entries(mapFiles).forEach(([mapPath, importFn]) => {
 import { logger } from '../utils/logger'
 
 export async function importMap(mapName: string): Promise<string | undefined> {
-	logger.debug(`Attempting to load map: ${mapName}`)
-	logger.debug('Available maps', { maps: Object.keys(mapMap) })
-
 	const importFn = mapMap[mapName]
 	if (!importFn) {
 		logger.error(`Map import function not found for: ${mapName}`, {

@@ -5,17 +5,17 @@ export const usePixelDensitySync = () => {
 	const { app } = useApplication()
 
 	useEffect(() => {
-		if (!app || !window.visualViewport) return
+		if (!app) return
 
 		const updateResolution = () => {
 			app.renderer.resolution = window.devicePixelRatio
-			app.renderer.resize(window.innerWidth, window.innerHeight)
 		}
 
-		window.visualViewport.addEventListener('resize', updateResolution)
+		updateResolution()
+		window.addEventListener('resize', updateResolution)
 
 		return () => {
-			window.visualViewport?.removeEventListener('resize', updateResolution)
+			window.removeEventListener('resize', updateResolution)
 		}
 	}, [app])
 }

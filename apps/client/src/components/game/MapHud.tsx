@@ -1,5 +1,8 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
+import { useShallow } from 'zustand/react/shallow'
+import { useFPS } from '../../hooks/useFPS'
+import { usePlayerPosition } from '../../hooks/usePlayer'
 import { useViewportStore } from '../../store/viewportStore'
 import { Button, Colors, Label } from '../ui'
 
@@ -8,10 +11,19 @@ type MapHudProps = {
 }
 
 export const MapHud: FC<MapHudProps> = ({ onBack }) => {
-	const resetWorldZoom = useViewportStore((state) => state.resetWorldZoom)
-	const worldZoom = useViewportStore((state) => state.worldZoom)
-	const zoomIn = useViewportStore((state) => state.zoomIn)
-	const zoomOut = useViewportStore((state) => state.zoomOut)
+	const { resetWorldZoom, worldZoom, zoomIn, zoomOut } = useViewportStore(
+		useShallow((state) => ({
+			resetWorldZoom: state.resetWorldZoom,
+			worldZoom: state.worldZoom,
+			zoomIn: state.zoomIn,
+			zoomOut: state.zoomOut,
+		})),
+	)
+	const fps = useFPS()
+	const { tileX, tileY } = usePlayerPosition()
+	const positionText = `[${tileX.toString().padStart(2, '0')} ; ${tileY
+		.toString()
+		.padStart(2, '0')}]`
 
 	return (
 		<layoutContainer
@@ -32,7 +44,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 					layout={{
 						...tw`flex-row items-start gap-3`,
 						flexWrap: 'wrap',
-						maxWidth: '60%',
+						maxWidth: '58%',
 						minWidth: 260,
 					}}
 				>
@@ -51,12 +63,42 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='label'
 							color={Colors.silver}
 						/>
+						<Label
+							text='Center stays clear so the map remains visible'
+							font='labelSm'
+							color={Colors.bronze}
+						/>
+					</layoutContainer>
+					<layoutContainer
+						layout={{
+							...tw`flex-col gap-1`,
+							padding: 12,
+							backgroundColor: Colors.backgroundDark,
+							borderRadius: 8,
+						}}
+					>
+						<Label
+							text='Region: Town Center'
+							font='label'
+							color={Colors.gold}
+						/>
+						<Label
+							text='Weather: Clear skies'
+							font='labelSm'
+							color={Colors.silver}
+						/>
+						<Label
+							text='Mode: Exploration'
+							font='labelSm'
+							color={Colors.silver}
+						/>
 					</layoutContainer>
 				</layoutContainer>
 				<layoutContainer
 					layout={{
 						...tw`flex-col items-end gap-2`,
 						alignSelf: 'flex-start',
+						minWidth: 220,
 						maxWidth: '100%',
 					}}
 				>
@@ -73,7 +115,12 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='label'
 							color={Colors.metalHighlight}
 						/>
-						<Label text='Zoom controls' font='labelSm' color={Colors.silver} />
+						<Label text={`FPS: ${fps}`} font='labelSm' color={Colors.silver} />
+						<Label
+							text={`Pos: ${positionText}`}
+							font='labelSm'
+							color={Colors.bronze}
+						/>
 					</layoutContainer>
 					<layoutContainer
 						layout={{
@@ -91,6 +138,86 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 
 			<layoutContainer
 				layout={{
+					...tw`w-full flex-row justify-between items-stretch`,
+					flex: 1,
+					columnGap: 16,
+				}}
+			>
+				<layoutContainer
+					layout={{
+						...tw`flex-col gap-2`,
+						justifyContent: 'center',
+						minWidth: 120,
+						maxWidth: 160,
+					}}
+				>
+					<Button text='Inventory' variant='small' onPress={() => {}} />
+					<Button text='Spells' variant='small' onPress={() => {}} />
+					<Button text='Party' variant='small' onPress={() => {}} />
+					<Button text='Map' variant='small' onPress={() => {}} />
+					<Button text='Craft' variant='small' onPress={() => {}} />
+				</layoutContainer>
+
+				<layoutContainer layout={{ flex: 1 }} />
+
+				<layoutContainer
+					layout={{
+						...tw`flex-col gap-3`,
+						justifyContent: 'center',
+						alignItems: 'flex-end',
+						minWidth: 220,
+						maxWidth: 280,
+					}}
+				>
+					<layoutContainer
+						layout={{
+							...tw`flex-col gap-1`,
+							padding: 12,
+							backgroundColor: Colors.backgroundDark,
+							borderRadius: 8,
+							alignItems: 'flex-end',
+						}}
+					>
+						<Label text='Session' font='label' color={Colors.gold} />
+						<Label
+							text='Players nearby: 3'
+							font='labelSm'
+							color={Colors.silver}
+						/>
+						<Label text='Music: On' font='labelSm' color={Colors.silver} />
+						<Label
+							text='Latency: Stable'
+							font='labelSm'
+							color={Colors.bronze}
+						/>
+					</layoutContainer>
+					<layoutContainer
+						layout={{
+							...tw`flex-col gap-1`,
+							padding: 12,
+							backgroundColor: Colors.backgroundDark,
+							borderRadius: 8,
+							alignItems: 'flex-end',
+						}}
+					>
+						<Label text='Tips' font='label' color={Colors.gold} />
+						<Label text='Arrows move' font='labelSm' color={Colors.silver} />
+						<Label
+							text='Zoom buttons adjust camera'
+							font='labelSm'
+							color={Colors.silver}
+						/>
+						<Label
+							text='Map stays clear in the center'
+							font='labelSm'
+							color={Colors.bronze}
+						/>
+					</layoutContainer>
+				</layoutContainer>
+			</layoutContainer>
+
+			<layoutContainer
+				layout={{
 					...tw`w-full flex-row justify-between items-end flex-wrap`,
 					columnGap: 16,
 					rowGap: 12,
@@ -102,8 +229,9 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 						flexWrap: 'wrap',
 					}}
 				>
-					<Button text='Inventory' variant='small' onPress={() => {}} />
-					<Button text='Spells' variant='small' onPress={() => {}} />
+					<Button text='Quests' variant='small' onPress={() => {}} />
+					<Button text='Skills' variant='small' onPress={() => {}} />
+					<Button text='Config' variant='small' onPress={() => {}} />
 				</layoutContainer>
 				<layoutContainer
 					layout={{
@@ -115,11 +243,20 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 					}}
 				>
 					<Label
-						text='HUD overlays the world'
+						text='HUD wraps on resize'
 						font='labelSm'
 						color={Colors.silver}
 					/>
-					<Label text='Resize-safe layout' font='label' color={Colors.gold} />
+					<Label
+						text='Edges stay informative'
+						font='labelSm'
+						color={Colors.silver}
+					/>
+					<Label
+						text='Center remains map-first'
+						font='label'
+						color={Colors.gold}
+					/>
 				</layoutContainer>
 			</layoutContainer>
 		</layoutContainer>

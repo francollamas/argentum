@@ -1,11 +1,21 @@
 import type { FC } from 'react'
 import { useFPS } from '../../hooks/useFPS'
-import { useViewportStore } from '../../store/viewportStore'
-import { Text } from '../common/Text'
+import { Label } from '../ui'
 
 export const FPSCounter: FC = () => {
 	const fps = useFPS()
-	const screenWidth = useViewportStore((state) => state.screenWidth)
 
-	return <Text text={`FPS: ${fps}`} x={screenWidth - 70} y={5} bold border />
+	return (
+		<layoutContainer
+			layout={{
+				width: '100%',
+				justifyContent: 'flex-start',
+				alignItems: 'flex-end',
+				paddingTop: 5,
+				paddingRight: 8,
+			}}
+		>
+			<Label text={`FPS: ${fps}`} font='labelSm' />
+		</layoutContainer>
+	)
 }

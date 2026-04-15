@@ -31,14 +31,12 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 	const maskRef = useRef<Graphics>(null)
 	const gameContainerRef = useRef<Container>(null)
 
-	// Set up the mask when refs are available
 	useEffect(() => {
 		if (maskRef.current && gameContainerRef.current) {
 			gameContainerRef.current.mask = maskRef.current
 		}
-	})
+	}, [])
 
-	// Don't render anything until map is fully loaded
 	if (loading || error || !map) {
 		return (
 			<pixiGraphics
@@ -58,7 +56,6 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 
 	return (
 		<pixiContainer>
-			{/* Viewport mask - defines the clipping area */}
 			<pixiGraphics
 				ref={maskRef}
 				draw={(g) => {
@@ -73,7 +70,6 @@ export const GameView: FC<GameViewProps> = ({ mapNumber }) => {
 				}}
 			/>
 
-			{/* Game content with camera transform and mask applied */}
 			<pixiContainer
 				ref={gameContainerRef}
 				x={cameraX}

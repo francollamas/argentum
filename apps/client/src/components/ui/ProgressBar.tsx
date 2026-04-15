@@ -90,7 +90,6 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 					tint={fillColor}
 				/>
 			)}
-			{/* TODO: Refactor in Step 7 — using raw pixiBitmapText with manual positioning for now */}
 			{label && (
 				<pixiBitmapText
 					text={label}

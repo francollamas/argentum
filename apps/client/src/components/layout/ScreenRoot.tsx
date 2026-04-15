@@ -27,8 +27,8 @@ export const ScreenRoot: FC<ScreenRootProps> = ({ children }) => {
 	return (
 		<layoutContainer
 			layout={{
-				width: app.screen.width,
-				height: app.screen.height,
+				width: Math.max(1, app.screen.width),
+				height: Math.max(1, app.screen.height),
 			}}
 		>
 			{children}

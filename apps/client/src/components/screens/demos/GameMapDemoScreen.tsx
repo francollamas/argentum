@@ -1,5 +1,4 @@
 import type { FC } from 'react'
-import { FPSCounter } from '../../common/FPSCounter'
 import { GameView } from '../../game/GameView'
 import { MapHud } from '../../game/MapHud'
 import { UIScreen } from '../../layout'
@@ -15,7 +14,6 @@ export const GameMapDemoScreen: FC<GameMapDemoScreenProps> = ({ onBack }) => {
 			<GameView mapNumber={DEMO_MAP_NUMBER} />
 			<UIScreen>
 				<MapHud onBack={onBack} />
-				<FPSCounter />
 			</UIScreen>
 		</>
 	)

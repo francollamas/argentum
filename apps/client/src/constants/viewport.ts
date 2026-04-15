@@ -6,10 +6,12 @@ export const MAX_UI_SCALE = 1
 export const DEFAULT_WORLD_ZOOM = 1
 export const MIN_WORLD_ZOOM = 0.75
 export const MAX_WORLD_ZOOM = 1.5
-export const WORLD_ZOOM_STEP = 0.1
+export const WORLD_ZOOM_STEP = 0.25
 
-export const DEFAULT_SCREEN_WIDTH = UI_DESIGN_WIDTH
-export const DEFAULT_SCREEN_HEIGHT = UI_DESIGN_HEIGHT
+export const DEFAULT_SCREEN_WIDTH =
+	typeof window === 'undefined' ? UI_DESIGN_WIDTH : window.innerWidth
+export const DEFAULT_SCREEN_HEIGHT =
+	typeof window === 'undefined' ? UI_DESIGN_HEIGHT : window.innerHeight
 
 export const DEFAULT_VIEWPORT_STATE = {
 	screenWidth: DEFAULT_SCREEN_WIDTH,

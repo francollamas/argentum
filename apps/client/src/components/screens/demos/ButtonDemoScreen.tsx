@@ -27,15 +27,8 @@ export const ButtonDemoScreen: FC = () => {
 				<layoutContainer layout={tw`flex-col gap-3`}>
 					<Label text='Variants' font='titleSm' color={Colors.gold} />
 					<layoutContainer layout={tw`flex-row items-center gap-4`}>
-						<Button
-							text='Normal'
-							onPress={() => console.log('Normal pressed')}
-						/>
-						<Button
-							text='Small'
-							variant='small'
-							onPress={() => console.log('Small pressed')}
-						/>
+						<Button text='Normal' onPress={() => {}} />
+						<Button text='Small' variant='small' onPress={() => {}} />
 					</layoutContainer>
 				</layoutContainer>
 

@@ -2,46 +2,69 @@ import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { ContentFrame, UIScreen } from '../layout'
-import { Colors } from '../ui'
+import { Button, Colors, Label } from '../ui'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
 
-type DemoScreen = {
-	label: string
-	component: FC | null
-	enabled?: boolean
+type FramedDemoProps = {
+	onBack: () => void
 }
 
-const DEMOS: DemoScreen[] = [
-	{ label: 'Label', component: LabelDemoScreen },
-	{ label: 'Map + HUD', component: null, enabled: true },
-	{ label: 'Panel', component: null },
-	{ label: 'Button', component: ButtonDemoScreen },
-	{ label: 'CheckBox', component: null },
-	{ label: 'Switch', component: null },
-	{ label: 'RadioGroup', component: null },
-	{ label: 'ProgressBar', component: null },
-	{ label: 'Input', component: null },
-	{ label: 'Divider', component: null },
-	{ label: 'Slider', component: null },
-	{ label: 'IconButton', component: null },
-	{ label: 'TabBar', component: null },
-	{ label: 'ScrollView', component: null },
-	{ label: 'Dropdown', component: null },
-	{ label: 'Tooltip', component: null },
-	{ label: 'Dialog', component: null },
-	{ label: 'Full Integration', component: null },
+type DemoDefinition = {
+	id: string
+	label: string
+	presentation: 'framed' | 'fullscreen'
+	render?: FC<FramedDemoProps>
+}
+
+const LabelDemoRoute: FC<FramedDemoProps> = () => <LabelDemoScreen />
+const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
+
+const DEMOS: DemoDefinition[] = [
+	{
+		id: 'label',
+		label: 'Label',
+		presentation: 'framed',
+		render: LabelDemoRoute,
+	},
+	{
+		id: 'map-hud',
+		label: 'Map + HUD',
+		presentation: 'fullscreen',
+		render: GameMapDemoScreen,
+	},
+	{ id: 'panel', label: 'Panel', presentation: 'framed' },
+	{
+		id: 'button',
+		label: 'Button',
+		presentation: 'framed',
+		render: ButtonDemoRoute,
+	},
+	{ id: 'checkbox', label: 'CheckBox', presentation: 'framed' },
+	{ id: 'switch', label: 'Switch', presentation: 'framed' },
+	{ id: 'radiogroup', label: 'RadioGroup', presentation: 'framed' },
+	{ id: 'progressbar', label: 'ProgressBar', presentation: 'framed' },
+	{ id: 'input', label: 'Input', presentation: 'framed' },
+	{ id: 'divider', label: 'Divider', presentation: 'framed' },
+	{ id: 'slider', label: 'Slider', presentation: 'framed' },
+	{ id: 'iconbutton', label: 'IconButton', presentation: 'framed' },
+	{ id: 'tabbar', label: 'TabBar', presentation: 'framed' },
+	{ id: 'scrollview', label: 'ScrollView', presentation: 'framed' },
+	{ id: 'dropdown', label: 'Dropdown', presentation: 'framed' },
+	{ id: 'tooltip', label: 'Tooltip', presentation: 'framed' },
+	{ id: 'dialog', label: 'Dialog', presentation: 'framed' },
+	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
 ]
 
 export const DemoHubScreen: FC = () => {
-	const [activeDemo, setActiveDemo] = useState<string | null>(null)
+	const [activeDemoId, setActiveDemoId] = useState<string | null>(null)
 
-	const activeEntry = DEMOS.find((d) => d.label === activeDemo)
-	const ActiveComponent = activeEntry?.component
+	const activeEntry = DEMOS.find((demo) => demo.id === activeDemoId)
+	const ActiveDemoScreen = activeEntry?.render
 
-	if (activeDemo === 'Map + HUD') {
-		return <GameMapDemoScreen onBack={() => setActiveDemo(null)} />
+	if (ActiveDemoScreen && activeEntry?.presentation === 'fullscreen') {
+		return <ActiveDemoScreen onBack={() => setActiveDemoId(null)} />
 	}
 
 	return (
@@ -52,7 +75,7 @@ export const DemoHubScreen: FC = () => {
 					backgroundColor: Colors.backgroundDark,
 				}}
 			/>
-			{ActiveComponent ? (
+			{ActiveDemoScreen ? (
 				<ContentFrame>
 					<layoutContainer
 						layout={{
@@ -61,40 +84,19 @@ export const DemoHubScreen: FC = () => {
 						}}
 					>
 						<layoutContainer layout={tw`flex-row items-center justify-between`}>
-							<pixiBitmapText
+							<Label
 								text={activeEntry?.label ?? 'Demo'}
-								style={{
-									fontFamily: 'medievalsharp-regular',
-									fontSize: 36,
-									fill: Colors.gold,
-								}}
-								layout={{ width: 'intrinsic', height: 'intrinsic' }}
+								font='title'
+								color={Colors.gold}
 							/>
-							<layoutContainer
-								layout={{
-									...tw`items-center justify-center`,
-									width: 120,
-									height: 36,
-									backgroundColor: Colors.woodMid,
-									borderRadius: 4,
-								}}
-								eventMode='static'
-								cursor='pointer'
-								onPointerDown={() => setActiveDemo(null)}
-							>
-								<pixiBitmapText
-									text='Back'
-									style={{
-										fontFamily: 'crimsomtext-regular',
-										fontSize: 16,
-										fill: 0xffffff,
-									}}
-									layout={{ width: 'intrinsic', height: 'intrinsic' }}
-								/>
-							</layoutContainer>
+							<Button
+								text='Back'
+								variant='small'
+								onPress={() => setActiveDemoId(null)}
+							/>
 						</layoutContainer>
 						<layoutContainer layout={{ ...tw`w-full`, flex: 1 }}>
-							<ActiveComponent />
+							<ActiveDemoScreen onBack={() => setActiveDemoId(null)} />
 						</layoutContainer>
 					</layoutContainer>
 				</ContentFrame>
@@ -109,23 +111,15 @@ export const DemoHubScreen: FC = () => {
 							gap: 20,
 						}}
 					>
-						<pixiBitmapText
+						<Label
 							text='UI Component Demos'
-							style={{
-								fontFamily: 'medievalsharp-regular',
-								fontSize: 44,
-								fill: Colors.gold,
-							}}
-							layout={{ width: 'intrinsic', height: 'intrinsic' }}
+							font='titleLg'
+							color={Colors.gold}
 						/>
-						<pixiBitmapText
+						<Label
 							text='Select a component to test'
-							style={{
-								fontFamily: 'crimsomtext-regular',
-								fontSize: 20,
-								fill: Colors.silver,
-							}}
-							layout={{ width: 'intrinsic', height: 'intrinsic' }}
+							font='bodySm'
+							color={Colors.silver}
 						/>
 						<layoutContainer
 							layout={{
@@ -136,49 +130,22 @@ export const DemoHubScreen: FC = () => {
 							}}
 						>
 							{DEMOS.map((demo) => (
-								<layoutContainer
+								<Button
 									key={demo.label}
-									layout={{
-										...tw`items-center justify-center`,
-										width: 180,
-										height: 40,
-										backgroundColor:
-											demo.component || demo.enabled
-												? Colors.woodMid
-												: Colors.backgroundMid,
-										borderRadius: 4,
-									}}
-									eventMode='static'
-									cursor={
-										demo.component || demo.enabled ? 'pointer' : 'default'
+									text={demo.label}
+									width={180}
+									variant='small'
+									disabled={!demo.render}
+									onPress={
+										demo.render ? () => setActiveDemoId(demo.id) : undefined
 									}
-									onPointerDown={() => {
-										if (demo.component || demo.enabled) {
-											setActiveDemo(demo.label)
-										}
-									}}
-								>
-									<pixiBitmapText
-										text={demo.label}
-										style={{
-											fontFamily: 'crimsomtext-regular',
-											fontSize: 16,
-											fill:
-												demo.component || demo.enabled ? 0xffffff : 0x666666,
-										}}
-										layout={{ width: 'intrinsic', height: 'intrinsic' }}
-									/>
-								</layoutContainer>
+								/>
 							))}
 						</layoutContainer>
-						<pixiBitmapText
-							text='Gray buttons = not yet implemented'
-							style={{
-								fontFamily: 'crimsomtext-regular',
-								fontSize: 14,
-								fill: 0x666666,
-							}}
-							layout={{ width: 'intrinsic', height: 'intrinsic' }}
+						<Label
+							text='Disabled buttons mark demos that are not implemented yet'
+							font='labelSm'
+							color={Colors.silver}
 						/>
 					</layoutContainer>
 				</ContentFrame>

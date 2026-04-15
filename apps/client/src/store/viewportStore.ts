@@ -31,9 +31,21 @@ export const useViewportStore = create<ViewportStoreState>()(
 			...DEFAULT_VIEWPORT_STATE,
 			setScreenSize: (width, height) =>
 				set(
-					{
-						screenWidth: Math.max(1, Math.round(width)),
-						screenHeight: Math.max(1, Math.round(height)),
+					(state) => {
+						const nextScreenWidth = Math.max(1, Math.round(width))
+						const nextScreenHeight = Math.max(1, Math.round(height))
+
+						if (
+							state.screenWidth === nextScreenWidth &&
+							state.screenHeight === nextScreenHeight
+						) {
+							return state
+						}
+
+						return {
+							screenWidth: nextScreenWidth,
+							screenHeight: nextScreenHeight,
+						}
 					},
 					false,
 					'setScreenSize',
