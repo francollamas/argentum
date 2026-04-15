@@ -16,27 +16,52 @@ async function loadJSON<T>(filePath: string): Promise<T> {
 	return JSON.parse(data)
 }
 
+async function createPackedTextureInput(inputPath: string, projectName: string) {
+	const files = await fs.promises.readdir(inputPath)
+	const textureFiles = files.filter((file) => file.endsWith('.png'))
+	const tempInputPath = path.join(
+		path.dirname(inputPath),
+		`temp-${projectName}-input`,
+	)
+
+	await fs.promises.rm(tempInputPath, { recursive: true, force: true })
+	await fs.promises.mkdir(tempInputPath, { recursive: true })
+
+	for (const file of textureFiles) {
+		await fs.promises.copyFile(
+			path.join(inputPath, file),
+			path.join(tempInputPath, file),
+		)
+	}
+
+	return tempInputPath
+}
+
 async function generatePackedTextures(projectName: string) {
 	const texPackerPath = path.join(__dirname, '../../tools/texpacker')
 	const projectPath = path.join(texPackerPath, `${projectName}.ftpp`)
 	const projectFile = await fs.promises.readFile(projectPath, 'utf-8')
 	const inputPath = path.join(texPackerPath, `textures-${projectName}`)
 	const outputPath = path.join(__assetspath, 'textures')
-
-	// Create a temporary project file
-	const projectData = JSON.parse(projectFile)
-	projectData.folders = [inputPath]
+	const tempInputPath = await createPackedTextureInput(inputPath, projectName)
 	const tempProjectPath = path.join(texPackerPath, 'temp.ftpp')
-	await fs.promises.writeFile(tempProjectPath, JSON.stringify(projectData))
 
-	// Execute the packer
-	const execPromise = util.promisify(exec)
-	await execPromise(
-		`pnpm exec free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
-	)
+	try {
+		// Create a temporary project file
+		const projectData = JSON.parse(projectFile)
+		projectData.folders = [tempInputPath]
+		await fs.promises.writeFile(tempProjectPath, JSON.stringify(projectData))
 
-	// Delete the temporary project file
-	await fs.promises.unlink(tempProjectPath)
+		// Execute the packer
+		const execPromise = util.promisify(exec)
+		await execPromise(
+			`pnpm exec free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
+		)
+
+	} finally {
+		await fs.promises.unlink(tempProjectPath).catch(() => {})
+		await fs.promises.rm(tempInputPath, { recursive: true, force: true })
+	}
 }
 
 async function generateSpritesheetFile() {
