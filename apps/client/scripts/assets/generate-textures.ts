@@ -32,7 +32,7 @@ async function generatePackedTextures(projectName: string) {
 	// Execute the packer
 	const execPromise = util.promisify(exec)
 	await execPromise(
-		`npx free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
+		`pnpm exec free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
 	)
 
 	// Delete the temporary project file

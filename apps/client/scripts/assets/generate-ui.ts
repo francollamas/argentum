@@ -87,7 +87,7 @@ export async function generateUITextures() {
 
 		const execPromise = util.promisify(exec)
 		await execPromise(
-			`npx free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
+			`pnpm exec free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
 		)
 
 		await patchSpritesheetResolution(outputPath, 2)
