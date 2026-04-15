@@ -7,6 +7,10 @@ on:
 
   workflow_dispatch:
 
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   draft:
     name: Draft a release
@@ -16,9 +20,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --dir apps/client --frozen-lockfile
+
       - name: Get Node project version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: apps/client
 
       - name: Draft
         uses: softprops/action-gh-release@v2
@@ -50,23 +70,29 @@ jobs:
             args: ''
 
     runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: apps/client
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.18.0
+          version: 10.33.0
 
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
 
-       - name: Install Free Tex Packer
-         run: pnpm add -g free-tex-packer-cli
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-       - name: Generate assets
-         run: pnpm -C apps/client run generate-assets
+      - name: Generate assets
+        run: pnpm run generate-assets
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -80,13 +106,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: install frontend dependencies
-        run: pnpm install # change this to npm, pnpm or bun depending on which one you use.
-
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          projectPath: apps/client
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'App v__VERSION__'
           releaseDraft: true
@@ -98,23 +122,29 @@ jobs:
     needs: draft
     permissions:
       contents: write
+    defaults:
+      run:
+        working-directory: apps/client
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10.33.0
 
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
 
-       - name: Install Free Tex Packer
-         run: pnpm add -g free-tex-packer-cli
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-       - name: Generate packed textures
-         run: pnpm -C apps/client run generate-assets
+      - name: Generate packed textures
+        run: pnpm run generate-assets
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -132,9 +162,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Build app bundle
         run: pnpm tauri android build -v
@@ -158,6 +185,8 @@ jobs:
       - name: Get Node project version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: apps/client
 
       - name: Rename APK file
         run: |

@@ -1,40 +1,42 @@
 name: continuous integration
 
 on:
-    pull_request:
-    push:
-        branches: ['develop', 'main']
+  pull_request:
+  push:
+    branches: ['develop', 'main']
 
 jobs:
-    continuous-integration:
-        runs-on: ubuntu-latest
+  continuous-integration:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/client
 
-        steps:
-            - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: pnpm/action-setup@v4
-              with:
-                  version: 10.33.0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
 
-            - name: setup node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: lts/*
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
 
-            - name: Install Free Tex Packer
-              run: pnpm add -g free-tex-packer-cli
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-            - name: Install dependencies
-              run: pnpm i
+      - name: Generate assets
+        run: pnpm run generate-assets
 
-            - name: Generate assets
-              run: pnpm -C apps/client run generate-assets
+      - name: Build
+        run: pnpm run build
 
-            - name: Build
-              run: pnpm -C apps/client run build
+      - name: Test
+        run: pnpm test
 
-            - name: Test
-              run: pnpm -C apps/client test
-
-            - name: Linter and Format
-              run: pnpm -C apps/client run linter-check
+      - name: Linter and Format
+        run: pnpm run linter-check
