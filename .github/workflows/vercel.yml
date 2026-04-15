@@ -39,9 +39,6 @@ jobs:
       - name: Install Vercel
         run: pnpm add -g vercel@latest
 
-      - name: Generate assets
-        run: pnpm run generate-assets
-
       - name: Pull Vercel Environment Information
         run: vercel pull --cwd . --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 

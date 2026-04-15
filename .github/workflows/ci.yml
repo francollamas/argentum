@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate assets
-        run: pnpm run generate-assets
-
       - name: Build
         run: pnpm run build
 
