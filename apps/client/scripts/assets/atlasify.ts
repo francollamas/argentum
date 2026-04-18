@@ -77,6 +77,9 @@ export async function packAtlas({
 			'--search-dummy',
 			inputPath,
 		],
-		{ cwd: outputPath },
+		{
+			cwd: outputPath,
+			shell: process.platform === 'win32',
+		},
 	)
 }

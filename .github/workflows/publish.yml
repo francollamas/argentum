@@ -34,8 +34,41 @@ jobs:
           tag_name: v${{ steps.package-version.outputs.current-version}}
           generate_release_notes: true
 
-  publish-desktop:
+  generate-assets:
     needs: draft
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate assets
+        run: pnpm run generate-assets
+
+      - name: Upload generated assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-generated-assets
+          path: |
+            apps/client/src/assets
+            apps/client/public/fonts
+
+  publish-desktop:
+    needs:
+      - draft
+      - generate-assets
     permissions:
       contents: write
     strategy:
@@ -89,8 +122,11 @@ jobs:
       - name: install frontend dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate assets
-        run: pnpm run generate-assets
+      - name: Download generated assets
+        uses: actions/download-artifact@v4
+        with:
+          name: client-generated-assets
+          path: apps/client
 
       - uses: tauri-apps/tauri-action@v0.6.2
         env:
@@ -105,7 +141,9 @@ jobs:
 
   publish-android:
     runs-on: ubuntu-latest
-    needs: draft
+    needs:
+      - draft
+      - generate-assets
     permissions:
       contents: write
     steps:
@@ -142,8 +180,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate assets
-        run: pnpm run generate-assets
+      - name: Download generated assets
+        uses: actions/download-artifact@v4
+        with:
+          name: client-generated-assets
+          path: apps/client
 
       - name: Build app bundle
         run: pnpm tauri android build -v
