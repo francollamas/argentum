@@ -2,6 +2,11 @@ name: vercel deploy
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+defaults:
+  run:
+    working-directory: apps/client
+
 on:
   push:
     branches-ignore:
@@ -20,15 +25,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
 
-       - name: Install Free Tex Packer
-         run: pnpm add -g free-tex-packer-cli
+      - name: Install Free Tex Packer
+        run: pnpm add -g free-tex-packer-cli
 
-       - name: Install Vercel
-         run: pnpm add -g vercel@canary
+      - name: Install Vercel
+        run: pnpm add -g vercel@canary
 
-       - name: Generate assets
-         run: pnpm run generate-assets
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate assets
+        run: pnpm run generate-assets
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}

@@ -7,6 +7,10 @@ on:
 
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: apps/client
+
 jobs:
   draft:
     name: Draft a release
@@ -19,6 +23,8 @@ jobs:
       - name: Get Node project version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: apps/client
 
       - name: Draft
         uses: softprops/action-gh-release@v2
@@ -61,12 +67,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
 
-       - name: Install Free Tex Packer
-         run: pnpm add -g free-tex-packer-cli
-
-       - name: Generate assets
-         run: pnpm run generate-assets
+      - name: Install Free Tex Packer
+        run: pnpm add -g free-tex-packer-cli
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -81,12 +86,16 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: install frontend dependencies
-        run: pnpm install # change this to npm, pnpm or bun depending on which one you use.
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate assets
+        run: pnpm run generate-assets
 
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          projectPath: apps/client
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'App v__VERSION__'
           releaseDraft: true
@@ -109,12 +118,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
 
-       - name: Install Free Tex Packer
-         run: pnpm add -g free-tex-packer-cli
-
-       - name: Generate packed textures
-         run: pnpm run generate-assets
+      - name: Install Free Tex Packer
+        run: pnpm add -g free-tex-packer-cli
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -134,7 +142,10 @@ jobs:
           targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate packed textures
+        run: pnpm run generate-assets
 
       - name: Build app bundle
         run: pnpm tauri android build -v
@@ -158,6 +169,8 @@ jobs:
       - name: Get Node project version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: apps/client
 
       - name: Rename APK file
         run: |
@@ -171,4 +184,4 @@ jobs:
           tag_name: v${{ steps.package-version.outputs.current-version}}
           generate_release_notes: true
           files: |
-            ./src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ steps.package-version.outputs.current-version}}.apk
+            apps/client/src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ steps.package-version.outputs.current-version}}.apk

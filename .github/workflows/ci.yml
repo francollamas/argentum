@@ -5,6 +5,10 @@ on:
     push:
         branches: ['develop', 'main']
 
+defaults:
+    run:
+        working-directory: apps/client
+
 jobs:
     continuous-integration:
         runs-on: ubuntu-latest
@@ -20,12 +24,14 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: lts/*
+                  cache: pnpm
+                  cache-dependency-path: apps/client/pnpm-lock.yaml
 
             - name: Install Free Tex Packer
               run: pnpm add -g free-tex-packer-cli
 
             - name: Install dependencies
-              run: pnpm i
+              run: pnpm install --frozen-lockfile
 
             - name: Generate assets
               run: pnpm run generate-assets
