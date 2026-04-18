@@ -28,7 +28,7 @@ jobs:
          run: pnpm add -g vercel@canary
 
        - name: Generate assets
-         run: pnpm -C apps/client run generate-assets
+         run: pnpm run generate-assets
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
