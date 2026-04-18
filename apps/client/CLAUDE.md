@@ -20,7 +20,7 @@ pnpm linter          # Fix linting issues
 ## Architecture Principles
 
 ### Asset Pipeline Architecture
-- **Texture atlases**: Generated via `pnpm generate-assets` using FastPack
+- **Texture atlases**: Generated via `pnpm generate-assets` using atlasify
 - **Binary loaders**: Custom PixiJS parsers in `src/loaders/` handle proprietary formats (sprites.bin, .mmap, .dir.bin)
 - **Loading orchestration**: `useResources` hook registers parsers and loads all assets before rendering
 - **Dynamic imports**: All importers use Vite's `import.meta.glob` for dynamic asset loading
@@ -75,7 +75,7 @@ pnpm linter          # Fix linting issues
 2. Run `pnpm generate-assets`
 3. Textures available via sprite IDs
 
-FastPack requires Rust locally. Install it once with `cargo install fastpack`.
+Texture atlas generation uses the local `atlasify` dependency installed with `pnpm install`.
 
 ### Custom Binary Parsers
 - Extend PixiJS asset loading with `ExtensionType.LoadParser`

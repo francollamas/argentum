@@ -8,6 +8,8 @@ function getBaseName(path: string): string {
 	const filename = path.split('/').pop() || ''
 	return filename
 		.replace(/\.(png|json)$/, '')
+		.replace(/^textureb\.(\d+)$/, 'textureb$1')
+		.replace(/^texture\.(\d+)$/, 'texture$1')
 		.replace(/^texture-/, 'texture')
 		.replace(/^textureb-/, 'textureb')
 }

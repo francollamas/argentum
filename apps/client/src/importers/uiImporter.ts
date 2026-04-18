@@ -6,7 +6,7 @@ const jsonFiles = import.meta.glob('../assets/ui/*.json')
 
 function getBaseName(path: string): string {
 	const filename = path.split('/').pop() || ''
-	return filename.replace(/\.(png|json)$/, '')
+	return filename.replace(/\.(png|json)$/, '').replace(/^ui\.(\d+)$/, 'ui$1')
 }
 
 const uiTextureMap: Record<string, { pngPath: string; jsonPath: string }> = {}
