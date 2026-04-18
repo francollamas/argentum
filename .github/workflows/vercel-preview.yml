@@ -9,7 +9,7 @@ defaults:
 
 on:
   push:
-    branches-ignore:
+    branches:
       - main
 jobs:
   preview:
