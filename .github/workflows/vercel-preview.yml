@@ -28,9 +28,6 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/client/pnpm-lock.yaml
 
-      - name: Install Free Tex Packer
-        run: pnpm add -g free-tex-packer-cli
-
       - name: Install Vercel
         run: pnpm add -g vercel@canary
 
