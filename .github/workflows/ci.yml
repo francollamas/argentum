@@ -11,7 +11,7 @@ defaults:
 
 jobs:
     continuous-integration:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
 
         steps:
             - uses: actions/checkout@v4
@@ -30,8 +30,13 @@ jobs:
             - name: install Rust stable
               uses: dtolnay/rust-toolchain@stable
 
+            - name: Install Linux dependencies for FastPack
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
             - name: Install FastPack
-              run: cargo install fastpack --version 0.29.4 --locked
+              run: cargo install fastpack --version 0.29.4
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
