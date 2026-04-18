@@ -27,8 +27,11 @@ jobs:
                   cache: pnpm
                   cache-dependency-path: apps/client/pnpm-lock.yaml
 
-            - name: Install Free Tex Packer
-              run: pnpm add -g free-tex-packer-cli
+            - name: install Rust stable
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Install FastPack
+              run: cargo install fastpack --version 0.29.4 --locked
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile

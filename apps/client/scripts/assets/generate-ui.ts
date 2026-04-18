@@ -1,10 +1,13 @@
-import { exec } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import util from 'node:util'
 import type { SpritesheetData } from 'pixi.js'
 import sharp from 'sharp'
+import {
+	clearAtlasOutput,
+	ensureFastPackInstalled,
+	packProject,
+} from './fastpack'
 
 // Get the current directory path
 const __filename = fileURLToPath(import.meta.url)
@@ -20,6 +23,9 @@ async function generateSpritesheetFile(outputPath: string) {
 	const files = await fs.promises.readdir(outputPath)
 	const jsonFiles = files.filter(
 		(file) => file.endsWith('.json') && file !== 'spritesheets.json',
+	)
+	jsonFiles.sort((left, right) =>
+		left.localeCompare(right, undefined, { numeric: true }),
 	)
 
 	const entries: string[] = []
@@ -62,7 +68,9 @@ export async function generateUITextures() {
 	const svgInputPath = path.join(texPackerPath, 'ui')
 	const pngTempPath = path.join(texPackerPath, 'ui/png')
 	const outputPath = path.join(__assetspath, 'ui')
-	const tempProjectPath = path.join(texPackerPath, 'temp-ui.ftpp')
+
+	await ensureFastPackInstalled()
+	await clearAtlasOutput(outputPath, ['ui'])
 
 	try {
 		await fs.promises.mkdir(pngTempPath, { recursive: true })
@@ -78,22 +86,15 @@ export async function generateUITextures() {
 			await sharp(inputPath, { density: 144 }).png().toFile(outputFilePath)
 		}
 
-		const projectPath = path.join(texPackerPath, 'ui.ftpp')
-		const projectFile = await fs.promises.readFile(projectPath, 'utf-8')
-
-		const projectData = JSON.parse(projectFile)
-		projectData.folders = [pngTempPath]
-		await fs.promises.writeFile(tempProjectPath, JSON.stringify(projectData))
-
-		const execPromise = util.promisify(exec)
-		await execPromise(
-			`pnpm exec free-tex-packer-cli --project ${tempProjectPath} --output ${outputPath}`,
-		)
+		await packProject({
+			projectPath: path.join(texPackerPath, 'ui.fpsheet'),
+			outputPath,
+			name: 'ui',
+		})
 
 		await patchSpritesheetResolution(outputPath, 2)
 		await generateSpritesheetFile(outputPath)
 	} finally {
-		await fs.promises.unlink(tempProjectPath).catch(() => {})
 		await fs.promises.rm(pngTempPath, { recursive: true, force: true })
 	}
 }

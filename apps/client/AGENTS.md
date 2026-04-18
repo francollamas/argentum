@@ -32,7 +32,7 @@
 - All code is written in English.
 
 ## Architecture & Loading Principles
-- Texture atlases are generated via `pnpm generate-assets` using free-tex-packer-cli; avoid hand-editing generated outputs.
+- Texture atlases are generated via `pnpm generate-assets` using FastPack; avoid hand-editing generated outputs.
 - Binary loaders in `src/loaders/` register PixiJS parsers for proprietary formats (sprites.bin, .mmap, .dir.bin); register extensions before loading.
 - Asset loading is orchestrated through `useResources`, which must complete before rendering (enforced in `src/app/App.tsx`).
 - Dynamic asset imports rely on `import.meta.glob`.
@@ -64,6 +64,7 @@
 
 ## Key Workflows
 - Adding textures: place assets in `tools/texpacker/textures-normal/` or `textures-bigger/`, then run `pnpm generate-assets` to refresh atlases.
+- FastPack must be installed locally to generate atlases: install Rust, then run `cargo install fastpack`.
 - Custom binary parsers: extend PixiJS asset loading with `ExtensionType.LoadParser` and register via `extensions.add()` before loading assets (see `src/loaders/`).
 
 ## Important Constraints

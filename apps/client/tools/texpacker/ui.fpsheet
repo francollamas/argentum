@@ -1,0 +1,49 @@
+sprite_overrides = []
+excludes = []
+
+[layout]
+max_width = 4096
+max_height = 4096
+size_constraint = "any_size"
+force_square = false
+allow_rotation = false
+pack_mode = "good"
+border_padding = 0
+shape_padding = 0
+
+[sprites]
+trim_mode = "none"
+trim_threshold = 0
+trim_margin = 0
+extrude = 0
+common_divisor_x = 0
+common_divisor_y = 0
+detect_aliases = true
+
+[sprites.default_pivot]
+x = 0.5
+y = 0.5
+
+[output]
+name = "ui"
+directory = "../../src/assets/ui"
+texture_format = "png"
+pixel_format = "rgba8888"
+premultiply_alpha = false
+data_format = "pixijs"
+quality = 95
+texture_path_prefix = ""
+multipack = true
+
+[algorithm]
+type = "max_rects"
+heuristic = "best_short_side_fit"
+
+[[variants]]
+scale = 1.0
+suffix = ""
+scale_mode = "smooth"
+
+[[sources]]
+path = "ui/png"
+filter = "**/*.png"
