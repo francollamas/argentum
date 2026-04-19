@@ -1,43 +1,34 @@
 name: continuous integration
 
 on:
-    pull_request:
-    push:
-        branches: ['develop', 'main']
+  pull_request:
+  push:
+    branches: ['develop', 'main']
 
 defaults:
-    run:
-        working-directory: apps/client
+  run:
+    working-directory: apps/client
+
+env:
+  CLIENT_DIR: apps/client
 
 jobs:
-    continuous-integration:
-        runs-on: ubuntu-latest
+  continuous-integration:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v6
+    steps:
+      - uses: ./.github/actions/setup-client
+        with:
+          working-directory: ${{ env.CLIENT_DIR }}
 
-            - uses: pnpm/action-setup@v5
-              with:
-                  version: 10.33.0
+      - name: Generate assets
+        run: pnpm run generate-assets
 
-            - name: setup node
-              uses: actions/setup-node@v6
-              with:
-                  node-version: lts/*
-                  cache: pnpm
-                  cache-dependency-path: apps/client/pnpm-lock.yaml
+      - name: Build
+        run: pnpm run build
 
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+      - name: Test
+        run: pnpm test
 
-            - name: Generate assets
-              run: pnpm run generate-assets
-
-            - name: Build
-              run: pnpm run build
-
-            - name: Test
-              run: pnpm test
-
-            - name: Linter and Format
-              run: pnpm run linter-check
+      - name: Linter and format
+        run: pnpm run linter-check

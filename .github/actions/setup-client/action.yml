@@ -1,0 +1,41 @@
+name: Setup Client
+description: Checkout repository and install client dependencies
+
+inputs:
+  working-directory:
+    description: Client working directory
+    required: false
+    default: apps/client
+  node-version:
+    description: Node.js version
+    required: false
+    default: lts/*
+  pnpm-version:
+    description: pnpm version
+    required: false
+    default: 10.33.0
+  cache-dependency-path:
+    description: Lockfile path used for pnpm cache
+    required: false
+    default: apps/client/pnpm-lock.yaml
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v6
+
+    - uses: pnpm/action-setup@v5
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install --frozen-lockfile
