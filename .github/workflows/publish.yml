@@ -2,8 +2,7 @@ name: publish
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches: ['develop', 'main']
 
   workflow_dispatch:
 
