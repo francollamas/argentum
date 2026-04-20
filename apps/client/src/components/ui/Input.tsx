@@ -1,4 +1,3 @@
-import { tw } from '@pixi/layout/tailwind'
 import { useApplication } from '@pixi/react'
 import type { Container, NineSliceSprite } from 'pixi.js'
 import type { FC } from 'react'
@@ -20,13 +19,30 @@ type InputProps = {
 	layout?: Record<string, unknown>
 }
 
-const TEXT_ALIGNMENT = {
-	left: 'flex-start',
-	center: 'center',
-	right: 'flex-end',
-} as const
+const DEBUG_DOM_INPUT = false
+const DOM_INPUT_CLASS = 'ao-pixi-input-overlay'
+const DOM_INPUT_STYLE_ID = 'ao-pixi-input-overlay-styles'
 
-const DEBUG_DOM_INPUT = true
+const toCssColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`
+
+const ensureDomInputStyles = () => {
+	if (document.getElementById(DOM_INPUT_STYLE_ID)) return
+
+	const style = document.createElement('style')
+	style.id = DOM_INPUT_STYLE_ID
+	style.textContent = `
+		.${DOM_INPUT_CLASS}::placeholder {
+			color: var(--input-placeholder-color, #888888);
+			opacity: 1;
+		}
+
+		.${DOM_INPUT_CLASS}::selection {
+			background: rgba(255, 214, 102, 0.35);
+			color: inherit;
+		}
+	`
+	document.head.appendChild(style)
+}
 
 export const Input: FC<InputProps> = ({
 	width,
@@ -50,10 +66,10 @@ export const Input: FC<InputProps> = ({
 	const valueRef = useRef(value)
 	const placeholderRef = useRef(placeholder)
 	const [active, setActive] = useState(false)
-	const [internalValue, setInternalValue] = useState(value)
+	const [, setInternalValue] = useState(value)
 
+	const fontConfig = FONTS.input
 	const inputTexture = useUITexture('input-field')
-	const fontConfig = FONTS.body
 
 	// Keep callback refs fresh without triggering DOM re-creation
 	onChangeRef.current = onChange
@@ -70,7 +86,7 @@ export const Input: FC<InputProps> = ({
 	}, [value])
 
 	const syncDomInputPosition = useCallback(() => {
-		if (!DEBUG_DOM_INPUT || !app?.canvas) return
+		if (!app?.canvas) return
 		const domInput = domInputRef.current
 		const backgroundNode = backgroundNodeRef.current
 		if (!domInput || !backgroundNode) return
@@ -83,31 +99,36 @@ export const Input: FC<InputProps> = ({
 		const left = canvasRect.left - parentRect.left + bounds.x
 		const top = canvasRect.top - parentRect.top + bounds.y
 		const width = bounds.width
-		const height = bounds.height
+		const renderedHeight = bounds.height
+		const domScale = height > 0 ? renderedHeight / height : 1
+		const paddingInline = Math.max(8, 12 * domScale)
+		const fontSize = Math.max(12, fontConfig.fontSize * domScale)
+		const lineHeight = Math.max(1, renderedHeight - 2)
+		const borderRadius = Math.max(6, 6 * domScale)
 
 		domInput.style.left = `${left}px`
 		domInput.style.top = `${top}px`
 		domInput.style.width = `${width}px`
-		domInput.style.height = `${height}px`
+		domInput.style.height = `${renderedHeight}px`
+		domInput.style.paddingLeft = `${paddingInline}px`
+		domInput.style.paddingRight = `${paddingInline}px`
+		domInput.style.fontSize = `${fontSize}px`
+		domInput.style.lineHeight = `${lineHeight}px`
+		domInput.style.borderRadius = `${borderRadius}px`
+	}, [app, height])
 
-		if (DEBUG_DOM_INPUT) {
-			console.log('[Input DOM] position', {
-				boundsX: bounds.x,
-				boundsY: bounds.y,
-				boundsWidth: bounds.width,
-				boundsHeight: bounds.height,
-				left,
-				top,
-				width,
-				height,
-				canvasWidth: canvasRect.width,
-				canvasHeight: canvasRect.height,
-				screenWidth: app.screen.width,
-				screenHeight: app.screen.height,
-				resolution: app.renderer.resolution,
-			})
-		}
-	}, [app])
+	useEffect(() => {
+		const domInput = domInputRef.current
+		if (!domInput) return
+
+		domInput.style.color = toCssColor(textColor)
+		domInput.style.caretColor = toCssColor(textColor)
+		domInput.style.textAlign = align
+		domInput.style.setProperty('--input-placeholder-color', '#888888')
+		domInput.placeholder = placeholder
+		domInput.style.fontFamily = fontConfig.domFontFamily
+		syncDomInputPosition()
+	}, [align, placeholder, syncDomInputPosition, textColor])
 
 	const inputRefCallback = useCallback(
 		(node: Container | null) => {
@@ -129,6 +150,7 @@ export const Input: FC<InputProps> = ({
 	// Create the invisible DOM input once; recreate only when structural props change
 	useEffect(() => {
 		if (!app?.canvas) return
+		ensureDomInputStyles()
 
 		const canvas = app.canvas as HTMLCanvasElement
 		const canvasParent = canvas.parentElement
@@ -140,6 +162,7 @@ export const Input: FC<InputProps> = ({
 		}
 
 		const domInput = document.createElement('input')
+		domInput.className = DOM_INPUT_CLASS
 		domInput.type = secure ? 'password' : 'text'
 		if (maxLength) domInput.maxLength = maxLength
 		domInput.autocomplete = 'off'
@@ -148,21 +171,25 @@ export const Input: FC<InputProps> = ({
 
 		Object.assign(domInput.style, {
 			position: 'absolute',
-			opacity: DEBUG_DOM_INPUT ? '0.95' : '0',
-			pointerEvents: DEBUG_DOM_INPUT ? 'auto' : 'none',
-			width: DEBUG_DOM_INPUT ? '200px' : '1px',
-			height: DEBUG_DOM_INPUT ? `${height}px` : '1px',
+			opacity: '1',
+			pointerEvents: 'auto',
+			width: '1px',
+			height: `${height}px`,
 			boxSizing: 'border-box',
 			top: '0',
 			left: '0',
 			border: DEBUG_DOM_INPUT ? '1px solid #ff4d4f' : 'none',
 			borderRadius: '6px',
-			padding: DEBUG_DOM_INPUT ? '0 12px' : '0',
+			padding: '0 12px',
 			margin: '0',
 			background: DEBUG_DOM_INPUT ? 'rgba(255, 244, 229, 0.12)' : 'transparent',
-			color: DEBUG_DOM_INPUT ? '#ffffff' : 'transparent',
-			fontSize: DEBUG_DOM_INPUT ? `${FONTS.body.fontSize}px` : '1px',
-			fontFamily: FONTS.body.fontFamily,
+			color: toCssColor(textColor),
+			caretColor: toCssColor(textColor),
+			textAlign: align,
+			fontSize: `${fontConfig.fontSize}px`,
+			fontFamily: fontConfig.domFontFamily,
+			lineHeight: `${height}px`,
+			appearance: 'none',
 			outline: 'none',
 			zIndex: '999',
 		} satisfies Partial<CSSStyleDeclaration>)
@@ -175,20 +202,11 @@ export const Input: FC<InputProps> = ({
 
 		const handleInput = () => {
 			const next = domInput.value
-			if (DEBUG_DOM_INPUT) {
-				console.log('[Input DOM] input', {
-					next,
-					placeholder: placeholderRef.current,
-				})
-			}
 			setInternalValue(next)
 			onChangeRef.current?.(next)
 		}
 
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (DEBUG_DOM_INPUT) {
-				console.log('[Input DOM] keydown', e.key)
-			}
 			if (e.key === 'Enter') {
 				onEnterRef.current?.(domInput.value)
 				domInput.blur()
@@ -198,18 +216,8 @@ export const Input: FC<InputProps> = ({
 			}
 		}
 
-		const handleBlur = () => {
-			if (DEBUG_DOM_INPUT) {
-				console.log('[Input DOM] blur')
-			}
-			setActive(false)
-		}
-		const handleFocus = () => {
-			if (DEBUG_DOM_INPUT) {
-				console.log('[Input DOM] focus')
-			}
-			setActive(true)
-		}
+		const handleBlur = () => setActive(false)
+		const handleFocus = () => setActive(true)
 
 		domInput.addEventListener('input', handleInput)
 		domInput.addEventListener('keydown', handleKeyDown)
@@ -227,27 +235,8 @@ export const Input: FC<InputProps> = ({
 			domInput.remove()
 			domInputRef.current = null
 		}
-	}, [app, secure, maxLength, height, syncDomInputPosition])
+	}, [align, app, height, maxLength, secure, syncDomInputPosition, textColor])
 
-	const activate = useCallback(() => {
-		if (!domInputRef.current) return
-		if (DEBUG_DOM_INPUT) {
-			console.log('[Input Pixi] activate')
-		}
-		syncDomInputPosition()
-		setActive(true)
-		domInputRef.current.focus()
-	}, [syncDomInputPosition])
-
-	const displayText =
-		active || internalValue
-			? secure
-				? '•'.repeat(internalValue.length)
-				: internalValue
-			: placeholder
-
-	const isPlaceholder = !active && !internalValue
-	const displayColor = isPlaceholder ? 0x888888 : textColor
 	const rootLayout = {
 		...(width != null ? { width } : { width: '100%' }),
 		height,
@@ -262,7 +251,6 @@ export const Input: FC<InputProps> = ({
 			ref={inputRefCallback}
 			eventMode='static'
 			cursor='text'
-			onPointerDown={activate}
 			layout={rootLayout}
 		>
 			<pixiNineSliceSprite
@@ -280,31 +268,6 @@ export const Input: FC<InputProps> = ({
 					applySizeDirectly: true,
 				}}
 			/>
-			<layoutContainer
-				layout={{
-					...tw`w-full h-full`,
-					paddingLeft: 12,
-					paddingRight: 12,
-					alignItems: 'center',
-					justifyContent: TEXT_ALIGNMENT[align],
-					overflow: 'hidden',
-				}}
-			>
-				<pixiBitmapText
-					text={displayText}
-					style={{
-						fontFamily: fontConfig.fontFamily,
-						fontSize: fontConfig.fontSize,
-						fill: displayColor,
-					}}
-					layout={{
-						width: 'intrinsic',
-						height: 'intrinsic',
-						flexShrink: 0,
-					}}
-					roundPixels
-				/>
-			</layoutContainer>
 		</layoutContainer>
 	)
 }

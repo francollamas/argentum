@@ -44,6 +44,19 @@ async function generateFonts() {
 	return fontAliases
 }
 
+async function copyDomFonts() {
+	const files = await fs.promises.readdir(fontsInputPath)
+	const ttfFiles = files.filter((file) => file.endsWith('.ttf'))
+
+	for (const ttfFile of ttfFiles) {
+		const sourcePath = path.join(fontsInputPath, ttfFile)
+		const targetPath = path.join(fontsOutputPath, ttfFile)
+
+		await fs.promises.copyFile(sourcePath, targetPath)
+		console.log(`Copied DOM font ${ttfFile}`)
+	}
+}
+
 async function createFontsManifest(fontAliases: string[]) {
 	const manifestPath = path.join(fontsOutputPath, 'fonts.json')
 	await fs.promises.writeFile(
@@ -59,6 +72,9 @@ export async function generateMSDFFonts() {
 
 	console.log('Generating MSDF fonts...')
 	const fontAliases = await generateFonts()
+
+	console.log('Copying DOM fonts...')
+	await copyDomFonts()
 
 	console.log('Creating fonts manifest...')
 	await createFontsManifest(fontAliases)

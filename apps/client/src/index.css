@@ -1,3 +1,21 @@
+@font-face {
+	font-family: 'inter-dom';
+	src: url('/fonts/inter.ttf') format('truetype');
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'spacegrotesk-regular-dom';
+	src: url('/fonts/spacegrotesk-regular.ttf') format('truetype');
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'tahoma-regular-dom';
+	src: url('/fonts/tahoma-regular.ttf') format('truetype');
+	font-display: swap;
+}
+
 html,
 body,
 div,
