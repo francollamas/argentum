@@ -210,7 +210,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 6: RadioGroup
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Remove `scale` prop and manual offset calculation (`offsetX`/`offsetY`).
@@ -235,7 +235,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 7: ProgressBar
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Remove manual `x`/`y` positioning for label and value text.

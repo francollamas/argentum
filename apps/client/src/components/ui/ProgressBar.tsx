@@ -1,12 +1,11 @@
 import type { FC } from 'react'
-import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
+import { Colors } from './colors'
+import { Label } from './Label'
 
 type ProgressBarTextVariant = 'amount' | 'percentage'
 
 type ProgressBarProps = {
-	x?: number
-	y?: number
 	width: number
 	height: number
 	value?: number
@@ -18,17 +17,16 @@ type ProgressBarProps = {
 		bottom?: number
 		left?: number
 	}
-	/** Stat name rendered inside the bar, left-aligned */
+	/** Stat name rendered above the bar, left-aligned */
 	label?: string
 	labelColor?: number
-	/** Optional value text rendered centered inside the bar */
+	/** Optional value text rendered above the bar, right-aligned */
 	textVariant?: ProgressBarTextVariant
 	textColor?: number
+	layout?: Record<string, unknown>
 }
 
 export const ProgressBar: FC<ProgressBarProps> = ({
-	x,
-	y,
 	width,
 	height,
 	value = 0,
@@ -36,9 +34,10 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 	fillColor = 0xf2d059,
 	fillPaddings = { top: 2, right: 2, bottom: 2, left: 2 },
 	label,
-	labelColor = 0xffffff,
+	labelColor = Colors.metalHighlight,
 	textVariant,
-	textColor = 0xffffff,
+	textColor = Colors.silver,
+	layout,
 }) => {
 	const bgTexture = useUITexture('bar-container')
 	const fillTexture = useUITexture('bar-fill')
@@ -54,9 +53,8 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 	const bgSliceSize = Math.min(bgTexture.width, bgTexture.height) * 0.25
 	const fillSliceSize = Math.min(fillTexture.width, fillTexture.height) * 0.25
 
-	const fillInnerWidth = width - padLeft - padRight
 	const fillInnerHeight = height - padTop - padBottom
-	const fillWidth = Math.max(0, (progress / 100) * fillInnerWidth)
+	const fillPercent = `${progress}%`
 
 	const valueText =
 		textVariant === 'amount'
@@ -66,56 +64,87 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 				: null
 
 	return (
-		<pixiContainer x={x} y={y} layout={{ width, height }}>
-			<pixiNineSliceSprite
-				texture={bgTexture}
-				leftWidth={bgSliceSize}
-				topHeight={bgSliceSize}
-				rightWidth={bgSliceSize}
-				bottomHeight={bgSliceSize}
-				width={width}
-				height={height}
-			/>
-			{fillWidth > 0 && (
+		<layoutContainer
+			layout={{
+				width,
+				minWidth: width,
+				flexDirection: 'column',
+				gap: 4,
+				...layout,
+			}}
+		>
+			<layoutContainer
+				layout={{
+					width: '100%',
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					minWidth: 0,
+				}}
+			>
+				{label ? (
+					<Label
+						text={label}
+						font='labelSm'
+						color={labelColor}
+						layout={{ flexShrink: 0 }}
+					/>
+				) : null}
+				{valueText ? (
+					<Label
+						text={valueText}
+						font='bodySm'
+						color={textColor}
+						layout={{ flexShrink: 0 }}
+					/>
+				) : null}
+			</layoutContainer>
+			<layoutContainer
+				layout={{
+					width: '100%',
+					height,
+					minHeight: height,
+				}}
+			>
 				<pixiNineSliceSprite
-					texture={fillTexture}
-					leftWidth={fillSliceSize}
-					topHeight={fillSliceSize}
-					rightWidth={fillSliceSize}
-					bottomHeight={fillSliceSize}
-					x={padLeft}
-					y={padTop}
-					width={fillWidth}
-					height={fillInnerHeight}
-					tint={fillColor}
-				/>
-			)}
-			{label && (
-				<pixiBitmapText
-					text={label}
-					x={8}
-					y={height / 2}
-					anchor={{ x: 0, y: 0.5 }}
-					style={{
-						fontFamily: FONTS.label.fontFamily,
-						fontSize: FONTS.label.fontSize,
-						fill: labelColor,
+					texture={bgTexture}
+					leftWidth={bgSliceSize}
+					topHeight={bgSliceSize}
+					rightWidth={bgSliceSize}
+					bottomHeight={bgSliceSize}
+					layout={{
+						position: 'absolute',
+						width: '100%',
+						height: '100%',
+						applySizeDirectly: true,
 					}}
 				/>
-			)}
-			{valueText && (
-				<pixiBitmapText
-					text={valueText}
-					x={width / 2}
-					y={height / 2}
-					anchor={{ x: 0.5, y: 0.5 }}
-					style={{
-						fontFamily: FONTS.body.fontFamily,
-						fontSize: FONTS.body.fontSize,
-						fill: textColor,
-					}}
-				/>
-			)}
-		</pixiContainer>
+				{progress > 0 && (
+					<layoutContainer
+						layout={{
+							position: 'absolute',
+							left: padLeft,
+							right: padRight,
+							top: padTop,
+							bottom: padBottom,
+						}}
+					>
+						<pixiNineSliceSprite
+							texture={fillTexture}
+							leftWidth={fillSliceSize}
+							topHeight={fillSliceSize}
+							rightWidth={fillSliceSize}
+							bottomHeight={fillSliceSize}
+							tint={fillColor}
+							layout={{
+								width: fillPercent,
+								height: fillInnerHeight,
+								applySizeDirectly: true,
+							}}
+						/>
+					</layoutContainer>
+				)}
+			</layoutContainer>
+		</layoutContainer>
 	)
 }
