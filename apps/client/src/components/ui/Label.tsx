@@ -5,14 +5,14 @@ type LabelProps = {
 	text: string
 	font?: FontType
 	color?: number
-	layoutStyle?: Record<string, unknown>
+	layout?: Record<string, unknown>
 }
 
 export const Label: FC<LabelProps> = ({
 	text,
 	font = 'body',
 	color = 0xffffff,
-	layoutStyle,
+	layout,
 }) => {
 	const fontConfig = FONTS[font]
 
@@ -23,7 +23,7 @@ export const Label: FC<LabelProps> = ({
 				width: 'intrinsic',
 				height: 'intrinsic',
 				flexShrink: 0,
-				...layoutStyle,
+				...layout,
 			}}
 			style={{
 				fontFamily: fontConfig.fontFamily,

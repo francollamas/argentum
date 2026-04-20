@@ -60,7 +60,7 @@ export const LabelDemoScreen: FC = () => {
 								text={variant}
 								font='labelSm'
 								color={Colors.metalLight}
-								layoutStyle={{ width: 80 }}
+								layout={{ width: 80 }}
 							/>
 							<Label
 								text={`The quick brown fox — ${variant}`}
@@ -105,7 +105,7 @@ export const LabelDemoScreen: FC = () => {
 					text='layoutStyle demo: alignSelf center'
 					font='label'
 					color={Colors.metalHighlight}
-					layoutStyle={{ alignSelf: 'center' }}
+					layout={{ alignSelf: 'center' }}
 				/>
 			</layoutContainer>
 		</layoutContainer>

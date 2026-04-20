@@ -2,48 +2,66 @@ import { tw } from '@pixi/layout/tailwind'
 import type { FC, ReactNode } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 
+const OUTER_LAYOUT_KEYS = new Set([
+	'width',
+	'height',
+	'minWidth',
+	'minHeight',
+	'maxWidth',
+	'maxHeight',
+	'flex',
+	'flexGrow',
+	'flexShrink',
+	'flexBasis',
+	'alignSelf',
+	'margin',
+	'marginTop',
+	'marginRight',
+	'marginBottom',
+	'marginLeft',
+	'position',
+	'top',
+	'right',
+	'bottom',
+	'left',
+])
+
 type PanelProps = {
 	children?: ReactNode
-	width?: number | string
-	height?: number | string
-	padding?: number
-	gap?: number
-	flexDirection?: 'column' | 'row'
-	alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch'
-	justifyContent?:
-		| 'flex-start'
-		| 'center'
-		| 'flex-end'
-		| 'space-between'
-		| 'space-around'
-		| 'space-evenly'
-	layoutStyle?: Record<string, unknown>
+	layout?: Record<string, unknown>
 	sliceSize?: number
 }
 
-export const Panel: FC<PanelProps> = ({
-	children,
-	width,
-	height,
-	padding = 16,
-	gap = 8,
-	flexDirection = 'column',
-	alignItems = 'flex-start',
-	justifyContent = 'flex-start',
-	layoutStyle,
-	sliceSize = 42,
-}) => {
+export const Panel: FC<PanelProps> = ({ children, layout, sliceSize = 42 }) => {
 	const panelTexture = useUITexture('panel')
 	const minimumPanelSize = sliceSize * 2 + 1
+	const outerLayout: Record<string, unknown> = {}
+	const innerLayout: Record<string, unknown> = {}
+
+	for (const [key, value] of Object.entries(layout ?? {})) {
+		if (OUTER_LAYOUT_KEYS.has(key)) {
+			outerLayout[key] = value
+			continue
+		}
+
+		innerLayout[key] = value
+	}
+
+	const minWidth =
+		typeof outerLayout.minWidth === 'number'
+			? Math.max(outerLayout.minWidth, minimumPanelSize)
+			: (outerLayout.minWidth ?? minimumPanelSize)
+	const minHeight =
+		typeof outerLayout.minHeight === 'number'
+			? Math.max(outerLayout.minHeight, minimumPanelSize)
+			: (outerLayout.minHeight ?? minimumPanelSize)
 
 	return (
 		<layoutContainer
 			layout={{
-				...(width != null ? { width } : {}),
-				...(height != null ? { height } : {}),
-				...layoutStyle,
-				minWidth: minimumPanelSize,
-				minHeight: minimumPanelSize,
+				...outerLayout,
+				minWidth,
+				minHeight,
 			}}
 		>
 			<pixiNineSliceSprite
@@ -62,16 +80,11 @@ export const Panel: FC<PanelProps> = ({
 			<layoutContainer
 				layout={{
 					...tw`flex-col`,
-					...(width != null ? { width: '100%' } : {}),
-					...(height != null ? { height: '100%' } : {}),
-					paddingTop: padding,
-					paddingRight: padding,
-					paddingBottom: padding,
-					paddingLeft: padding,
-					gap,
-					flexDirection,
-					alignItems,
-					justifyContent,
+					...(outerLayout.width != null ? { width: '100%' } : {}),
+					...(outerLayout.height != null ? { height: '100%' } : {}),
+					padding: 16,
+					gap: 8,
+					...innerLayout,
 				}}
 			>
 				{children}

@@ -15,7 +15,7 @@ type ButtonProps = {
 	textColor?: number
 	variant?: ButtonVariant
 	disabled?: boolean
-	layoutStyle?: Record<string, unknown>
+	layout?: Record<string, unknown>
 }
 
 type ButtonStyleConfig = {
@@ -51,7 +51,7 @@ export const Button: FC<ButtonProps> = ({
 	textColor = 0xffffff,
 	variant = 'normal',
 	disabled = false,
-	layoutStyle,
+	layout,
 }) => {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
@@ -91,7 +91,7 @@ export const Button: FC<ButtonProps> = ({
 				paddingRight: style.paddingH,
 				paddingTop: style.paddingV,
 				paddingBottom: style.paddingV,
-				...layoutStyle,
+				...layout,
 			}}
 			eventMode={disabled ? 'none' : 'static'}
 			cursor={disabled ? 'default' : 'pointer'}

@@ -27,7 +27,7 @@ export const PanelDemoScreen: FC = () => {
 					gap: 20,
 				}}
 			>
-				<Panel width={320}>
+				<Panel layout={{ width: 320 }}>
 					<Label
 						text='Default Column Panel'
 						font='titleSm'
@@ -41,7 +41,7 @@ export const PanelDemoScreen: FC = () => {
 					<Button text='Primary Action' onPress={() => {}} />
 				</Panel>
 
-				<Panel width={360} padding={24} gap={16}>
+				<Panel layout={{ width: 360, padding: 24, gap: 16 }}>
 					<Label text='Padding + Gap' font='titleSm' color={Colors.gold} />
 					<Label
 						text='This panel uses larger spacing so the content breathes more.'
@@ -54,7 +54,7 @@ export const PanelDemoScreen: FC = () => {
 					</layoutContainer>
 				</Panel>
 
-				<Panel width={520} flexDirection='row' gap={16}>
+				<Panel layout={{ width: 520, flexDirection: 'row', gap: 16 }}>
 					<layoutContainer layout={tw`flex-col gap-2`}>
 						<Label text='Row Layout' font='titleSm' color={Colors.gold} />
 						<Label
@@ -68,19 +68,21 @@ export const PanelDemoScreen: FC = () => {
 				</Panel>
 
 				<Panel
-					width={520}
-					height={90}
-					flexDirection='row'
-					gap={10}
-					alignItems='center'
-					justifyContent='center'
+					layout={{
+						width: 520,
+						height: 90,
+						flexDirection: 'row',
+						gap: 10,
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
 				>
 					<Button text='Left' variant='small' onPress={() => {}} />
 					<Button text='Center' variant='small' onPress={() => {}} />
 					<Button text='Right' variant='small' onPress={() => {}} />
 				</Panel>
 
-				<Panel width={320} height={220} gap={12}>
+				<Panel layout={{ width: 320, height: 220, gap: 12 }}>
 					<Label text='Fixed Height' font='titleSm' color={Colors.gold} />
 					<Label
 						text='A fixed-height panel keeps its background stretched while content stays layout-driven.'
@@ -91,9 +93,9 @@ export const PanelDemoScreen: FC = () => {
 					<Button text='Bottom Action' onPress={() => {}} />
 				</Panel>
 
-				<Panel width={420} padding={20} gap={16}>
+				<Panel layout={{ width: 420, padding: 20, gap: 16 }}>
 					<Label text='Nested Panels' font='titleSm' color={Colors.gold} />
-					<Panel padding={12} gap={6}>
+					<Panel layout={{ padding: 12, gap: 6 }}>
 						<Label
 							text='Character Summary'
 							font='label'
@@ -102,7 +104,14 @@ export const PanelDemoScreen: FC = () => {
 						<Label text='Class: Warrior' font='bodySm' color={Colors.silver} />
 						<Label text='Level: 12' font='bodySm' color={Colors.silver} />
 					</Panel>
-					<Panel flexDirection='row' padding={12} gap={10} alignItems='center'>
+					<Panel
+						layout={{
+							flexDirection: 'row',
+							padding: 12,
+							gap: 10,
+							alignItems: 'center',
+						}}
+					>
 						<Button text='Stats' variant='small' onPress={() => {}} />
 						<Button text='Inventory' variant='small' onPress={() => {}} />
 						<Button text='Skills' variant='small' onPress={() => {}} />
