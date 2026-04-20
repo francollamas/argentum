@@ -171,7 +171,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 4: CheckBox
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Remove `scale` prop. Sprite renders at intrinsic texture size (or explicit fixed size).
@@ -192,7 +192,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 5: Switch
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Same refactor pattern as CheckBox. Remove `scale`, remove hit-rect hack, use flexbox.
