@@ -6,9 +6,7 @@ export const ButtonDemoScreen: FC = () => {
 	return (
 		<layoutContainer
 			layout={{
-				...tw`flex-col items-center justify-center`,
-				width: '100%',
-				height: '100%',
+				...tw`w-full h-full flex-col items-center justify-center`,
 				padding: 32,
 			}}
 		>

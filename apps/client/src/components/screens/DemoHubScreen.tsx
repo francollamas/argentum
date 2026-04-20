@@ -102,7 +102,7 @@ export const DemoHubScreen: FC = () => {
 								onPress={() => setActiveDemoId(null)}
 							/>
 						</layoutContainer>
-						<layoutContainer layout={{ ...tw`w-full`, flex: 1 }}>
+						<layoutContainer layout={tw`w-full flex-1`}>
 							<ActiveDemoScreen onBack={() => setActiveDemoId(null)} />
 						</layoutContainer>
 					</layoutContainer>

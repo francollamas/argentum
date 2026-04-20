@@ -6,9 +6,8 @@ export const PanelDemoScreen: FC = () => {
 	return (
 		<layoutContainer
 			layout={{
-				...tw`w-full h-full flex-col items-center`,
+				...tw`w-full h-full flex-col items-center gap-6`,
 				padding: 32,
-				gap: 24,
 			}}
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
@@ -22,8 +21,7 @@ export const PanelDemoScreen: FC = () => {
 
 			<layoutContainer
 				layout={{
-					...tw`flex-row flex-wrap justify-center`,
-					width: '100%',
+					...tw`w-full flex-row flex-wrap justify-center`,
 					gap: 20,
 				}}
 			>
@@ -54,7 +52,7 @@ export const PanelDemoScreen: FC = () => {
 					</layoutContainer>
 				</Panel>
 
-				<Panel layout={{ width: 520, flexDirection: 'row', gap: 16 }}>
+				<Panel layout={{ ...tw`flex-row gap-4`, width: 520 }}>
 					<layoutContainer layout={tw`flex-col gap-2`}>
 						<Label text='Row Layout' font='titleSm' color={Colors.gold} />
 						<Label
@@ -69,12 +67,10 @@ export const PanelDemoScreen: FC = () => {
 
 				<Panel
 					layout={{
+						...tw`flex-row items-center justify-center`,
 						width: 520,
 						height: 90,
-						flexDirection: 'row',
 						gap: 10,
-						alignItems: 'center',
-						justifyContent: 'center',
 					}}
 				>
 					<Button text='Left' variant='small' onPress={() => {}} />
@@ -104,14 +100,7 @@ export const PanelDemoScreen: FC = () => {
 						<Label text='Class: Warrior' font='bodySm' color={Colors.silver} />
 						<Label text='Level: 12' font='bodySm' color={Colors.silver} />
 					</Panel>
-					<Panel
-						layout={{
-							flexDirection: 'row',
-							padding: 12,
-							gap: 10,
-							alignItems: 'center',
-						}}
-					>
+					<Panel layout={{ ...tw`flex-row items-center`, padding: 12, gap: 10 }}>
 						<Button text='Stats' variant='small' onPress={() => {}} />
 						<Button text='Inventory' variant='small' onPress={() => {}} />
 						<Button text='Skills' variant='small' onPress={() => {}} />

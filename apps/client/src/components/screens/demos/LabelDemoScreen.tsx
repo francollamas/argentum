@@ -30,9 +30,7 @@ export const LabelDemoScreen: FC = () => {
 	return (
 		<layoutContainer
 			layout={{
-				...tw`flex-col items-center justify-center`,
-				width: '100%',
-				height: '100%',
+				...tw`w-full h-full flex-col items-center justify-center`,
 				padding: 32,
 			}}
 		>
@@ -76,22 +74,16 @@ export const LabelDemoScreen: FC = () => {
 					<Label text='Color Samples' font='titleSm' color={Colors.gold} />
 					<layoutContainer layout={tw`flex-row flex-wrap items-center gap-4`}>
 						{COLOR_SAMPLES.map((sample) => (
-							<layoutContainer
-								key={sample.name}
-								layout={{
-									...tw`flex-row gap-2`,
-									alignItems: 'baseline',
-								}}
-							>
+							<layoutContainer key={sample.name} layout={tw`flex-row items-baseline gap-2`}>
 								<layoutContainer
 									layout={{
+										...tw`shrink-0`,
 										width: 16,
 										height: 16,
 										minWidth: 16,
 										minHeight: 16,
 										backgroundColor: sample.value,
 										borderRadius: 2,
-										flexShrink: 0,
 									}}
 								/>
 								<Label text={sample.name} font='body' color={sample.value} />
