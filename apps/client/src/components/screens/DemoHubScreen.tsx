@@ -6,6 +6,7 @@ import { Button, Colors, Label } from '../ui'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
+import { PanelDemoScreen } from './demos/PanelDemoScreen'
 
 type FramedDemoProps = {
 	onBack: () => void
@@ -20,6 +21,7 @@ type DemoDefinition = {
 
 const LabelDemoRoute: FC<FramedDemoProps> = () => <LabelDemoScreen />
 const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
+const PanelDemoRoute: FC<FramedDemoProps> = () => <PanelDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -34,7 +36,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'fullscreen',
 		render: GameMapDemoScreen,
 	},
-	{ id: 'panel', label: 'Panel', presentation: 'framed' },
+	{
+		id: 'panel',
+		label: 'Panel',
+		presentation: 'framed',
+		render: PanelDemoRoute,
+	},
 	{
 		id: 'button',
 		label: 'Button',
