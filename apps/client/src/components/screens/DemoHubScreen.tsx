@@ -8,6 +8,7 @@ import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
 import { PanelDemoScreen } from './demos/PanelDemoScreen'
+import { RadioGroupDemoScreen } from './demos/RadioGroupDemoScreen'
 import { SwitchDemoScreen } from './demos/SwitchDemoScreen'
 
 type FramedDemoProps = {
@@ -26,6 +27,7 @@ const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
 const PanelDemoRoute: FC<FramedDemoProps> = () => <PanelDemoScreen />
 const CheckBoxDemoRoute: FC<FramedDemoProps> = () => <CheckBoxDemoScreen />
 const SwitchDemoRoute: FC<FramedDemoProps> = () => <SwitchDemoScreen />
+const RadioGroupDemoRoute: FC<FramedDemoProps> = () => <RadioGroupDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -64,7 +66,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: SwitchDemoRoute,
 	},
-	{ id: 'radiogroup', label: 'RadioGroup', presentation: 'framed' },
+	{
+		id: 'radiogroup',
+		label: 'RadioGroup',
+		presentation: 'framed',
+		render: RadioGroupDemoRoute,
+	},
 	{ id: 'progressbar', label: 'ProgressBar', presentation: 'framed' },
 	{ id: 'input', label: 'Input', presentation: 'framed' },
 	{ id: 'divider', label: 'Divider', presentation: 'framed' },
