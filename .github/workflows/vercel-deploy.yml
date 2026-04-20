@@ -29,6 +29,8 @@ jobs:
       group: vercel-${{ inputs.environment }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
+      - uses: actions/checkout@v6
+
       - uses: ./.github/actions/setup-client
         with:
           working-directory: ${{ env.CLIENT_DIR }}

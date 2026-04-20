@@ -1,5 +1,5 @@
 name: Setup Client
-description: Checkout repository and install client dependencies
+description: Setup Node, pnpm and install client dependencies
 
 inputs:
   working-directory:
@@ -22,8 +22,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v6
-
     - uses: pnpm/action-setup@v5
       with:
         version: ${{ inputs.pnpm-version }}
