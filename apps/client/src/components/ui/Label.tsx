@@ -6,6 +6,7 @@ type LabelProps = {
 	font?: FontType
 	color?: number
 	layout?: Record<string, unknown>
+	wrap?: boolean
 }
 
 export const Label: FC<LabelProps> = ({
@@ -13,8 +14,28 @@ export const Label: FC<LabelProps> = ({
 	font = 'body',
 	color = 0xffffff,
 	layout,
+	wrap = false,
 }) => {
 	const fontConfig = FONTS[font]
+	const textStyle = {
+		fontFamily: fontConfig.fontFamily,
+		fontSize: fontConfig.fontSize,
+		fill: color,
+		...(wrap ? { wordWrap: true } : {}),
+	}
+	if (wrap) {
+		return (
+			<layoutBitmapText
+				text={text}
+				layout={{
+					width: '100%',
+					height: 'intrinsic',
+					...layout,
+				}}
+				style={textStyle}
+			/>
+		)
+	}
 
 	return (
 		<pixiBitmapText
@@ -25,11 +46,7 @@ export const Label: FC<LabelProps> = ({
 				flexShrink: 0,
 				...layout,
 			}}
-			style={{
-				fontFamily: fontConfig.fontFamily,
-				fontSize: fontConfig.fontSize,
-				fill: color,
-			}}
+			style={textStyle}
 		/>
 	)
 }

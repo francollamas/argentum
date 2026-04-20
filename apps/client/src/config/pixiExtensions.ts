@@ -1,4 +1,4 @@
-import { LayoutContainer } from '@pixi/layout/components'
+import { LayoutBitmapText, LayoutContainer } from '@pixi/layout/components'
 import { extend } from '@pixi/react'
 import {
 	AnimatedSprite,
@@ -14,6 +14,7 @@ extend({
 	BitmapText,
 	Container,
 	Graphics,
+	LayoutBitmapText,
 	LayoutContainer,
 	NineSliceSprite,
 	Sprite,

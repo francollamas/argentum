@@ -16,6 +16,7 @@ export const PanelDemoScreen: FC = () => {
 					text='Panel as a real flex container with direct children'
 					font='bodySm'
 					color={Colors.silver}
+					wrap
 				/>
 			</layoutContainer>
 
@@ -35,6 +36,7 @@ export const PanelDemoScreen: FC = () => {
 						text='Uses the built-in defaults: padding 16, gap 8, column layout.'
 						font='bodySm'
 						color={Colors.silver}
+						wrap
 					/>
 					<Button text='Primary Action' onPress={() => {}} />
 				</Panel>
@@ -45,6 +47,7 @@ export const PanelDemoScreen: FC = () => {
 						text='This panel uses larger spacing so the content breathes more.'
 						font='bodySm'
 						color={Colors.silver}
+						wrap
 					/>
 					<layoutContainer layout={tw`flex-row items-center gap-3`}>
 						<Button text='Accept' variant='small' onPress={() => {}} />
@@ -53,12 +56,15 @@ export const PanelDemoScreen: FC = () => {
 				</Panel>
 
 				<Panel layout={{ ...tw`flex-row gap-4`, width: 520 }}>
-					<layoutContainer layout={tw`flex-col gap-2`}>
+					<layoutContainer
+						layout={{ ...tw`flex-col gap-2`, flex: 1, minWidth: 0 }}
+					>
 						<Label text='Row Layout' font='titleSm' color={Colors.gold} />
 						<Label
 							text='Children sit next to each other without an extra inner wrapper.'
 							font='bodySm'
 							color={Colors.silver}
+							wrap
 						/>
 					</layoutContainer>
 					<Button text='Equip' onPress={() => {}} />
@@ -84,6 +90,7 @@ export const PanelDemoScreen: FC = () => {
 						text='A fixed-height panel keeps its background stretched while content stays layout-driven.'
 						font='bodySm'
 						color={Colors.silver}
+						wrap
 					/>
 					<layoutContainer layout={{ flex: 1 }} />
 					<Button text='Bottom Action' onPress={() => {}} />
