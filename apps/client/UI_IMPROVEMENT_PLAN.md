@@ -258,13 +258,38 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 **Status**: `pending`
 
 **What**:
-- Remove `fontSize * 0.5` hack. Use the `body` font variant from typography (18px).
-- Remove manual `textX`/`textY` calculation. Use flexbox to position text inside the input (`alignItems: 'center'`, padding for horizontal inset).
-- NineSliceSprite background via `position: 'absolute'`.
-- Keep DOM input strategy (invisible `<input>` for keyboard capture) — this is the correct approach for PixiJS text input and maximizes platform compatibility.
-- Remove `x`/`y` props — positioned by parent flex.
-- Input should fill available width by default (`flex: 1` or explicit `width`).
-- `align` prop controls `justifyContent` for the text.
+- Remove `fontSize * 0.5` hack. Use the `body` font variant from typography (18px) directly.
+- Remove manual `textX`/`textY` calculation and any `anchor` usage. Text placement must come from a dedicated inner flex container.
+- Keep the current invisible DOM `<input>` strategy for keyboard capture, focus, blur, Enter, and Escape handling. This remains the source of truth for actual text input.
+- Remove `x`/`y` props entirely. The component is positioned only by parent flex layout.
+- The root node should be a `layoutContainer` with `eventMode='static'`, `cursor='text'`, and pointer activation that focuses the DOM input.
+- The visual background should be a `NineSliceSprite` in absolute layout mode (`position: 'absolute'`, `width: '100%'`, `height: '100%'`, `applySizeDirectly: true`).
+- Add an inner `layoutContainer` that owns text padding and alignment. Use `alignItems: 'center'` for vertical centering and map `align` to horizontal `justifyContent`:
+  - `left` -> `flex-start`
+  - `center` -> `center`
+  - `right` -> `flex-end`
+- Input should stretch to available width by default when placed in bounded containers, while still allowing explicit `width` and `height` overrides.
+- Add a `layout` pass-through prop so callers can provide `flex`, `alignSelf`, `minWidth`, etc., without adding more bespoke props.
+- Placeholder text should render with a muted color when the input is unfocused and empty.
+
+**Internal structure target**:
+```tsx
+<layoutContainer layout={rootLayout} eventMode='static'>
+  <pixiNineSliceSprite layout={backgroundLayout} ... />
+  <layoutContainer layout={contentLayout}>
+    <pixiBitmapText layout={textLayout} ... />
+  </layoutContainer>
+</layoutContainer>
+```
+
+**Acceptance criteria**:
+- `Input` no longer exposes `x` / `y`.
+- `Input` no longer uses manual text coordinates or `anchor`.
+- `Input` no longer scales font size artificially.
+- Background sizing is driven by layout, not by manual sprite dimensions.
+- Text alignment responds correctly to `align='left' | 'center' | 'right'`.
+- The component works correctly inside `Panel` and in row/column layout compositions.
+- DemoHub enables the Input demo button.
 
 **API after refactor**:
 ```tsx

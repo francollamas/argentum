@@ -6,6 +6,7 @@ import { Button, Colors, Label } from '../ui'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
+import { InputDemoScreen } from './demos/InputDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
 import { PanelDemoScreen } from './demos/PanelDemoScreen'
 import { ProgressBarDemoScreen } from './demos/ProgressBarDemoScreen'
@@ -32,6 +33,7 @@ const RadioGroupDemoRoute: FC<FramedDemoProps> = () => <RadioGroupDemoScreen />
 const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
 	<ProgressBarDemoScreen />
 )
+const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -82,7 +84,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: ProgressBarDemoRoute,
 	},
-	{ id: 'input', label: 'Input', presentation: 'framed' },
+	{
+		id: 'input',
+		label: 'Input',
+		presentation: 'framed',
+		render: InputDemoRoute,
+	},
 	{ id: 'divider', label: 'Divider', presentation: 'framed' },
 	{ id: 'slider', label: 'Slider', presentation: 'framed' },
 	{ id: 'iconbutton', label: 'IconButton', presentation: 'framed' },
