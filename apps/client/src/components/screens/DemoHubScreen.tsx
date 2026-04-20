@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ContentFrame, UIScreen } from '../layout'
 import { Button, Colors, Label } from '../ui'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
+import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
 import { PanelDemoScreen } from './demos/PanelDemoScreen'
@@ -22,6 +23,7 @@ type DemoDefinition = {
 const LabelDemoRoute: FC<FramedDemoProps> = () => <LabelDemoScreen />
 const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
 const PanelDemoRoute: FC<FramedDemoProps> = () => <PanelDemoScreen />
+const CheckBoxDemoRoute: FC<FramedDemoProps> = () => <CheckBoxDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -48,7 +50,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: ButtonDemoRoute,
 	},
-	{ id: 'checkbox', label: 'CheckBox', presentation: 'framed' },
+	{
+		id: 'checkbox',
+		label: 'CheckBox',
+		presentation: 'framed',
+		render: CheckBoxDemoRoute,
+	},
 	{ id: 'switch', label: 'Switch', presentation: 'framed' },
 	{ id: 'radiogroup', label: 'RadioGroup', presentation: 'framed' },
 	{ id: 'progressbar', label: 'ProgressBar', presentation: 'framed' },
