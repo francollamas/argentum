@@ -100,7 +100,9 @@ export const PanelDemoScreen: FC = () => {
 						<Label text='Class: Warrior' font='bodySm' color={Colors.silver} />
 						<Label text='Level: 12' font='bodySm' color={Colors.silver} />
 					</Panel>
-					<Panel layout={{ ...tw`flex-row items-center`, padding: 12, gap: 10 }}>
+					<Panel
+						layout={{ ...tw`flex-row items-center`, padding: 12, gap: 10 }}
+					>
 						<Button text='Stats' variant='small' onPress={() => {}} />
 						<Button text='Inventory' variant='small' onPress={() => {}} />
 						<Button text='Skills' variant='small' onPress={() => {}} />

@@ -2,6 +2,8 @@ import { tw } from '@pixi/layout/tailwind'
 import type { FC, ReactNode } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 
+type PanelNumberValue = number | `${number}` | `${number}%`
+
 const OUTER_LAYOUT_KEYS = new Set([
 	'width',
 	'height',
@@ -50,11 +52,11 @@ export const Panel: FC<PanelProps> = ({ children, layout, sliceSize = 42 }) => {
 	const minWidth =
 		typeof outerLayout.minWidth === 'number'
 			? Math.max(outerLayout.minWidth, minimumPanelSize)
-			: (outerLayout.minWidth ?? minimumPanelSize)
+			: ((outerLayout.minWidth ?? minimumPanelSize) as PanelNumberValue)
 	const minHeight =
 		typeof outerLayout.minHeight === 'number'
 			? Math.max(outerLayout.minHeight, minimumPanelSize)
-			: (outerLayout.minHeight ?? minimumPanelSize)
+			: ((outerLayout.minHeight ?? minimumPanelSize) as PanelNumberValue)
 
 	return (
 		<layoutContainer

@@ -74,7 +74,10 @@ export const LabelDemoScreen: FC = () => {
 					<Label text='Color Samples' font='titleSm' color={Colors.gold} />
 					<layoutContainer layout={tw`flex-row flex-wrap items-center gap-4`}>
 						{COLOR_SAMPLES.map((sample) => (
-							<layoutContainer key={sample.name} layout={tw`flex-row items-baseline gap-2`}>
+							<layoutContainer
+								key={sample.name}
+								layout={tw`flex-row items-baseline gap-2`}
+							>
 								<layoutContainer
 									layout={{
 										...tw`shrink-0`,

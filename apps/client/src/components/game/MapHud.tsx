@@ -4,7 +4,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { useFPS } from '../../hooks/useFPS'
 import { usePlayerPosition } from '../../hooks/usePlayer'
 import { useViewportStore } from '../../store/viewportStore'
-import { Button, Colors, Label } from '../ui'
+import { Button, Colors, Label, Panel } from '../ui'
 
 type MapHudProps = {
 	onBack: () => void
@@ -49,14 +49,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 					}}
 				>
 					<Button text='Back' variant='small' onPress={onBack} />
-					<layoutContainer
-						layout={{
-							...tw`flex-col gap-1`,
-							padding: 12,
-							backgroundColor: Colors.backgroundDark,
-							borderRadius: 8,
-						}}
-					>
+					<Panel layout={{ ...tw`flex-col gap-1`, padding: 12 }}>
 						<Label text='Map Demo' font='titleSm' color={Colors.gold} />
 						<Label
 							text='Arrow keys move the player state'
@@ -68,15 +61,8 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='labelSm'
 							color={Colors.bronze}
 						/>
-					</layoutContainer>
-					<layoutContainer
-						layout={{
-							...tw`flex-col gap-1`,
-							padding: 12,
-							backgroundColor: Colors.backgroundDark,
-							borderRadius: 8,
-						}}
-					>
+					</Panel>
+					<Panel layout={{ ...tw`flex-col gap-1`, padding: 12 }}>
 						<Label
 							text='Region: Town Center'
 							font='label'
@@ -92,7 +78,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='labelSm'
 							color={Colors.silver}
 						/>
-					</layoutContainer>
+					</Panel>
 				</layoutContainer>
 				<layoutContainer
 					layout={{
@@ -102,14 +88,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 						maxWidth: '100%',
 					}}
 				>
-					<layoutContainer
-						layout={{
-							...tw`flex-col gap-1`,
-							padding: 12,
-							backgroundColor: Colors.backgroundDark,
-							borderRadius: 8,
-						}}
-					>
+					<Panel layout={{ ...tw`flex-col gap-1`, padding: 12 }}>
 						<Label
 							text={`Zoom: ${worldZoom.toFixed(2)}x`}
 							font='label'
@@ -121,7 +100,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='labelSm'
 							color={Colors.bronze}
 						/>
-					</layoutContainer>
+					</Panel>
 					<layoutContainer
 						layout={{
 							...tw`flex-row gap-2`,
@@ -169,15 +148,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 						maxWidth: 280,
 					}}
 				>
-					<layoutContainer
-						layout={{
-							...tw`flex-col gap-1`,
-							padding: 12,
-							backgroundColor: Colors.backgroundDark,
-							borderRadius: 8,
-							alignItems: 'flex-end',
-						}}
-					>
+					<Panel layout={{ ...tw`flex-col items-end gap-1`, padding: 12 }}>
 						<Label text='Session' font='label' color={Colors.gold} />
 						<Label
 							text='Players nearby: 3'
@@ -190,16 +161,8 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='labelSm'
 							color={Colors.bronze}
 						/>
-					</layoutContainer>
-					<layoutContainer
-						layout={{
-							...tw`flex-col gap-1`,
-							padding: 12,
-							backgroundColor: Colors.backgroundDark,
-							borderRadius: 8,
-							alignItems: 'flex-end',
-						}}
-					>
+					</Panel>
+					<Panel layout={{ ...tw`flex-col items-end gap-1`, padding: 12 }}>
 						<Label text='Tips' font='label' color={Colors.gold} />
 						<Label text='Arrows move' font='labelSm' color={Colors.silver} />
 						<Label
@@ -212,7 +175,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 							font='labelSm'
 							color={Colors.bronze}
 						/>
-					</layoutContainer>
+					</Panel>
 				</layoutContainer>
 			</layoutContainer>
 
@@ -233,15 +196,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 					<Button text='Skills' variant='small' onPress={() => {}} />
 					<Button text='Config' variant='small' onPress={() => {}} />
 				</layoutContainer>
-				<layoutContainer
-					layout={{
-						...tw`flex-col gap-1`,
-						padding: 12,
-						backgroundColor: Colors.backgroundDark,
-						borderRadius: 8,
-						alignItems: 'flex-end',
-					}}
-				>
+				<Panel layout={{ ...tw`flex-col items-end gap-1`, padding: 12 }}>
 					<Label
 						text='HUD wraps on resize'
 						font='labelSm'
@@ -257,7 +212,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 						font='label'
 						color={Colors.gold}
 					/>
-				</layoutContainer>
+				</Panel>
 			</layoutContainer>
 		</layoutContainer>
 	)
