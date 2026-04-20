@@ -16,7 +16,7 @@ export const usePlayerStore = create<PlayerStore>()(
 	devtools(
 		persist(
 			(set) => ({
-				position: { tileX: 90, tileY: 40 },
+				position: { tileX: 50, tileY: 50 },
 				setPosition: (position) => set({ position }, false, 'setPosition'),
 				movePlayer: (position) => set({ position }, false, 'movePlayer'),
 			}),
