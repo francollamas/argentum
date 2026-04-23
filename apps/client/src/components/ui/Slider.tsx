@@ -4,6 +4,14 @@ import type { FC } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 
+type LayoutMeasuredContainer = Container & {
+	layout?: {
+		computedLayout?: {
+			width?: number
+		}
+	}
+}
+
 type SliderProps = {
 	value: number
 	min?: number
@@ -56,8 +64,12 @@ export const Slider: FC<SliderProps> = ({
 	const trackHeight = Math.min(DEFAULT_TRACK_HEIGHT, height)
 	const trackTop = Math.max(0, Math.round((height - trackHeight) / 2))
 	const thumbTop = Math.max(0, Math.round((height - thumbHeight) / 2))
-	const fillWidth = Math.max(0, Math.round(trackWidth * progress))
-	const thumbLeft = Math.round(progress * trackWidth - thumbWidth / 2)
+	const thumbTravelWidth = Math.max(0, trackWidth - thumbWidth)
+	const thumbLeft = Math.round(progress * thumbTravelWidth)
+	const fillWidth = Math.max(
+		0,
+		Math.min(trackWidth, Math.round(thumbLeft + thumbWidth / 2)),
+	)
 
 	const rootLayout = useMemo(
 		() => ({
@@ -78,7 +90,9 @@ export const Slider: FC<SliderProps> = ({
 		}
 
 		const nextWidth =
-			node.getLocalBounds().width || node.width || width || DEFAULT_WIDTH
+			(node as LayoutMeasuredContainer).layout?.computedLayout?.width ||
+			width ||
+			DEFAULT_WIDTH
 		setTrackWidth(nextWidth)
 	}, [width])
 
@@ -106,7 +120,9 @@ export const Slider: FC<SliderProps> = ({
 			}
 
 			const local = node.toLocal(global)
-			const usableWidth = node.getLocalBounds().width || trackWidth
+			const usableWidth =
+				(node as LayoutMeasuredContainer).layout?.computedLayout?.width ||
+				trackWidth
 			if (usableWidth <= 0) {
 				return
 			}
@@ -131,26 +147,34 @@ export const Slider: FC<SliderProps> = ({
 			return
 		}
 
-		const handleGlobalPointerMove = (event: FederatedPointerEvent) => {
-			setValueFromGlobal(event.global)
+		const handleWindowPointerMove = (event: PointerEvent) => {
+			if (!app.canvas) {
+				return
+			}
+
+			const rect = app.canvas.getBoundingClientRect()
+			const global = {
+				x: event.clientX - rect.left,
+				y: event.clientY - rect.top,
+			}
+
+			setValueFromGlobal(global)
 		}
 
 		const stopDragging = () => {
 			setIsDragging(false)
 		}
 
-		app.stage.on('globalpointermove', handleGlobalPointerMove)
-		app.stage.on('pointerup', stopDragging)
-		app.stage.on('pointerupoutside', stopDragging)
-		app.stage.on('pointercancel', stopDragging)
+		window.addEventListener('pointermove', handleWindowPointerMove)
+		window.addEventListener('pointerup', stopDragging)
+		window.addEventListener('pointercancel', stopDragging)
 
 		return () => {
-			app.stage.off('globalpointermove', handleGlobalPointerMove)
-			app.stage.off('pointerup', stopDragging)
-			app.stage.off('pointerupoutside', stopDragging)
-			app.stage.off('pointercancel', stopDragging)
+			window.removeEventListener('pointermove', handleWindowPointerMove)
+			window.removeEventListener('pointerup', stopDragging)
+			window.removeEventListener('pointercancel', stopDragging)
 		}
-	}, [app.stage, isDragging, setValueFromGlobal])
+	}, [app.canvas, isDragging, setValueFromGlobal])
 
 	useEffect(() => {
 		return () => {
