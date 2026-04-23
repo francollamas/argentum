@@ -325,7 +325,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 10: Divider (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Simple horizontal or vertical line component.

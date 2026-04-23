@@ -1,6 +1,7 @@
 export { Button } from './Button'
 export { CheckBox } from './CheckBox'
 export { Colors } from './colors'
+export { Divider } from './Divider'
 export { Input } from './Input'
 export { Label } from './Label'
 export { Panel } from './Panel'

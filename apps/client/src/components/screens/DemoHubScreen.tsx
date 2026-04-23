@@ -5,6 +5,7 @@ import { ContentFrame, UIScreen } from '../layout'
 import { Button, Colors, Label } from '../ui'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
+import { DividerDemoScreen } from './demos/DividerDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { InputDemoScreen } from './demos/InputDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
@@ -36,6 +37,7 @@ const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
 )
 const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
 const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
+const DividerDemoRoute: FC<FramedDemoProps> = () => <DividerDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -98,7 +100,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: TextAreaDemoRoute,
 	},
-	{ id: 'divider', label: 'Divider', presentation: 'framed' },
+	{
+		id: 'divider',
+		label: 'Divider',
+		presentation: 'framed',
+		render: DividerDemoRoute,
+	},
 	{ id: 'slider', label: 'Slider', presentation: 'framed' },
 	{ id: 'iconbutton', label: 'IconButton', presentation: 'framed' },
 	{ id: 'tabbar', label: 'TabBar', presentation: 'framed' },
