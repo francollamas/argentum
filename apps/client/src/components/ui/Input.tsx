@@ -1,9 +1,12 @@
 import { useApplication } from '@pixi/react'
+import type { LayoutOptions } from '@pixi/layout'
 import type { Container, NineSliceSprite } from 'pixi.js'
-import type { FC } from 'react'
+import type { CSSProperties, FC } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
 import { FONTS } from '../../config/typography'
 import { useUITexture } from '../../hooks/useUITexture'
+import { DomInputOverlay } from './DomInputOverlay'
 
 type InputProps = {
 	width?: number
@@ -19,28 +22,10 @@ type InputProps = {
 	layout?: Record<string, unknown>
 }
 
-const DOM_INPUT_CLASS = 'ao-pixi-input-overlay'
-const DOM_INPUT_STYLE_ID = 'ao-pixi-input-overlay-styles'
-
 const toCssColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`
 
-const ensureDomInputStyles = () => {
-	if (document.getElementById(DOM_INPUT_STYLE_ID)) return
-
-	const style = document.createElement('style')
-	style.id = DOM_INPUT_STYLE_ID
-	style.textContent = `
-		.${DOM_INPUT_CLASS}::placeholder {
-			color: var(--input-placeholder-color, #888888);
-			opacity: 1;
-		}
-
-		.${DOM_INPUT_CLASS}::selection {
-			background: rgba(255, 214, 102, 0.35);
-			color: inherit;
-		}
-	`
-	document.head.appendChild(style)
+type DomInputStyle = CSSProperties & {
+	'--input-placeholder-color': string
 }
 
 export const Input: FC<InputProps> = ({
@@ -59,27 +44,23 @@ export const Input: FC<InputProps> = ({
 	const { app } = useApplication()
 	const inputNodeRef = useRef<Container | null>(null)
 	const backgroundNodeRef = useRef<NineSliceSprite | null>(null)
-	const domInputRef = useRef<HTMLInputElement | null>(null)
+	const overlayHostRef = useRef<HTMLDivElement | null>(null)
+	const overlayRootRef = useRef<Root | null>(null)
 	const syncFrameRef = useRef<number | null>(null)
-	const onChangeRef = useRef(onChange)
-	const onEnterRef = useRef(onEnter)
 	const [active, setActive] = useState(false)
+	const [domInputStyle, setDomInputStyle] = useState<DomInputStyle | null>(null)
 
 	const fontConfig = FONTS.input
 	const inputTexture = useUITexture('input-field')
 
-	onChangeRef.current = onChange
-	onEnterRef.current = onEnter
-
 	const syncDomInputPosition = useCallback(() => {
 		if (!app?.canvas) return
-		const domInput = domInputRef.current
 		const backgroundNode = backgroundNodeRef.current
-		if (!domInput || !backgroundNode) return
+		const container = overlayHostRef.current?.parentElement
+		if (!backgroundNode || !container) return
 
 		const canvasRect = app.canvas.getBoundingClientRect()
-		const parentRect = domInput.parentElement?.getBoundingClientRect()
-		if (!parentRect) return
+		const parentRect = container.getBoundingClientRect()
 
 		const bounds = backgroundNode.getBounds()
 		const left = canvasRect.left - parentRect.left + bounds.x
@@ -92,16 +73,31 @@ export const Input: FC<InputProps> = ({
 		const lineHeight = Math.max(1, renderedHeight - 2)
 		const borderRadius = Math.max(6, 6 * domScale)
 
-		domInput.style.left = `${left}px`
-		domInput.style.top = `${top}px`
-		domInput.style.width = `${width}px`
-		domInput.style.height = `${renderedHeight}px`
-		domInput.style.paddingLeft = `${paddingInline}px`
-		domInput.style.paddingRight = `${paddingInline}px`
-		domInput.style.fontSize = `${fontSize}px`
-		domInput.style.lineHeight = `${lineHeight}px`
-		domInput.style.borderRadius = `${borderRadius}px`
-	}, [app, height])
+		setDomInputStyle({
+			position: 'absolute',
+			top,
+			left,
+			width,
+			height: renderedHeight,
+			padding: `0 ${paddingInline}px`,
+			margin: 0,
+			boxSizing: 'border-box',
+			border: 'none',
+			borderRadius,
+			background: 'transparent',
+			color: toCssColor(textColor),
+			caretColor: toCssColor(textColor),
+			textAlign: align,
+			fontSize,
+			fontFamily: fontConfig.domFontFamily,
+			lineHeight: `${lineHeight}px`,
+			appearance: 'none',
+			outline: 'none',
+			pointerEvents: 'auto',
+			zIndex: 999,
+			'--input-placeholder-color': '#888888',
+		})
+	}, [align, app, fontConfig.domFontFamily, fontConfig.fontSize, height, textColor])
 
 	const scheduleDomInputSync = useCallback(() => {
 		if (syncFrameRef.current != null) {
@@ -142,120 +138,77 @@ export const Input: FC<InputProps> = ({
 
 	useEffect(() => {
 		if (!app?.canvas) return
-		ensureDomInputStyles()
 
 		const canvas = app.canvas as HTMLCanvasElement
 		const canvasParent = canvas.parentElement
 		if (!canvasParent) return
 
 		const parentStyle = window.getComputedStyle(canvasParent)
+		const shouldRestorePosition = parentStyle.position === 'static'
+		const overlayHost = document.createElement('div')
+		overlayHostRef.current = overlayHost
+		overlayRootRef.current = createRoot(overlayHost)
+		canvasParent.appendChild(overlayHost)
+
 		if (parentStyle.position === 'static') {
 			canvasParent.style.position = 'relative'
 		}
 
-		const domInput = document.createElement('input')
-		domInput.className = DOM_INPUT_CLASS
-		domInput.type = secure ? 'password' : 'text'
-		if (maxLength != null) domInput.maxLength = maxLength
-		domInput.autocomplete = 'off'
-		domInput.spellcheck = false
-
-		Object.assign(domInput.style, {
-			position: 'absolute',
-			opacity: '1',
-			pointerEvents: 'auto',
-			width: '1px',
-			height: `${height}px`,
-			boxSizing: 'border-box',
-			top: '0',
-			left: '0',
-			border: 'none',
-			borderRadius: '6px',
-			padding: '0 12px',
-			margin: '0',
-			background: 'transparent',
-			color: toCssColor(textColor),
-			caretColor: toCssColor(textColor),
-			textAlign: align,
-			fontSize: `${fontConfig.fontSize}px`,
-			fontFamily: fontConfig.domFontFamily,
-			lineHeight: `${height}px`,
-			appearance: 'none',
-			outline: 'none',
-			zIndex: '999',
-		} satisfies Partial<CSSStyleDeclaration>)
-
-		canvasParent.appendChild(domInput)
-		domInputRef.current = domInput
-		scheduleDomInputSync()
-
-		const handleInput = () => {
-			const next = domInput.value
-			onChangeRef.current?.(next)
-		}
-
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === 'Enter') {
-				onEnterRef.current?.(domInput.value)
-				domInput.blur()
-			}
-			if (e.key === 'Escape') {
-				domInput.blur()
-			}
-		}
-
-		const handleBlur = () => setActive(false)
-		const handleFocus = () => setActive(true)
-
-		domInput.addEventListener('input', handleInput)
-		domInput.addEventListener('keydown', handleKeyDown)
-		domInput.addEventListener('blur', handleBlur)
-		domInput.addEventListener('focus', handleFocus)
-
-		app.renderer.on('resize', scheduleDomInputSync)
 
 		return () => {
-			domInput.removeEventListener('input', handleInput)
-			domInput.removeEventListener('keydown', handleKeyDown)
-			domInput.removeEventListener('blur', handleBlur)
-			domInput.removeEventListener('focus', handleFocus)
-			app.renderer.off('resize', scheduleDomInputSync)
+			overlayRootRef.current?.unmount()
+			overlayRootRef.current = null
+			overlayHost.remove()
+			overlayHostRef.current = null
 			if (syncFrameRef.current != null) {
 				cancelAnimationFrame(syncFrameRef.current)
 				syncFrameRef.current = null
 			}
-			domInput.remove()
-			domInputRef.current = null
+			setDomInputStyle(null)
+			if (shouldRestorePosition) {
+				canvasParent.style.position = ''
+			}
 		}
-	}, [align, app, height, maxLength, scheduleDomInputSync, secure, textColor])
+	}, [app])
 
 	useEffect(() => {
-		if (domInputRef.current) {
-			domInputRef.current.value = value
+		if (!app) return
+
+		app.renderer.on('resize', scheduleDomInputSync)
+
+		return () => {
+			app.renderer.off('resize', scheduleDomInputSync)
 		}
-	}, [value])
+	}, [app, scheduleDomInputSync])
 
 	useEffect(() => {
-		const domInput = domInputRef.current
-		if (!domInput) return
-
-		domInput.style.color = toCssColor(textColor)
-		domInput.style.caretColor = toCssColor(textColor)
-		domInput.style.textAlign = align
-		domInput.style.setProperty('--input-placeholder-color', '#888888')
-		domInput.placeholder = placeholder
-		domInput.style.fontFamily = fontConfig.domFontFamily
 		scheduleDomInputSync()
-	}, [align, placeholder, scheduleDomInputSync, textColor])
+	}, [scheduleDomInputSync])
+
+	useEffect(() => {
+		overlayRootRef.current?.render(
+			<DomInputOverlay
+				style={domInputStyle}
+				placeholder={placeholder}
+				value={value}
+				maxLength={maxLength}
+				secure={secure}
+				onChange={onChange}
+				onEnter={onEnter}
+				onFocus={() => setActive(true)}
+				onBlur={() => setActive(false)}
+			/>,
+		)
+	}, [domInputStyle, maxLength, onChange, onEnter, placeholder, secure, value])
 
 	const rootLayout = {
 		...(width != null ? { width } : { width: '100%' }),
 		height,
 		minHeight: height,
 		minWidth: width ?? 200,
-		position: 'relative',
+		position: 'relative' as const,
 		...layout,
-	}
+	} as unknown as Omit<LayoutOptions, 'target'>
 
 	return (
 		<layoutContainer

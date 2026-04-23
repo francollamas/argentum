@@ -151,3 +151,13 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+.input-overlay::placeholder {
+	color: var(--input-placeholder-color, #888888);
+	opacity: 1;
+}
+
+.input-overlay::selection {
+	background: rgba(255, 214, 102, 0.35);
+	color: inherit;
+}
