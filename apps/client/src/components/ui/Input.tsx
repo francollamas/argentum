@@ -19,7 +19,6 @@ type InputProps = {
 	layout?: Record<string, unknown>
 }
 
-const DEBUG_DOM_INPUT = false
 const DOM_INPUT_CLASS = 'ao-pixi-input-overlay'
 const DOM_INPUT_STYLE_ID = 'ao-pixi-input-overlay-styles'
 
@@ -64,27 +63,13 @@ export const Input: FC<InputProps> = ({
 	const syncFrameRef = useRef<number | null>(null)
 	const onChangeRef = useRef(onChange)
 	const onEnterRef = useRef(onEnter)
-	const valueRef = useRef(value)
-	const placeholderRef = useRef(placeholder)
 	const [active, setActive] = useState(false)
-	const [, setInternalValue] = useState(value)
 
 	const fontConfig = FONTS.input
 	const inputTexture = useUITexture('input-field')
 
-	// Keep callback refs fresh without triggering DOM re-creation
 	onChangeRef.current = onChange
 	onEnterRef.current = onEnter
-	valueRef.current = value
-	placeholderRef.current = placeholder
-
-	// Sync controlled value into the DOM input and local state
-	useEffect(() => {
-		setInternalValue(value)
-		if (domInputRef.current) {
-			domInputRef.current.value = value
-		}
-	}, [value])
 
 	const syncDomInputPosition = useCallback(() => {
 		if (!app?.canvas) return
@@ -138,19 +123,6 @@ export const Input: FC<InputProps> = ({
 		}
 	}, [])
 
-	useEffect(() => {
-		const domInput = domInputRef.current
-		if (!domInput) return
-
-		domInput.style.color = toCssColor(textColor)
-		domInput.style.caretColor = toCssColor(textColor)
-		domInput.style.textAlign = align
-		domInput.style.setProperty('--input-placeholder-color', '#888888')
-		domInput.placeholder = placeholder
-		domInput.style.fontFamily = fontConfig.domFontFamily
-		scheduleDomInputSync()
-	}, [align, placeholder, scheduleDomInputSync, textColor])
-
 	const inputRefCallback = useCallback(
 		(node: Container | null) => {
 			const previousNode = inputNodeRef.current
@@ -168,7 +140,6 @@ export const Input: FC<InputProps> = ({
 		[scheduleDomInputSync],
 	)
 
-	// Create the invisible DOM input once; recreate only when structural props change
 	useEffect(() => {
 		if (!app?.canvas) return
 		ensureDomInputStyles()
@@ -185,10 +156,9 @@ export const Input: FC<InputProps> = ({
 		const domInput = document.createElement('input')
 		domInput.className = DOM_INPUT_CLASS
 		domInput.type = secure ? 'password' : 'text'
-		if (maxLength) domInput.maxLength = maxLength
+		if (maxLength != null) domInput.maxLength = maxLength
 		domInput.autocomplete = 'off'
 		domInput.spellcheck = false
-		domInput.placeholder = placeholderRef.current
 
 		Object.assign(domInput.style, {
 			position: 'absolute',
@@ -199,11 +169,11 @@ export const Input: FC<InputProps> = ({
 			boxSizing: 'border-box',
 			top: '0',
 			left: '0',
-			border: DEBUG_DOM_INPUT ? '1px solid #ff4d4f' : 'none',
+			border: 'none',
 			borderRadius: '6px',
 			padding: '0 12px',
 			margin: '0',
-			background: DEBUG_DOM_INPUT ? 'rgba(255, 244, 229, 0.12)' : 'transparent',
+			background: 'transparent',
 			color: toCssColor(textColor),
 			caretColor: toCssColor(textColor),
 			textAlign: align,
@@ -215,15 +185,12 @@ export const Input: FC<InputProps> = ({
 			zIndex: '999',
 		} satisfies Partial<CSSStyleDeclaration>)
 
-		domInput.value = valueRef.current
-
 		canvasParent.appendChild(domInput)
 		domInputRef.current = domInput
 		scheduleDomInputSync()
 
 		const handleInput = () => {
 			const next = domInput.value
-			setInternalValue(next)
 			onChangeRef.current?.(next)
 		}
 
@@ -261,6 +228,25 @@ export const Input: FC<InputProps> = ({
 			domInputRef.current = null
 		}
 	}, [align, app, height, maxLength, scheduleDomInputSync, secure, textColor])
+
+	useEffect(() => {
+		if (domInputRef.current) {
+			domInputRef.current.value = value
+		}
+	}, [value])
+
+	useEffect(() => {
+		const domInput = domInputRef.current
+		if (!domInput) return
+
+		domInput.style.color = toCssColor(textColor)
+		domInput.style.caretColor = toCssColor(textColor)
+		domInput.style.textAlign = align
+		domInput.style.setProperty('--input-placeholder-color', '#888888')
+		domInput.placeholder = placeholder
+		domInput.style.fontFamily = fontConfig.domFontFamily
+		scheduleDomInputSync()
+	}, [align, placeholder, scheduleDomInputSync, textColor])
 
 	const rootLayout = {
 		...(width != null ? { width } : { width: '100%' }),
