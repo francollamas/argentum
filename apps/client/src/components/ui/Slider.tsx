@@ -1,3 +1,4 @@
+import type { LayoutOptions } from '@pixi/layout'
 import { useApplication } from '@pixi/react'
 import type { Container, FederatedPointerEvent, PointData } from 'pixi.js'
 import type { FC } from 'react'
@@ -72,14 +73,15 @@ export const Slider: FC<SliderProps> = ({
 	)
 
 	const rootLayout = useMemo(
-		() => ({
-			...(width != null ? { width } : { width: '100%' }),
-			height,
-			minHeight: height,
-			minWidth: width ?? DEFAULT_WIDTH,
-			position: 'relative' as const,
-			...layout,
-		}),
+		() =>
+			({
+				...(width != null ? { width } : { width: '100%' }),
+				height,
+				minHeight: height,
+				minWidth: width ?? DEFAULT_WIDTH,
+				position: 'relative' as const,
+				...layout,
+			}) as unknown as Omit<LayoutOptions, 'target'>,
 		[height, layout, width],
 	)
 

@@ -1,7 +1,11 @@
 import type { CSSProperties, FC } from 'react'
 
+type DomTextAreaOverlayStyle = CSSProperties & {
+	'--input-placeholder-color'?: string
+}
+
 type DomTextAreaOverlayProps = {
-	style: CSSProperties | null
+	style: DomTextAreaOverlayStyle | null
 	placeholder: string
 	value: string
 	maxLength?: number
@@ -21,7 +25,7 @@ export const DomTextAreaOverlay: FC<DomTextAreaOverlayProps> = ({
 }) => {
 	if (!style) return null
 
-	const shellStyle: CSSProperties = {
+	const shellStyle: DomTextAreaOverlayStyle = {
 		position: style.position,
 		top: style.top,
 		left: style.left,

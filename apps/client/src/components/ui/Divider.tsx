@@ -1,3 +1,4 @@
+import type { LayoutOptions } from '@pixi/layout'
 import type { FC } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 
@@ -35,5 +36,11 @@ export const Divider: FC<DividerProps> = ({
 					...layout,
 				}
 
-	return <pixiSprite texture={texture} layout={dividerLayout} roundPixels />
+	return (
+		<pixiSprite
+			texture={texture}
+			layout={dividerLayout as unknown as Omit<LayoutOptions, 'target'>}
+			roundPixels
+		/>
+	)
 }
