@@ -1,5 +1,5 @@
-import { useApplication } from '@pixi/react'
 import type { LayoutOptions } from '@pixi/layout'
+import { useApplication } from '@pixi/react'
 import type { Container, NineSliceSprite } from 'pixi.js'
 import type { CSSProperties, FC } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -28,6 +28,9 @@ type DomInputStyle = CSSProperties & {
 	'--input-placeholder-color': string
 }
 
+const INPUT_DOM_FONT_FAMILY = FONTS.input.domFontFamily
+const INPUT_FONT_SIZE = FONTS.input.fontSize
+
 export const Input: FC<InputProps> = ({
 	width,
 	height = 40,
@@ -50,7 +53,6 @@ export const Input: FC<InputProps> = ({
 	const [active, setActive] = useState(false)
 	const [domInputStyle, setDomInputStyle] = useState<DomInputStyle | null>(null)
 
-	const fontConfig = FONTS.input
 	const inputTexture = useUITexture('input-field')
 
 	const syncDomInputPosition = useCallback(() => {
@@ -69,7 +71,7 @@ export const Input: FC<InputProps> = ({
 		const renderedHeight = bounds.height
 		const domScale = height > 0 ? renderedHeight / height : 1
 		const paddingInline = Math.max(8, 12 * domScale)
-		const fontSize = Math.max(12, fontConfig.fontSize * domScale)
+		const fontSize = Math.max(12, INPUT_FONT_SIZE * domScale)
 		const lineHeight = Math.max(1, renderedHeight - 2)
 		const borderRadius = Math.max(6, 6 * domScale)
 
@@ -89,7 +91,7 @@ export const Input: FC<InputProps> = ({
 			caretColor: toCssColor(textColor),
 			textAlign: align,
 			fontSize,
-			fontFamily: fontConfig.domFontFamily,
+			fontFamily: INPUT_DOM_FONT_FAMILY,
 			lineHeight: `${lineHeight}px`,
 			appearance: 'none',
 			outline: 'none',
@@ -97,7 +99,7 @@ export const Input: FC<InputProps> = ({
 			zIndex: 999,
 			'--input-placeholder-color': '#888888',
 		})
-	}, [align, app, fontConfig.domFontFamily, fontConfig.fontSize, height, textColor])
+	}, [align, app, height, textColor])
 
 	const scheduleDomInputSync = useCallback(() => {
 		if (syncFrameRef.current != null) {
@@ -153,7 +155,6 @@ export const Input: FC<InputProps> = ({
 		if (parentStyle.position === 'static') {
 			canvasParent.style.position = 'relative'
 		}
-
 
 		return () => {
 			overlayRootRef.current?.unmount()

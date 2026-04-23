@@ -9,6 +9,8 @@ type ScreenRootProps = {
 
 export const ScreenRoot: FC<ScreenRootProps> = ({ children }) => {
 	const { app } = useApplication()
+	const screenWidth = useViewportStore((state) => state.screenWidth)
+	const screenHeight = useViewportStore((state) => state.screenHeight)
 	const setScreenSize = useViewportStore((state) => state.setScreenSize)
 
 	useEffect(() => {
@@ -27,8 +29,8 @@ export const ScreenRoot: FC<ScreenRootProps> = ({ children }) => {
 	return (
 		<layoutContainer
 			layout={{
-				width: Math.max(1, app.screen.width),
-				height: Math.max(1, app.screen.height),
+				width: screenWidth,
+				height: screenHeight,
 			}}
 		>
 			{children}

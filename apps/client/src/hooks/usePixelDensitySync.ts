@@ -8,6 +8,7 @@ export const usePixelDensitySync = () => {
 		if (!app) return
 
 		const updateResolution = () => {
+			if (!app.renderer) return
 			app.renderer.resolution = window.devicePixelRatio
 		}
 
