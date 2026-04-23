@@ -1,10 +1,12 @@
 import type { LayoutOptions } from '@pixi/layout'
 import { useApplication } from '@pixi/react'
-import type { Container, NineSliceSprite } from 'pixi.js'
+import type { Bounds, Container, NineSliceSprite } from 'pixi.js'
 import type { CSSProperties, FC } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createRoot, type Root } from 'react-dom/client'
 import { FONTS } from '../../config/typography'
+import { useDomOverlayHost } from '../../hooks/useDomOverlayHost'
+import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
+import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
 import { DomInputOverlay } from './DomInputOverlay'
 
@@ -45,149 +47,72 @@ export const Input: FC<InputProps> = ({
 	layout,
 }) => {
 	const { app } = useApplication()
-	const inputNodeRef = useRef<Container | null>(null)
-	const backgroundNodeRef = useRef<NineSliceSprite | null>(null)
-	const overlayHostRef = useRef<HTMLDivElement | null>(null)
-	const overlayRootRef = useRef<Root | null>(null)
-	const syncFrameRef = useRef<number | null>(null)
+	const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 	const [active, setActive] = useState(false)
-	const [domInputStyle, setDomInputStyle] = useState<DomInputStyle | null>(null)
 
 	const inputTexture = useUITexture('input-field')
+	const { hostElement, overlayRoot } = useDomOverlayHost(app)
 
-	const syncDomInputPosition = useCallback(() => {
-		if (!app?.canvas) return
-		const backgroundNode = backgroundNodeRef.current
-		const container = overlayHostRef.current?.parentElement
-		if (!backgroundNode || !container) return
+	const computeOverlayStyle = useCallback(
+		({
+			bounds,
+			canvasRect,
+			containerRect,
+		}: {
+			bounds: Bounds
+			canvasRect: DOMRect
+			containerRect: DOMRect
+		}): DomInputStyle => {
+			const left = canvasRect.left - containerRect.left + bounds.x
+			const top = canvasRect.top - containerRect.top + bounds.y
+			const renderedHeight = bounds.height
+			const domScale = height > 0 ? renderedHeight / height : 1
+			const paddingInline = Math.max(8, 12 * domScale)
+			const fontSize = Math.max(12, INPUT_FONT_SIZE * domScale)
+			const lineHeight = Math.max(1, renderedHeight - 2)
+			const borderRadius = Math.max(6, 6 * domScale)
 
-		const canvasRect = app.canvas.getBoundingClientRect()
-		const parentRect = container.getBoundingClientRect()
-
-		const bounds = backgroundNode.getBounds()
-		const left = canvasRect.left - parentRect.left + bounds.x
-		const top = canvasRect.top - parentRect.top + bounds.y
-		const width = bounds.width
-		const renderedHeight = bounds.height
-		const domScale = height > 0 ? renderedHeight / height : 1
-		const paddingInline = Math.max(8, 12 * domScale)
-		const fontSize = Math.max(12, INPUT_FONT_SIZE * domScale)
-		const lineHeight = Math.max(1, renderedHeight - 2)
-		const borderRadius = Math.max(6, 6 * domScale)
-
-		setDomInputStyle({
-			position: 'absolute',
-			top,
-			left,
-			width,
-			height: renderedHeight,
-			padding: `0 ${paddingInline}px`,
-			margin: 0,
-			boxSizing: 'border-box',
-			border: 'none',
-			borderRadius,
-			background: 'transparent',
-			color: toCssColor(textColor),
-			caretColor: toCssColor(textColor),
-			textAlign: align,
-			fontSize,
-			fontFamily: INPUT_DOM_FONT_FAMILY,
-			lineHeight: `${lineHeight}px`,
-			appearance: 'none',
-			outline: 'none',
-			pointerEvents: 'auto',
-			zIndex: 999,
-			'--input-placeholder-color': '#888888',
-		})
-	}, [align, app, height, textColor])
-
-	const scheduleDomInputSync = useCallback(() => {
-		if (syncFrameRef.current != null) {
-			cancelAnimationFrame(syncFrameRef.current)
-		}
-
-		syncFrameRef.current = requestAnimationFrame(() => {
-			syncFrameRef.current = null
-			syncDomInputPosition()
-		})
-	}, [syncDomInputPosition])
-
-	useEffect(() => {
-		return () => {
-			if (syncFrameRef.current != null) {
-				cancelAnimationFrame(syncFrameRef.current)
-				syncFrameRef.current = null
-			}
-		}
-	}, [])
-
-	const inputRefCallback = useCallback(
-		(node: Container | null) => {
-			const previousNode = inputNodeRef.current
-			if (previousNode) {
-				previousNode.off('layout', scheduleDomInputSync)
-			}
-
-			inputNodeRef.current = node
-
-			if (node) {
-				node.on('layout', scheduleDomInputSync)
-				scheduleDomInputSync()
+			return {
+				position: 'absolute',
+				top,
+				left,
+				width: bounds.width,
+				height: renderedHeight,
+				padding: `0 ${paddingInline}px`,
+				margin: 0,
+				boxSizing: 'border-box',
+				border: 'none',
+				borderRadius,
+				background: 'transparent',
+				color: toCssColor(textColor),
+				caretColor: toCssColor(textColor),
+				textAlign: align,
+				fontSize,
+				fontFamily: INPUT_DOM_FONT_FAMILY,
+				lineHeight: `${lineHeight}px`,
+				appearance: 'none',
+				outline: 'none',
+				pointerEvents: 'auto',
+				zIndex: 999,
+				'--input-placeholder-color': '#888888',
 			}
 		},
-		[scheduleDomInputSync],
+		[align, height, textColor],
 	)
 
-	useEffect(() => {
-		if (!app?.canvas) return
+	const { style: domInputStyle, scheduleSync: scheduleOverlaySync } =
+		useOverlayPositionSync({
+			app,
+			hostElement,
+			targetRef: backgroundSpriteRef,
+			computeStyle: computeOverlayStyle,
+		})
 
-		const canvas = app.canvas as HTMLCanvasElement
-		const canvasParent = canvas.parentElement
-		if (!canvasParent) return
-
-		const parentStyle = window.getComputedStyle(canvasParent)
-		const shouldRestorePosition = parentStyle.position === 'static'
-		const overlayHost = document.createElement('div')
-		overlayHostRef.current = overlayHost
-		overlayRootRef.current = createRoot(overlayHost)
-		canvasParent.appendChild(overlayHost)
-
-		if (parentStyle.position === 'static') {
-			canvasParent.style.position = 'relative'
-		}
-
-		return () => {
-			overlayRootRef.current?.unmount()
-			overlayRootRef.current = null
-			overlayHost.remove()
-			overlayHostRef.current = null
-			if (syncFrameRef.current != null) {
-				cancelAnimationFrame(syncFrameRef.current)
-				syncFrameRef.current = null
-			}
-			setDomInputStyle(null)
-			if (shouldRestorePosition) {
-				canvasParent.style.position = ''
-			}
-		}
-	}, [app])
+	const { refCallback: inputContainerRef } =
+		usePixiLayoutListener<Container>(scheduleOverlaySync)
 
 	useEffect(() => {
-		if (!app) return
-
-		app.renderer.on('resize', scheduleDomInputSync)
-
-		return () => {
-			app.renderer.off('resize', scheduleDomInputSync)
-		}
-	}, [app, scheduleDomInputSync])
-
-	useEffect(() => {
-		scheduleDomInputSync()
-	}, [scheduleDomInputSync])
-
-	useEffect(() => {
-		overlayRootRef.current?.render(
+		overlayRoot?.render(
 			<DomInputOverlay
 				style={domInputStyle}
 				placeholder={placeholder}
@@ -200,7 +125,16 @@ export const Input: FC<InputProps> = ({
 				onBlur={() => setActive(false)}
 			/>,
 		)
-	}, [domInputStyle, maxLength, onChange, onEnter, placeholder, secure, value])
+	}, [
+		domInputStyle,
+		maxLength,
+		onChange,
+		onEnter,
+		overlayRoot,
+		placeholder,
+		secure,
+		value,
+	])
 
 	const rootLayout = {
 		...(width != null ? { width } : { width: '100%' }),
@@ -213,13 +147,13 @@ export const Input: FC<InputProps> = ({
 
 	return (
 		<layoutContainer
-			ref={inputRefCallback}
+			ref={inputContainerRef}
 			eventMode='static'
 			cursor='text'
 			layout={rootLayout}
 		>
 			<pixiNineSliceSprite
-				ref={backgroundNodeRef}
+				ref={backgroundSpriteRef}
 				texture={inputTexture}
 				leftWidth={10}
 				topHeight={10}
