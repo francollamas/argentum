@@ -61,6 +61,7 @@ export const Input: FC<InputProps> = ({
 	const inputNodeRef = useRef<Container | null>(null)
 	const backgroundNodeRef = useRef<NineSliceSprite | null>(null)
 	const domInputRef = useRef<HTMLInputElement | null>(null)
+	const syncFrameRef = useRef<number | null>(null)
 	const onChangeRef = useRef(onChange)
 	const onEnterRef = useRef(onEnter)
 	const valueRef = useRef(value)
@@ -117,6 +118,26 @@ export const Input: FC<InputProps> = ({
 		domInput.style.borderRadius = `${borderRadius}px`
 	}, [app, height])
 
+	const scheduleDomInputSync = useCallback(() => {
+		if (syncFrameRef.current != null) {
+			cancelAnimationFrame(syncFrameRef.current)
+		}
+
+		syncFrameRef.current = requestAnimationFrame(() => {
+			syncFrameRef.current = null
+			syncDomInputPosition()
+		})
+	}, [syncDomInputPosition])
+
+	useEffect(() => {
+		return () => {
+			if (syncFrameRef.current != null) {
+				cancelAnimationFrame(syncFrameRef.current)
+				syncFrameRef.current = null
+			}
+		}
+	}, [])
+
 	useEffect(() => {
 		const domInput = domInputRef.current
 		if (!domInput) return
@@ -127,24 +148,24 @@ export const Input: FC<InputProps> = ({
 		domInput.style.setProperty('--input-placeholder-color', '#888888')
 		domInput.placeholder = placeholder
 		domInput.style.fontFamily = fontConfig.domFontFamily
-		syncDomInputPosition()
-	}, [align, placeholder, syncDomInputPosition, textColor])
+		scheduleDomInputSync()
+	}, [align, placeholder, scheduleDomInputSync, textColor])
 
 	const inputRefCallback = useCallback(
 		(node: Container | null) => {
 			const previousNode = inputNodeRef.current
 			if (previousNode) {
-				previousNode.off('layout', syncDomInputPosition)
+				previousNode.off('layout', scheduleDomInputSync)
 			}
 
 			inputNodeRef.current = node
 
 			if (node) {
-				node.on('layout', syncDomInputPosition)
-				syncDomInputPosition()
+				node.on('layout', scheduleDomInputSync)
+				scheduleDomInputSync()
 			}
 		},
-		[syncDomInputPosition],
+		[scheduleDomInputSync],
 	)
 
 	// Create the invisible DOM input once; recreate only when structural props change
@@ -198,7 +219,7 @@ export const Input: FC<InputProps> = ({
 
 		canvasParent.appendChild(domInput)
 		domInputRef.current = domInput
-		syncDomInputPosition()
+		scheduleDomInputSync()
 
 		const handleInput = () => {
 			const next = domInput.value
@@ -224,18 +245,22 @@ export const Input: FC<InputProps> = ({
 		domInput.addEventListener('blur', handleBlur)
 		domInput.addEventListener('focus', handleFocus)
 
-		window.addEventListener('resize', syncDomInputPosition)
+		app.renderer.on('resize', scheduleDomInputSync)
 
 		return () => {
 			domInput.removeEventListener('input', handleInput)
 			domInput.removeEventListener('keydown', handleKeyDown)
 			domInput.removeEventListener('blur', handleBlur)
 			domInput.removeEventListener('focus', handleFocus)
-			window.removeEventListener('resize', syncDomInputPosition)
+			app.renderer.off('resize', scheduleDomInputSync)
+			if (syncFrameRef.current != null) {
+				cancelAnimationFrame(syncFrameRef.current)
+				syncFrameRef.current = null
+			}
 			domInput.remove()
 			domInputRef.current = null
 		}
-	}, [align, app, height, maxLength, secure, syncDomInputPosition, textColor])
+	}, [align, app, height, maxLength, scheduleDomInputSync, secure, textColor])
 
 	const rootLayout = {
 		...(width != null ? { width } : { width: '100%' }),
