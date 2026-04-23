@@ -255,7 +255,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 8: Input
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Remove `fontSize * 0.5` hack. Use the `body` font variant from typography (18px) directly.
@@ -301,7 +301,30 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 9: Divider (NEW)
+### Step 9: TextArea (NEW)
+**Status**: `done`
+
+**What**:
+- Build a multiline editable text box component using the same DOM overlay strategy as `Input`, but with a DOM `<textarea>` as the source of truth.
+- Keep the same visual strategy and attachment model as `Input`: `layoutContainer` root, `eventMode='static'`, text cursor, and an absolute `NineSliceSprite` background sized by layout.
+- Remove any need for manual text coordinates, `anchor`, `x`, or `y`. The component participates in flex layout exactly like the other controls.
+- Support explicit `width` and `height`, but stretch cleanly to available width by default inside bounded containers.
+- Add `layout` pass-through support so callers can provide `flex`, `alignSelf`, `minWidth`, etc.
+- Placeholder text should render in a muted color when the value is empty.
+- Text should start at the top of the field with internal padding suitable for longer content.
+- `Enter` inserts a new line. There is no submit behavior tied to `Enter`.
+
+**API**:
+```tsx
+<TextArea placeholder="Character description" value={bio} onChange={setBio} />
+<TextArea height={160} value={notes} onChange={setNotes} align="left" />
+```
+
+**Verify**: Create `src/components/screens/demos/TextAreaDemoScreen.tsx`. Show placeholder state, controlled multiline text, different heights, long content with internal scrolling, and usage inside a `Panel`. Add button to DemoHub. Screenshot review with user.
+
+---
+
+### Step 10: Divider (NEW)
 **Status**: `pending`
 
 **What**:
@@ -319,7 +342,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 10: Slider (NEW)
+### Step 11: Slider (NEW)
 **Status**: `pending`
 
 **What**:
@@ -338,7 +361,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 11: IconButton (NEW)
+### Step 12: IconButton (NEW)
 **Status**: `pending`
 
 **What**:
@@ -356,7 +379,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 12: TabBar (NEW)
+### Step 13: TabBar (NEW)
 **Status**: `pending`
 
 **What**:
@@ -378,7 +401,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 13: ScrollView (NEW)
+### Step 14: ScrollView (NEW)
 **Status**: `pending`
 
 **What**:
@@ -398,7 +421,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 14: Dropdown/Select (NEW)
+### Step 15: Dropdown/Select (NEW)
 **Status**: `pending`
 
 **What**:
@@ -422,7 +445,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 15: Tooltip (NEW)
+### Step 16: Tooltip (NEW)
 **Status**: `pending`
 
 **What**:
@@ -443,7 +466,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 16: Dialog/Modal (NEW)
+### Step 17: Dialog/Modal (NEW)
 **Status**: `pending`
 
 **What**:
@@ -472,7 +495,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 17: Full Integration Demo
+### Step 18: Full Integration Demo
 **Status**: `pending`
 
 **What**:
@@ -486,7 +509,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 18: Final Cleanup
+### Step 19: Final Cleanup
 **Status**: `pending`
 
 **What**:

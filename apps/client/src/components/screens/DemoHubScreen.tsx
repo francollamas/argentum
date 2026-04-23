@@ -12,6 +12,7 @@ import { PanelDemoScreen } from './demos/PanelDemoScreen'
 import { ProgressBarDemoScreen } from './demos/ProgressBarDemoScreen'
 import { RadioGroupDemoScreen } from './demos/RadioGroupDemoScreen'
 import { SwitchDemoScreen } from './demos/SwitchDemoScreen'
+import { TextAreaDemoScreen } from './demos/TextAreaDemoScreen'
 
 type FramedDemoProps = {
 	onBack: () => void
@@ -34,6 +35,7 @@ const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
 	<ProgressBarDemoScreen />
 )
 const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
+const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -89,6 +91,12 @@ const DEMOS: DemoDefinition[] = [
 		label: 'Input',
 		presentation: 'framed',
 		render: InputDemoRoute,
+	},
+	{
+		id: 'textarea',
+		label: 'TextArea',
+		presentation: 'framed',
+		render: TextAreaDemoRoute,
 	},
 	{ id: 'divider', label: 'Divider', presentation: 'framed' },
 	{ id: 'slider', label: 'Slider', presentation: 'framed' },
