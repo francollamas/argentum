@@ -343,7 +343,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 11: Slider (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Horizontal slider with track, fill, and draggable handle.
