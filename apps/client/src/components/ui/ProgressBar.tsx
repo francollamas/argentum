@@ -54,7 +54,10 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 	const fillSliceSize = Math.min(fillTexture.width, fillTexture.height) * 0.25
 
 	const fillInnerHeight = height - padTop - padBottom
-	const fillPercent = `${progress}%`
+	const fillInnerWidth = Math.max(
+		0,
+		(width - padLeft - padRight) * (progress / 100),
+	)
 
 	const valueText =
 		textVariant === 'amount'
@@ -137,7 +140,7 @@ export const ProgressBar: FC<ProgressBarProps> = ({
 							bottomHeight={fillSliceSize}
 							tint={fillColor}
 							layout={{
-								width: fillPercent,
+								width: fillInnerWidth,
 								height: fillInnerHeight,
 								applySizeDirectly: true,
 							}}
