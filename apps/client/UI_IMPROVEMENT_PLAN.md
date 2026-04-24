@@ -361,7 +361,53 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 12: IconButton (NEW)
+### Step 12: ArrowButton (NEW)
+**Status**: `pending`
+
+**What**:
+- Public reusable arrow button component.
+- Supports four directions: `up`, `down`, `left`, `right`.
+- Uses the existing UI arrow sprites directly (`arrow-{direction}`, `-hover`, `-pressed`) with no NineSlice background.
+- Uses a square layout box driven by `size`.
+- Reuses Button-like hover / pressed / disabled interaction behavior.
+- Props: `direction`, `size`, `onPress`, `disabled`, `layout`.
+
+**API**:
+```tsx
+<ArrowButton direction="left" onPress={handlePrevious} />
+<ArrowButton direction="right" size={40} onPress={handleNext} />
+```
+
+**Verify**: Create `src/components/screens/demos/ArrowButtonDemoScreen.tsx`. Show all four directions, different sizes, and disabled state. Add button to DemoHub. Screenshot review with user.
+
+---
+
+### Step 13: ArrowSelector (NEW)
+**Status**: `pending`
+
+**What**:
+- Replaces the old Dropdown/Select concept for sequential selection use cases like class selection.
+- Visual layout is: left arrow, selected item text, right arrow.
+- Uses `ArrowButton` internally for previous / next navigation.
+- Items API mirrors `RadioGroup` for consistency: `items={[{ text: 'Mago' }]}`.
+- Selection is circular: advancing past the last item wraps to the first, and going back from the first wraps to the last.
+- Must stretch to the width of the parent by default, while keeping a reasonable internal `minWidth`.
+- Props: `items`, `selectedIndex`, `onChange`, `disabled`, `textColor`, `size`, `gap`, `layout`.
+
+**API**:
+```tsx
+<ArrowSelector
+  items={[{ text: 'Guerrero' }, { text: 'Mago' }, { text: 'Arquero' }]}
+  selectedIndex={selectedClass}
+  onChange={setSelectedClass}
+/>
+```
+
+**Verify**: Create `src/components/screens/demos/ArrowSelectorDemoScreen.tsx`. Show class selection, wrap-around behavior, longer item text, disabled state, and usage inside a Panel. Add button to DemoHub. Screenshot review with user.
+
+---
+
+### Step 14: IconButton (NEW)
 **Status**: `pending`
 
 **What**:
@@ -379,7 +425,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 13: TabBar (NEW)
+### Step 15: TabBar (NEW)
 **Status**: `pending`
 
 **What**:
@@ -401,7 +447,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 14: ScrollView (NEW)
+### Step 16: ScrollView (NEW)
 **Status**: `pending`
 
 **What**:
@@ -421,31 +467,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 15: Dropdown/Select (NEW)
-**Status**: `pending`
-
-**What**:
-- Closed state: shows selected value in an Input-like container with down-arrow indicator.
-- Open state: shows a ScrollView (or simple list) with options below the trigger.
-- Uses `position: 'absolute'` for the dropdown list relative to the trigger.
-- Props: `options` (string array), `selectedIndex`, `onChange`, `placeholder`.
-- Closes on selection or click outside.
-
-**API**:
-```tsx
-<Dropdown
-  options={['Servidor 1', 'Servidor 2', 'Servidor 3']}
-  selectedIndex={selectedServer}
-  onChange={setSelectedServer}
-  placeholder="Elegir servidor"
-/>
-```
-
-**Verify**: Create `src/components/screens/demos/DropdownDemoScreen.tsx`. Show dropdown closed and verify it opens, selects, closes. Multiple dropdowns on screen. Add button to DemoHub. Screenshot review with user.
-
----
-
-### Step 16: Tooltip (NEW)
+### Step 17: Tooltip (NEW)
 **Status**: `pending`
 
 **What**:
@@ -466,7 +488,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 17: Dialog/Modal (NEW)
+### Step 18: Dialog/Modal (NEW)
 **Status**: `pending`
 
 **What**:
@@ -495,7 +517,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 18: Full Integration Demo
+### Step 19: Full Integration Demo
 **Status**: `pending`
 
 **What**:
@@ -509,7 +531,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 19: Final Cleanup
+### Step 20: Final Cleanup
 **Status**: `pending`
 
 **What**:

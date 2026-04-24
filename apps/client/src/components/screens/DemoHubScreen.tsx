@@ -3,6 +3,8 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import { ContentFrame, UIScreen } from '../layout'
 import { Button, Colors, Label } from '../ui'
+import { ArrowButtonDemoScreen } from './demos/ArrowButtonDemoScreen'
+import { ArrowSelectorDemoScreen } from './demos/ArrowSelectorDemoScreen'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { DividerDemoScreen } from './demos/DividerDemoScreen'
@@ -28,6 +30,12 @@ type DemoDefinition = {
 }
 
 const LabelDemoRoute: FC<FramedDemoProps> = () => <LabelDemoScreen />
+const ArrowButtonDemoRoute: FC<FramedDemoProps> = () => (
+	<ArrowButtonDemoScreen />
+)
+const ArrowSelectorDemoRoute: FC<FramedDemoProps> = () => (
+	<ArrowSelectorDemoScreen />
+)
 const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
 const PanelDemoRoute: FC<FramedDemoProps> = () => <PanelDemoScreen />
 const CheckBoxDemoRoute: FC<FramedDemoProps> = () => <CheckBoxDemoScreen />
@@ -53,6 +61,18 @@ const DEMOS: DemoDefinition[] = [
 		label: 'Map + HUD',
 		presentation: 'fullscreen',
 		render: GameMapDemoScreen,
+	},
+	{
+		id: 'arrowbutton',
+		label: 'ArrowButton',
+		presentation: 'framed',
+		render: ArrowButtonDemoRoute,
+	},
+	{
+		id: 'arrowselector',
+		label: 'ArrowSelector',
+		presentation: 'framed',
+		render: ArrowSelectorDemoRoute,
 	},
 	{
 		id: 'panel',
@@ -117,7 +137,6 @@ const DEMOS: DemoDefinition[] = [
 	{ id: 'iconbutton', label: 'IconButton', presentation: 'framed' },
 	{ id: 'tabbar', label: 'TabBar', presentation: 'framed' },
 	{ id: 'scrollview', label: 'ScrollView', presentation: 'framed' },
-	{ id: 'dropdown', label: 'Dropdown', presentation: 'framed' },
 	{ id: 'tooltip', label: 'Tooltip', presentation: 'framed' },
 	{ id: 'dialog', label: 'Dialog', presentation: 'framed' },
 	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
