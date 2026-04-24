@@ -1,6 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { ArrowButton } from './ArrowButton'
+import { Colors } from './colors'
 import { Label } from './Label'
 
 type ArrowSelectorItem = {
@@ -41,7 +42,8 @@ export const ArrowSelector: FC<ArrowSelectorProps> = ({
 	const itemCount = items.length
 	const safeIndex = wrapIndex(selectedIndex, itemCount)
 	const selectedItem = items[safeIndex]
-	const canNavigate = !disabled && itemCount > 1
+	const canNavigate = itemCount > 1
+	const labelColor = disabled ? Colors.disabled : textColor
 
 	const handlePrevious = () => {
 		if (itemCount === 0) {
@@ -73,7 +75,7 @@ export const ArrowSelector: FC<ArrowSelectorProps> = ({
 				direction='left'
 				size={size}
 				onPress={handlePrevious}
-				disabled={!canNavigate}
+				disabled={disabled || !canNavigate}
 			/>
 			<layoutContainer
 				layout={{
@@ -83,37 +85,23 @@ export const ArrowSelector: FC<ArrowSelectorProps> = ({
 					flexBasis: 0,
 					minWidth: 0,
 					minHeight: size,
-					paddingLeft: 8,
-					paddingRight: 8,
+					paddingBottom: 5,
 				}}
 			>
-				<layoutContainer
+				<Label
+					text={selectedItem?.text ?? ''}
+					font='label'
+					color={labelColor}
 					layout={{
-						...tw`items-center justify-center`,
-						width: '100%',
-						height: '100%',
 						minWidth: 0,
-						paddingTop: 0,
-						paddingBottom: 8,
 					}}
-				>
-					<Label
-						text={selectedItem?.text ?? ''}
-						font='body'
-						color={textColor}
-						layout={{
-							width: 'intrinsic',
-							height: 'intrinsic',
-							flexShrink: 0,
-						}}
-					/>
-				</layoutContainer>
+				/>
 			</layoutContainer>
 			<ArrowButton
 				direction='right'
 				size={size}
 				onPress={handleNext}
-				disabled={!canNavigate}
+				disabled={disabled || !canNavigate}
 			/>
 		</layoutContainer>
 	)

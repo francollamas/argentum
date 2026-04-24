@@ -1,6 +1,6 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
-import { useState } from 'react'
+import { usePressableState } from '../../hooks/usePressableState'
 import { useUITexture } from '../../hooks/useUITexture'
 
 type ArrowDirection = 'up' | 'down' | 'left' | 'right'
@@ -22,8 +22,10 @@ export const ArrowButton: FC<ArrowButtonProps> = ({
 	disabled = false,
 	layout,
 }) => {
-	const [isHovered, setIsHovered] = useState(false)
-	const [isPressed, setIsPressed] = useState(false)
+	const { isHovered, isPressed, ...pressableProps } = usePressableState({
+		disabled,
+		onPress,
+	})
 
 	const defaultTexture = useUITexture(`arrow-${direction}`)
 	const hoverTexture = useUITexture(`arrow-${direction}-hover`)
@@ -46,22 +48,8 @@ export const ArrowButton: FC<ArrowButtonProps> = ({
 				flexShrink: 0,
 				...layout,
 			}}
-			eventMode={disabled ? 'none' : 'static'}
-			cursor={disabled ? 'default' : 'pointer'}
 			alpha={disabled ? 0.5 : 1}
-			onPointerOver={() => setIsHovered(true)}
-			onPointerOut={() => {
-				setIsHovered(false)
-				setIsPressed(false)
-			}}
-			onPointerDown={() => setIsPressed(true)}
-			onPointerUp={() => {
-				setIsPressed(false)
-				if (isHovered) {
-					onPress?.()
-				}
-			}}
-			onPointerUpOutside={() => setIsPressed(false)}
+			{...pressableProps}
 		>
 			<pixiSprite
 				texture={currentTexture}

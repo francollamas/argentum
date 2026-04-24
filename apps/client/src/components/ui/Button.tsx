@@ -1,8 +1,9 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { FONTS } from '../../config/typography'
 import { useNineSliceBackground } from '../../hooks/useNineSliceBackground'
+import { usePressableState } from '../../hooks/usePressableState'
 import { useUITexture } from '../../hooks/useUITexture'
 
 type ButtonVariant = 'normal' | 'small'
@@ -53,8 +54,10 @@ export const Button: FC<ButtonProps> = ({
 	disabled = false,
 	layout,
 }) => {
-	const [isHovered, setIsHovered] = useState(false)
-	const [isPressed, setIsPressed] = useState(false)
+	const { isHovered, isPressed, ...pressableProps } = usePressableState({
+		disabled,
+		onPress,
+	})
 
 	const defaultTexture = useUITexture('button-main-normal')
 	const hoverTexture = useUITexture('button-main-hover')
@@ -63,12 +66,11 @@ export const Button: FC<ButtonProps> = ({
 	const style = BUTTON_STYLES[variant]
 	const fontConfig = FONTS[style.fontType]
 
-	const currentTexture =
-		disabled || isPressed
-			? pressedTexture
-			: isHovered
-				? hoverTexture
-				: defaultTexture
+	const currentTexture = isPressed
+		? pressedTexture
+		: isHovered
+			? hoverTexture
+			: defaultTexture
 
 	const { containerRefCallback, setTexture } = useNineSliceBackground({
 		texture: defaultTexture,
@@ -93,21 +95,8 @@ export const Button: FC<ButtonProps> = ({
 				paddingBottom: style.paddingV,
 				...layout,
 			}}
-			eventMode={disabled ? 'none' : 'static'}
-			cursor={disabled ? 'default' : 'pointer'}
 			alpha={disabled ? 0.5 : 1}
-			onPointerOver={() => setIsHovered(true)}
-			onPointerOut={() => {
-				setIsHovered(false)
-				setIsPressed(false)
-			}}
-			onPointerDown={() => setIsPressed(true)}
-			onPointerUp={() => {
-				setIsPressed(false)
-				if (isHovered && onPress) {
-					onPress()
-				}
-			}}
+			{...pressableProps}
 		>
 			<pixiBitmapText
 				text={text}

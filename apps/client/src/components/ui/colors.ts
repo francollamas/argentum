@@ -29,6 +29,7 @@ export const Colors = {
 	gold: 0xf2d059,
 	silver: 0xc8c8c8,
 	bronze: 0xc38a6a,
+	disabled: 0x8a8a8a,
 	statusOk: 0x38c44a,
 	statusError: 0xc42c2c,
 	statusWarning: 0xe0b454,
