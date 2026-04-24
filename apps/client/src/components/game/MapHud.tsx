@@ -14,16 +14,36 @@ import {
 	useDirectionalPlayerMovement,
 } from '../../hooks/usePlayerMovement'
 import { useViewportStore } from '../../store/viewportStore'
-import { ArrowButton, Button, Colors, Label, Panel, Slider } from '../ui'
+import {
+	ArrowButton,
+	ArrowSelector,
+	Button,
+	Colors,
+	Label,
+	Panel,
+	Slider,
+} from '../ui'
 
 const HOLD_POLLING_INTERVAL = 16
 const MOVEMENT_BUTTON_SIZE = 68
 const MOVEMENT_BUTTON_GAP = 4
+const MAP_COUNT = 290
+
+const MAP_SELECTOR_ITEMS = Array.from({ length: MAP_COUNT }, (_, index) => ({
+	text: `Map ${(index + 1).toString().padStart(3, '0')}`,
+}))
+
 type MapHudProps = {
 	onBack: () => void
+	mapNumber: number
+	onMapNumberChange: (mapNumber: number) => void
 }
 
-export const MapHud: FC<MapHudProps> = ({ onBack }) => {
+export const MapHud: FC<MapHudProps> = ({
+	onBack,
+	mapNumber,
+	onMapNumberChange,
+}) => {
 	const { setWorldZoom, worldZoom } = useViewportStore(
 		useShallow((state) => ({
 			setWorldZoom: state.setWorldZoom,
@@ -39,6 +59,7 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 	const positionText = `[${tileX.toString().padStart(2, '0')} ; ${tileY
 		.toString()
 		.padStart(2, '0')}]`
+	const selectedMapIndex = mapNumber - 1
 
 	const stopHeldMovement = useCallback(() => {
 		if (movementIntervalRef.current) {
@@ -79,24 +100,31 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 					layout={{
 						...tw`flex-row items-start gap-3`,
 						flexWrap: 'wrap',
-						maxWidth: '58%',
-						minWidth: 260,
+						maxWidth: '42%',
+						minWidth: 180,
 					}}
 				>
 					<Button text='Back' variant='small' onPress={onBack} />
-					<Panel layout={{ ...tw`flex-col gap-1`, padding: 12 }}>
-						<Label text='Map Demo' font='titleSm' color={Colors.gold} />
-						<Label
-							text='Arrow keys move the player state'
-							font='label'
-							color={Colors.silver}
+					<layoutContainer
+						layout={{
+							...tw`items-center`,
+							width: 260,
+							maxWidth: '100%',
+						}}
+					>
+						<ArrowSelector
+							items={MAP_SELECTOR_ITEMS}
+							selectedIndex={selectedMapIndex}
+							onChange={(selectedIndex) => onMapNumberChange(selectedIndex + 1)}
+							size={54}
+							gap={2}
+							layout={{
+								width: 260,
+								maxWidth: '100%',
+								minWidth: 180,
+							}}
 						/>
-						<Label
-							text='Center stays clear so the map remains visible'
-							font='labelSm'
-							color={Colors.bronze}
-						/>
-					</Panel>
+					</layoutContainer>
 					<Panel layout={{ ...tw`flex-col gap-1`, padding: 12 }}>
 						<Label
 							text='Region: Town Center'
@@ -235,7 +263,12 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 						...tw`flex-col items-start gap-3`,
 					}}
 				>
-					<layoutContainer layout={{ gap: MOVEMENT_BUTTON_GAP }}>
+					<layoutContainer
+						layout={{
+							...tw`flex-col`,
+							gap: MOVEMENT_BUTTON_GAP,
+						}}
+					>
 						<layoutContainer
 							layout={{
 								...tw`items-center`,
