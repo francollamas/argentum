@@ -43,11 +43,12 @@ export const SliderDemoScreen: FC = () => {
 						value={volume}
 						min={0}
 						max={100}
+						step={10}
 						onChange={setVolume}
 						width={400}
 					/>
 					<Label
-						text='Works as a standard 0 to 100 control with direct clicking or dragging.'
+						text='This one snaps in 10-point steps, like a traditional stepped slider.'
 						font='bodySm'
 						color={Colors.silver}
 						wrap

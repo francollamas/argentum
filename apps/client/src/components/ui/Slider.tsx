@@ -17,6 +17,7 @@ type SliderProps = {
 	value: number
 	min?: number
 	max?: number
+	step?: number
 	width?: number
 	height?: number
 	onChange?: (value: number) => void
@@ -34,10 +35,36 @@ const FILL_SLICE_SIZE = 10
 const clamp = (value: number, min: number, max: number) =>
 	Math.min(max, Math.max(min, value))
 
+const countDecimals = (value: number) => {
+	const text = value.toString().toLowerCase()
+	const [coefficient, exponent] = text.split('e-')
+	const decimalCount = coefficient.split('.')[1]?.length ?? 0
+
+	return exponent ? decimalCount + Number(exponent) : decimalCount
+}
+
+const snapToStep = (value: number, min: number, max: number, step?: number) => {
+	const clampedValue = clamp(value, min, max)
+
+	if (step == null || step <= 0) {
+		return clampedValue
+	}
+
+	const precision = Math.max(
+		countDecimals(min),
+		countDecimals(max),
+		countDecimals(step),
+	)
+	const snappedValue = min + Math.round((clampedValue - min) / step) * step
+
+	return clamp(Number(snappedValue.toFixed(precision)), min, max)
+}
+
 export const Slider: FC<SliderProps> = ({
 	value,
 	min = 0,
 	max = 100,
+	step,
 	width,
 	height = DEFAULT_HEIGHT,
 	onChange,
@@ -55,8 +82,8 @@ export const Slider: FC<SliderProps> = ({
 	const safeMin = Math.min(min, max)
 	const safeMax = Math.max(min, max)
 	const range = safeMax - safeMin
-	const clampedValue = clamp(value, safeMin, safeMax)
-	const progress = range === 0 ? 0 : (clampedValue - safeMin) / range
+	const resolvedValue = snapToStep(value, safeMin, safeMax, step)
+	const progress = range === 0 ? 0 : (resolvedValue - safeMin) / range
 
 	const thumbWidth = Math.round(
 		(thumbTexture.width / thumbTexture.height) * DEFAULT_THUMB_HEIGHT,
@@ -131,9 +158,13 @@ export const Slider: FC<SliderProps> = ({
 
 			const nextRatio = clamp(local.x / usableWidth, 0, 1)
 			const nextValue = safeMin + nextRatio * range
-			onChange?.(range === 0 ? safeMin : nextValue)
+			const resolvedNextValue = snapToStep(nextValue, safeMin, safeMax, step)
+
+			if (resolvedNextValue !== resolvedValue) {
+				onChange?.(range === 0 ? safeMin : resolvedNextValue)
+			}
 		},
-		[onChange, range, safeMin, trackWidth],
+		[onChange, range, resolvedValue, safeMax, safeMin, step, trackWidth],
 	)
 
 	const handlePointerDown = useCallback(
