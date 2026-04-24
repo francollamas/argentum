@@ -4,9 +4,9 @@ export const MIN_UI_SCALE = 0.5
 export const MAX_UI_SCALE = 1
 
 export const DEFAULT_WORLD_ZOOM = 1
-export const MIN_WORLD_ZOOM = 0.75
-export const MAX_WORLD_ZOOM = 1.5
-export const WORLD_ZOOM_STEP = 0.25
+export const MIN_WORLD_ZOOM = 0.5
+export const MAX_WORLD_ZOOM = 2
+export const WORLD_ZOOM_STEP = 0.01
 
 export const DEFAULT_SCREEN_WIDTH =
 	typeof window === 'undefined' ? UI_DESIGN_WIDTH : window.innerWidth

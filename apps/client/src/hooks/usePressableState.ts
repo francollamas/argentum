@@ -3,11 +3,15 @@ import { useEffect, useState } from 'react'
 type UsePressableStateOptions = {
 	disabled?: boolean
 	onPress?: () => void
+	onPressStart?: () => void
+	onPressEnd?: () => void
 }
 
 export const usePressableState = ({
 	disabled = false,
 	onPress,
+	onPressStart,
+	onPressEnd,
 }: UsePressableStateOptions) => {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
@@ -28,14 +32,22 @@ export const usePressableState = ({
 		onPointerOut: () => {
 			setIsHovered(false)
 			setIsPressed(false)
+			onPressEnd?.()
 		},
-		onPointerDown: () => setIsPressed(true),
+		onPointerDown: () => {
+			setIsPressed(true)
+			onPressStart?.()
+		},
 		onPointerUp: () => {
 			setIsPressed(false)
+			onPressEnd?.()
 			if (isHovered) {
 				onPress?.()
 			}
 		},
-		onPointerUpOutside: () => setIsPressed(false),
+		onPointerUpOutside: () => {
+			setIsPressed(false)
+			onPressEnd?.()
+		},
 	}
 }

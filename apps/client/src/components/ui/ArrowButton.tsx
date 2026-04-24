@@ -9,6 +9,8 @@ type ArrowButtonProps = {
 	direction: ArrowDirection
 	size?: number
 	onPress?: () => void
+	onPressStart?: () => void
+	onPressEnd?: () => void
 	disabled?: boolean
 	layout?: Record<string, unknown>
 }
@@ -19,12 +21,16 @@ export const ArrowButton: FC<ArrowButtonProps> = ({
 	direction,
 	size = DEFAULT_SIZE,
 	onPress,
+	onPressStart,
+	onPressEnd,
 	disabled = false,
 	layout,
 }) => {
 	const { isHovered, isPressed, ...pressableProps } = usePressableState({
 		disabled,
 		onPress,
+		onPressStart,
+		onPressEnd,
 	})
 
 	const defaultTexture = useUITexture(`arrow-${direction}`)

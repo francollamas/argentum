@@ -1,29 +1,64 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
+import {
+	MAX_WORLD_ZOOM,
+	MIN_WORLD_ZOOM,
+	WORLD_ZOOM_STEP,
+} from '../../constants/viewport'
 import { useFPS } from '../../hooks/useFPS'
 import { usePlayerPosition } from '../../hooks/usePlayer'
+import {
+	type MovementDirection,
+	useDirectionalPlayerMovement,
+} from '../../hooks/usePlayerMovement'
 import { useViewportStore } from '../../store/viewportStore'
-import { Button, Colors, Label, Panel } from '../ui'
+import { ArrowButton, Button, Colors, Label, Panel, Slider } from '../ui'
 
+const HOLD_POLLING_INTERVAL = 16
+const MOVEMENT_BUTTON_SIZE = 68
+const MOVEMENT_BUTTON_GAP = 4
 type MapHudProps = {
 	onBack: () => void
 }
 
 export const MapHud: FC<MapHudProps> = ({ onBack }) => {
-	const { resetWorldZoom, worldZoom, zoomIn, zoomOut } = useViewportStore(
+	const { setWorldZoom, worldZoom } = useViewportStore(
 		useShallow((state) => ({
-			resetWorldZoom: state.resetWorldZoom,
+			setWorldZoom: state.setWorldZoom,
 			worldZoom: state.worldZoom,
-			zoomIn: state.zoomIn,
-			zoomOut: state.zoomOut,
 		})),
 	)
 	const fps = useFPS()
 	const { tileX, tileY } = usePlayerPosition()
+	const { moveInDirection } = useDirectionalPlayerMovement()
+	const movementIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+		null,
+	)
 	const positionText = `[${tileX.toString().padStart(2, '0')} ; ${tileY
 		.toString()
 		.padStart(2, '0')}]`
+
+	const stopHeldMovement = useCallback(() => {
+		if (movementIntervalRef.current) {
+			clearInterval(movementIntervalRef.current)
+			movementIntervalRef.current = null
+		}
+	}, [])
+
+	const startHeldMovement = useCallback(
+		(direction: MovementDirection) => {
+			stopHeldMovement()
+			moveInDirection(direction)
+			movementIntervalRef.current = setInterval(() => {
+				moveInDirection(direction)
+			}, HOLD_POLLING_INTERVAL)
+		},
+		[moveInDirection, stopHeldMovement],
+	)
+
+	useEffect(() => stopHeldMovement, [stopHeldMovement])
 
 	return (
 		<layoutContainer
@@ -103,14 +138,23 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 					</Panel>
 					<layoutContainer
 						layout={{
-							...tw`flex-row gap-2`,
-							flexWrap: 'wrap',
-							justifyContent: 'flex-end',
+							...tw`w-full flex-col gap-1`,
+							maxWidth: 260,
 						}}
 					>
-						<Button text='Zoom -' variant='small' onPress={zoomOut} />
-						<Button text='Reset' variant='small' onPress={resetWorldZoom} />
-						<Button text='Zoom +' variant='small' onPress={zoomIn} />
+						<Slider
+							value={worldZoom}
+							min={MIN_WORLD_ZOOM}
+							max={MAX_WORLD_ZOOM}
+							step={WORLD_ZOOM_STEP}
+							onChange={setWorldZoom}
+							layout={{ width: '100%' }}
+						/>
+						<Label
+							text={`${MIN_WORLD_ZOOM.toFixed(2)}x - ${MAX_WORLD_ZOOM.toFixed(2)}x`}
+							font='labelSm'
+							color={Colors.bronze}
+						/>
 					</layoutContainer>
 				</layoutContainer>
 			</layoutContainer>
@@ -188,13 +232,72 @@ export const MapHud: FC<MapHudProps> = ({ onBack }) => {
 			>
 				<layoutContainer
 					layout={{
-						...tw`flex-row gap-2`,
-						flexWrap: 'wrap',
+						...tw`flex-col items-start gap-3`,
 					}}
 				>
-					<Button text='Quests' variant='small' onPress={() => {}} />
-					<Button text='Skills' variant='small' onPress={() => {}} />
-					<Button text='Config' variant='small' onPress={() => {}} />
+					<layoutContainer layout={{ gap: MOVEMENT_BUTTON_GAP }}>
+						<layoutContainer
+							layout={{
+								...tw`items-center`,
+								alignSelf: 'center',
+							}}
+						>
+							<ArrowButton
+								direction='up'
+								size={MOVEMENT_BUTTON_SIZE}
+								onPressStart={() => startHeldMovement('up')}
+								onPressEnd={stopHeldMovement}
+							/>
+						</layoutContainer>
+						<layoutContainer
+							layout={{
+								...tw`flex-row items-center`,
+								gap: MOVEMENT_BUTTON_GAP,
+							}}
+						>
+							<ArrowButton
+								direction='left'
+								size={MOVEMENT_BUTTON_SIZE}
+								onPressStart={() => startHeldMovement('left')}
+								onPressEnd={stopHeldMovement}
+							/>
+							<layoutContainer
+								layout={{
+									width: MOVEMENT_BUTTON_SIZE,
+									height: MOVEMENT_BUTTON_SIZE,
+								}}
+							/>
+							<ArrowButton
+								direction='right'
+								size={MOVEMENT_BUTTON_SIZE}
+								onPressStart={() => startHeldMovement('right')}
+								onPressEnd={stopHeldMovement}
+							/>
+						</layoutContainer>
+						<layoutContainer
+							layout={{
+								...tw`items-center`,
+								alignSelf: 'center',
+							}}
+						>
+							<ArrowButton
+								direction='down'
+								size={MOVEMENT_BUTTON_SIZE}
+								onPressStart={() => startHeldMovement('down')}
+								onPressEnd={stopHeldMovement}
+							/>
+						</layoutContainer>
+					</layoutContainer>
+					<layoutContainer
+						layout={{
+							...tw`flex-row gap-2`,
+							flexWrap: 'wrap',
+						}}
+					>
+						<Button text='Quests' variant='small' onPress={() => {}} />
+						<Button text='Skills' variant='small' onPress={() => {}} />
+						<Button text='Config' variant='small' onPress={() => {}} />
+					</layoutContainer>
 				</layoutContainer>
 				<Panel layout={{ ...tw`flex-col items-end gap-1`, padding: 12 }}>
 					<Label
