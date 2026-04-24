@@ -189,8 +189,7 @@ export const DemoHubScreen: FC = () => {
 				<ContentFrame>
 					<layoutContainer
 						layout={{
-							...tw`w-full h-full flex-col items-center`,
-							paddingTop: 96,
+							...tw`w-full h-full flex-col items-center justify-center`,
 							paddingLeft: 120,
 							paddingRight: 120,
 							gap: 20,
