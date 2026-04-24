@@ -1,3 +1,4 @@
+import type { EventMode } from 'pixi.js'
 import { useEffect, useState } from 'react'
 
 type UsePressableStateOptions = {
@@ -15,6 +16,7 @@ export const usePressableState = ({
 }: UsePressableStateOptions) => {
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
+	const eventMode: EventMode = disabled ? 'none' : 'static'
 
 	useEffect(() => {
 		if (disabled) {
@@ -26,7 +28,7 @@ export const usePressableState = ({
 	return {
 		isHovered,
 		isPressed,
-		eventMode: disabled ? 'none' : 'static',
+		eventMode,
 		cursor: disabled ? 'default' : 'pointer',
 		onPointerOver: () => setIsHovered(true),
 		onPointerOut: () => {
