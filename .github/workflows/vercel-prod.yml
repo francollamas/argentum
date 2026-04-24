@@ -2,7 +2,7 @@ name: vercel production deploy
 
 on:
   push:
-    branches:
+    branches-ignore:
       - main
 
 jobs:
