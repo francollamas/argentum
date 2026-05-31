@@ -362,7 +362,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 12: ArrowButton (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Public reusable arrow button component.
@@ -383,7 +383,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 13: ArrowSelector (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Replaces the old Dropdown/Select concept for sequential selection use cases like class selection.
