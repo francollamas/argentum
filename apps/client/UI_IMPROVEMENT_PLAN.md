@@ -408,7 +408,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 14: IconButton (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Square button with an icon sprite (from UI texture atlas).

@@ -9,6 +9,7 @@ import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { DividerDemoScreen } from './demos/DividerDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
+import { IconButtonDemoScreen } from './demos/IconButtonDemoScreen'
 import { InputDemoScreen } from './demos/InputDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
 import { PanelDemoScreen } from './demos/PanelDemoScreen'
@@ -45,6 +46,7 @@ const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
 	<ProgressBarDemoScreen />
 )
 const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
+const IconButtonDemoRoute: FC<FramedDemoProps> = () => <IconButtonDemoScreen />
 const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
 const DividerDemoRoute: FC<FramedDemoProps> = () => <DividerDemoScreen />
 const SliderDemoRoute: FC<FramedDemoProps> = () => <SliderDemoScreen />
@@ -134,7 +136,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: SliderDemoRoute,
 	},
-	{ id: 'iconbutton', label: 'IconButton', presentation: 'framed' },
+	{
+		id: 'iconbutton',
+		label: 'IconButton',
+		presentation: 'framed',
+		render: IconButtonDemoRoute,
+	},
 	{ id: 'tabbar', label: 'TabBar', presentation: 'framed' },
 	{ id: 'scrollview', label: 'ScrollView', presentation: 'framed' },
 	{ id: 'tooltip', label: 'Tooltip', presentation: 'framed' },
