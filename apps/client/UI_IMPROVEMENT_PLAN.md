@@ -447,7 +447,32 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 16: ScrollView (NEW)
+### Step 16: List (NEW)
+**Status**: `pending`
+
+**What**:
+- Reusable selectable list component designed to work standalone or inside `ScrollView`.
+- Renders items in a vertical layout by default.
+- Each item is selectable and exposes `selectedIndex` / `onChange`.
+- Supports item labels via `{ text: string }` initially.
+- Uses flex layout only: no `x`/`y`, no manual positioning.
+- Visual selected state should be clearly distinguishable from hover/normal state.
+- Props: `items`, `selectedIndex`, `onChange`, `width`, `itemHeight`, `disabled`, `layout`.
+
+**API**:
+```tsx
+<List
+  items={[{ text: 'Espada' }, { text: 'Escudo' }, { text: 'Pocion' }]}
+  selectedIndex={selectedItem}
+  onChange={setSelectedItem}
+/>
+```
+
+**Verify**: Create `src/components/screens/demos/ListDemoScreen.tsx`. Show selectable items, selected state, disabled state, long labels, and usage inside a `Panel`. Add button to DemoHub. Later verify it also works as children/content inside `ScrollView`.
+
+---
+
+### Step 17: ScrollView (NEW)
 **Status**: `pending`
 
 **What**:
@@ -467,7 +492,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 17: Tooltip (NEW)
+### Step 18: Tooltip (NEW)
 **Status**: `pending`
 
 **What**:
@@ -488,7 +513,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 18: Dialog/Modal (NEW)
+### Step 19: Dialog/Modal (NEW)
 **Status**: `pending`
 
 **What**:
@@ -517,7 +542,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 19: Full Integration Demo
+### Step 20: Full Integration Demo
 **Status**: `pending`
 
 **What**:
@@ -531,7 +556,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 
 ---
 
-### Step 20: Final Cleanup
+### Step 21: Final Cleanup
 **Status**: `pending`
 
 **What**:
