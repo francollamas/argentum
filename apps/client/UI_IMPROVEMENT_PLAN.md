@@ -426,7 +426,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 15: TabBar (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Row of tab buttons, one active at a time.
