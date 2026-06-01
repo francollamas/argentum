@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, Label, Panel, TabBar } from '../../ui'
+import { Colors, Divider, Label, Panel, TabBar } from '../../ui'
 
 const CHARACTER_TABS = [
 	{ label: 'Stats' },
@@ -60,34 +60,54 @@ export const TabBarDemoScreen: FC = () => {
 			>
 				<Panel layout={{ width: 540, gap: 16 }}>
 					<Label text='Character Panel' font='titleSm' color={Colors.gold} />
-					<TabBar
-						tabs={CHARACTER_TABS}
-						activeIndex={activeCharacterTab}
-						onChange={setActiveCharacterTab}
-					/>
-					<Panel layout={{ width: '100%', gap: 10, padding: 14 }}>
-						<Label
-							text={CHARACTER_TABS[activeCharacterTab]?.label ?? ''}
-							font='label'
-							color={Colors.metalHighlight}
+					<layoutContainer
+						layout={{
+							...tw`w-full flex-col`,
+							gap: 8,
+						}}
+					>
+						<TabBar
+							tabs={CHARACTER_TABS}
+							activeIndex={activeCharacterTab}
+							onChange={setActiveCharacterTab}
 						/>
-						<Label
-							text={CHARACTER_CONTENT[activeCharacterTab] ?? ''}
-							font='bodySm'
-							color={Colors.silver}
-							wrap
-						/>
-					</Panel>
+						<Divider thickness={2} />
+						<layoutContainer
+							layout={{
+								...tw`w-full flex-col`,
+								gap: 8,
+								paddingLeft: 6,
+								paddingRight: 6,
+								paddingTop: 8,
+								paddingBottom: 4,
+							}}
+						>
+							<Label
+								text={CHARACTER_TABS[activeCharacterTab]?.label ?? ''}
+								font='label'
+								color={Colors.metalHighlight}
+							/>
+							<Label
+								text={CHARACTER_CONTENT[activeCharacterTab] ?? ''}
+								font='bodySm'
+								color={Colors.silver}
+								wrap
+							/>
+						</layoutContainer>
+					</layoutContainer>
 				</Panel>
 
 				<Panel layout={{ width: 620, gap: 16 }}>
 					<Label text='Settings Tabs' font='titleSm' color={Colors.gold} />
-					<TabBar
-						tabs={SETTINGS_TABS}
-						activeIndex={activeSettingsTab}
-						onChange={setActiveSettingsTab}
-						gap={12}
-					/>
+					<layoutContainer layout={{ ...tw`w-full flex-col`, gap: 8 }}>
+						<TabBar
+							tabs={SETTINGS_TABS}
+							activeIndex={activeSettingsTab}
+							onChange={setActiveSettingsTab}
+							gap={12}
+						/>
+						<Divider thickness={2} />
+					</layoutContainer>
 					<Label
 						text={SETTINGS_CONTENT[activeSettingsTab] ?? ''}
 						font='bodySm'
