@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, IconButton, Label, Panel } from '../../ui'
+import { Colors, IconButton, Label, Panel, WrappedLabel } from '../../ui'
 
 const SQUARE_ICONS = [
 	'checkbox-checked',
@@ -85,11 +85,11 @@ export const IconButtonDemoScreen: FC = () => {
 						<IconButton icon='arrow-up' size={64} />
 						<IconButton icon='arrow-up' size={72} shape='circle' />
 					</layoutContainer>
-					<Label
+					<WrappedLabel
 						text='The icon footprint is smaller now so the outer shape reads more clearly.'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -133,11 +133,11 @@ export const IconButtonDemoScreen: FC = () => {
 						font='label'
 						color={Colors.metalHighlight}
 					/>
-					<Label
+					<WrappedLabel
 						text='Game icons use the first texture frame returned by useSprite().'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -153,11 +153,11 @@ export const IconButtonDemoScreen: FC = () => {
 							color={Colors.metalHighlight}
 						/>
 					</layoutContainer>
-					<Label
+					<WrappedLabel
 						text='The demo uses the current UI atlas textures as icon content to validate sizing and centering.'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 			</layoutContainer>

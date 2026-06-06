@@ -1,6 +1,6 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
-import { Colors, Label, Panel, ProgressBar } from '../../ui'
+import { Colors, Label, Panel, ProgressBar, WrappedLabel } from '../../ui'
 
 export const ProgressBarDemoScreen: FC = () => {
 	return (
@@ -12,11 +12,11 @@ export const ProgressBarDemoScreen: FC = () => {
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='ProgressBar Demo' font='title' color={Colors.gold} />
-				<Label
+				<WrappedLabel
 					text='Each bar renders a label row above a separate progress row'
+					width={560}
 					font='bodySm'
 					color={Colors.silver}
-					wrap
 				/>
 			</layoutContainer>
 
@@ -28,11 +28,11 @@ export const ProgressBarDemoScreen: FC = () => {
 			>
 				<Panel layout={{ width: 460, gap: 14 }}>
 					<Label text='Amount Overlay' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='Concept and amount live on the top row, with the bar isolated below.'
+						width={400}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<ProgressBar
 						width={400}
@@ -65,11 +65,11 @@ export const ProgressBarDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 460, gap: 14 }}>
 					<Label text='Percentage Overlay' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='The fill now stays clipped to the bar width, including at 100%.'
+						width={400}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<ProgressBar
 						width={400}
@@ -102,11 +102,11 @@ export const ProgressBarDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 520, gap: 14 }}>
 					<Label text='Panel Composition' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='The widget now behaves predictably inside panels because labels and fill use separate rows.'
+						width={460}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={{ ...tw`flex-col`, gap: 10 }}>
 						<ProgressBar

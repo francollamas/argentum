@@ -12,6 +12,7 @@ import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { IconButtonDemoScreen } from './demos/IconButtonDemoScreen'
 import { InputDemoScreen } from './demos/InputDemoScreen'
 import { LabelDemoScreen } from './demos/LabelDemoScreen'
+import { ListDemoScreen } from './demos/ListDemoScreen'
 import { PanelDemoScreen } from './demos/PanelDemoScreen'
 import { ProgressBarDemoScreen } from './demos/ProgressBarDemoScreen'
 import { RadioGroupDemoScreen } from './demos/RadioGroupDemoScreen'
@@ -47,6 +48,7 @@ const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
 	<ProgressBarDemoScreen />
 )
 const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
+const ListDemoRoute: FC<FramedDemoProps> = () => <ListDemoScreen />
 const IconButtonDemoRoute: FC<FramedDemoProps> = () => <IconButtonDemoScreen />
 const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
 const DividerDemoRoute: FC<FramedDemoProps> = () => <DividerDemoScreen />
@@ -125,6 +127,12 @@ const DEMOS: DemoDefinition[] = [
 		label: 'TextArea',
 		presentation: 'framed',
 		render: TextAreaDemoRoute,
+	},
+	{
+		id: 'list',
+		label: 'List',
+		presentation: 'framed',
+		render: ListDemoRoute,
 	},
 	{
 		id: 'divider',

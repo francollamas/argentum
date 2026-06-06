@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { ArrowSelector, Colors, Label, Panel } from '../../ui'
+import { ArrowSelector, Colors, Label, Panel, WrappedLabel } from '../../ui'
 
 const CLASS_ITEMS = [
 	{ text: 'Guerrero' },
@@ -72,11 +72,11 @@ export const ArrowSelectorDemoScreen: FC = () => {
 						size={ARROW_SELECTOR_SIZE}
 						layout={{ width: '100%' }}
 					/>
-					<Label
+					<WrappedLabel
 						text='The selector stretches with the panel width while keeping fixed-size arrows.'
+						width={560}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -90,11 +90,11 @@ export const ArrowSelectorDemoScreen: FC = () => {
 						layout={{ width: '100%' }}
 						disabled
 					/>
-					<Label
+					<WrappedLabel
 						text='Disabled selectors keep the current item visible and block navigation.'
+						width={460}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -107,11 +107,11 @@ export const ArrowSelectorDemoScreen: FC = () => {
 						size={ARROW_SELECTOR_SIZE}
 						layout={{ width: '100%' }}
 					/>
-					<Label
+					<WrappedLabel
 						text='Narrow panel with shorter labels.'
+						width={280}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -124,11 +124,11 @@ export const ArrowSelectorDemoScreen: FC = () => {
 						size={ARROW_SELECTOR_SIZE}
 						layout={{ width: '100%' }}
 					/>
-					<Label
+					<WrappedLabel
 						text='Shows how the center label behaves when the parent width gets tighter.'
+						width={300}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 			</layoutContainer>

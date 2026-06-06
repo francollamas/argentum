@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, Input, Label, Panel } from '../../ui'
+import { Colors, Input, Label, Panel, WrappedLabel } from '../../ui'
 
 export const InputDemoScreen: FC = () => {
 	const [username, setUsername] = useState('Franco')
@@ -19,11 +19,11 @@ export const InputDemoScreen: FC = () => {
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='Input Demo' font='title' color={Colors.gold} />
-				<Label
+				<WrappedLabel
 					text='Layout-driven input with DOM keyboard capture and Pixi rendering'
+					width={640}
 					font='bodySm'
 					color={Colors.silver}
-					wrap
 				/>
 			</layoutContainer>
 
@@ -35,11 +35,11 @@ export const InputDemoScreen: FC = () => {
 			>
 				<Panel layout={{ width: 420, gap: 14 }}>
 					<Label text='Basic States' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='Placeholder, controlled value, and Enter submission all use the hidden DOM input.'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`w-full flex-col gap-3`}>
 						<Input
@@ -62,21 +62,21 @@ export const InputDemoScreen: FC = () => {
 						font='label'
 						color={Colors.metalHighlight}
 					/>
-					<Label
+					<WrappedLabel
 						text={lastSubmitted}
+						width={360}
 						font='labelSm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
 				<Panel layout={{ width: 420, gap: 14 }}>
 					<Label text='Alignment' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='Horizontal alignment is handled by an inner flex container, not by manual text coordinates.'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`w-full flex-col gap-3`}>
 						<Input
@@ -102,11 +102,11 @@ export const InputDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 520, gap: 14 }}>
 					<Label text='Panel Composition' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='The component stretches cleanly inside columns and still allows explicit widths in rows.'
+						width={460}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`w-full flex-col gap-2`}>
 						<Label text='Email' font='label' color={Colors.metalHighlight} />

@@ -1,15 +1,17 @@
 import type { FC } from 'react'
 import { FONTS, type FontType } from '../../config/typography'
 
-type LabelProps = {
+type WrappedLabelProps = {
 	text: string
+	width: number
 	font?: FontType
 	color?: number
 	layout?: Record<string, unknown>
 }
 
-export const Label: FC<LabelProps> = ({
+export const WrappedLabel: FC<WrappedLabelProps> = ({
 	text,
+	width,
 	font = 'body',
 	color = 0xffffff,
 	layout,
@@ -20,7 +22,7 @@ export const Label: FC<LabelProps> = ({
 		<pixiBitmapText
 			text={text}
 			layout={{
-				width: 'intrinsic',
+				width,
 				height: 'intrinsic',
 				flexShrink: 0,
 				...layout,
@@ -29,6 +31,8 @@ export const Label: FC<LabelProps> = ({
 				fontFamily: fontConfig.fontFamily,
 				fontSize: fontConfig.fontSize,
 				fill: color,
+				wordWrap: true,
+				wordWrapWidth: width,
 			}}
 		/>
 	)

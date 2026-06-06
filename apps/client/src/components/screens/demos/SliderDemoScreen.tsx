@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, Label, Panel, Slider } from '../../ui'
+import { Colors, Label, Panel, Slider, WrappedLabel } from '../../ui'
 
 export const SliderDemoScreen: FC = () => {
 	const [volume, setVolume] = useState(68)
@@ -18,11 +18,11 @@ export const SliderDemoScreen: FC = () => {
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='Slider Demo' font='title' color={Colors.gold} />
-				<Label
+				<WrappedLabel
 					text='Nine-slice rail and fill with a draggable thumb, built to stretch cleanly inside panels.'
+					width={720}
 					font='bodySm'
 					color={Colors.silver}
-					wrap
 				/>
 			</layoutContainer>
 
@@ -47,11 +47,11 @@ export const SliderDemoScreen: FC = () => {
 						onChange={setVolume}
 						width={400}
 					/>
-					<Label
+					<WrappedLabel
 						text='This one snaps in 10-point steps, like a traditional stepped slider.'
+						width={400}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -103,11 +103,11 @@ export const SliderDemoScreen: FC = () => {
 						onChange={setBrightness}
 						layout={{ width: '100%' }}
 					/>
-					<Label
+					<WrappedLabel
 						text='The control stretches with the panel width and keeps the thumb centered on the active value.'
+						width={460}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 			</layoutContainer>

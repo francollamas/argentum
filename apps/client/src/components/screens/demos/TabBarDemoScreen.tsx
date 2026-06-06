@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, Divider, Label, Panel, TabBar } from '../../ui'
+import { Colors, Divider, Label, Panel, TabBar, WrappedLabel } from '../../ui'
 
 const CHARACTER_TABS = [
 	{ label: 'Stats' },
@@ -87,11 +87,11 @@ export const TabBarDemoScreen: FC = () => {
 								font='label'
 								color={Colors.metalHighlight}
 							/>
-							<Label
+							<WrappedLabel
 								text={CHARACTER_CONTENT[activeCharacterTab] ?? ''}
+								width={460}
 								font='bodySm'
 								color={Colors.silver}
-								wrap
 							/>
 						</layoutContainer>
 					</layoutContainer>
@@ -108,11 +108,11 @@ export const TabBarDemoScreen: FC = () => {
 						/>
 						<Divider thickness={2} />
 					</layoutContainer>
-					<Label
+					<WrappedLabel
 						text={SETTINGS_CONTENT[activeSettingsTab] ?? ''}
+						width={560}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 
@@ -134,11 +134,11 @@ export const TabBarDemoScreen: FC = () => {
 				<Panel layout={{ width: 360, gap: 16 }}>
 					<Label text='Disabled State' font='titleSm' color={Colors.gold} />
 					<TabBar tabs={CHARACTER_TABS} activeIndex={1} disabled />
-					<Label
+					<WrappedLabel
 						text='Disabled tab bars keep the selected tab visible and ignore clicks.'
+						width={320}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 				</Panel>
 			</layoutContainer>

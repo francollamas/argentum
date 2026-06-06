@@ -1,6 +1,6 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
-import { Button, Colors, Label, Panel } from '../../ui'
+import { Button, Colors, Label, Panel, WrappedLabel } from '../../ui'
 
 export const PanelDemoScreen: FC = () => {
 	return (
@@ -12,11 +12,11 @@ export const PanelDemoScreen: FC = () => {
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='Panel Demo' font='title' color={Colors.gold} />
-				<Label
+				<WrappedLabel
 					text='Panel as a real flex container with direct children'
+					width={480}
 					font='bodySm'
 					color={Colors.silver}
-					wrap
 				/>
 			</layoutContainer>
 
@@ -32,22 +32,22 @@ export const PanelDemoScreen: FC = () => {
 						font='titleSm'
 						color={Colors.gold}
 					/>
-					<Label
+					<WrappedLabel
 						text='Uses the built-in defaults: padding 16, gap 8, column layout.'
+						width={280}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<Button text='Primary Action' onPress={() => {}} />
 				</Panel>
 
 				<Panel layout={{ width: 360, padding: 24, gap: 16 }}>
 					<Label text='Padding + Gap' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='This panel uses larger spacing so the content breathes more.'
+						width={312}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`flex-row items-center gap-3`}>
 						<Button text='Accept' variant='small' onPress={() => {}} />
@@ -60,11 +60,11 @@ export const PanelDemoScreen: FC = () => {
 						layout={{ ...tw`flex-col gap-2`, flex: 1, minWidth: 0 }}
 					>
 						<Label text='Row Layout' font='titleSm' color={Colors.gold} />
-						<Label
+						<WrappedLabel
 							text='Children sit next to each other without an extra inner wrapper.'
+							width={260}
 							font='bodySm'
 							color={Colors.silver}
-							wrap
 						/>
 					</layoutContainer>
 					<Button text='Equip' onPress={() => {}} />
@@ -86,11 +86,11 @@ export const PanelDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 320, height: 220, gap: 12 }}>
 					<Label text='Fixed Height' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='A fixed-height panel keeps its background stretched while content stays layout-driven.'
+						width={280}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={{ flex: 1 }} />
 					<Button text='Bottom Action' onPress={() => {}} />

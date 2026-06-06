@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, Label, Panel, TextArea } from '../../ui'
+import { Colors, Label, Panel, TextArea, WrappedLabel } from '../../ui'
 
 const LONG_TEXT = `Born in Ullathorpe, this mage keeps notes about every hunt, every failed spell, and every rumor heard at the docks.
 
@@ -23,11 +23,11 @@ export const TextAreaDemoScreen: FC = () => {
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='TextArea Demo' font='title' color={Colors.gold} />
-				<Label
+				<WrappedLabel
 					text='Multiline editable text using the same DOM attachment strategy as Input'
+					width={640}
 					font='bodySm'
 					color={Colors.silver}
-					wrap
 				/>
 			</layoutContainer>
 
@@ -39,11 +39,11 @@ export const TextAreaDemoScreen: FC = () => {
 			>
 				<Panel layout={{ width: 440, gap: 14 }}>
 					<Label text='Basic States' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='Placeholder and controlled content behave like a regular textarea. Enter inserts a new line.'
+						width={380}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`w-full flex-col gap-3`}>
 						<TextArea
@@ -58,11 +58,11 @@ export const TextAreaDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 440, gap: 14 }}>
 					<Label text='Alignment + Height' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='The field keeps top padding for readability while letting horizontal alignment follow the chosen mode.'
+						width={380}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`w-full flex-col gap-3`}>
 						<TextArea
@@ -82,11 +82,11 @@ export const TextAreaDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 520, gap: 14 }}>
 					<Label text='Panel Composition' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='Longer notes stay inside the control and scroll internally without breaking panel layout.'
+						width={460}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<layoutContainer layout={tw`w-full flex-col gap-2`}>
 						<Label

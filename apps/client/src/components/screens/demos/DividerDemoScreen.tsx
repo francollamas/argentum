@@ -1,6 +1,6 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
-import { Button, Colors, Divider, Label, Panel } from '../../ui'
+import { Button, Colors, Divider, Label, Panel, WrappedLabel } from '../../ui'
 
 export const DividerDemoScreen: FC = () => {
 	return (
@@ -12,11 +12,11 @@ export const DividerDemoScreen: FC = () => {
 		>
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='Divider Demo' font='title' color={Colors.gold} />
-				<Label
+				<WrappedLabel
 					text='Simple separators that work cleanly in both column and row layouts'
+					width={640}
 					font='bodySm'
 					color={Colors.silver}
-					wrap
 				/>
 			</layoutContainer>
 
@@ -32,11 +32,11 @@ export const DividerDemoScreen: FC = () => {
 						font='titleSm'
 						color={Colors.gold}
 					/>
-					<Label
+					<WrappedLabel
 						text='Stacked sections stay readable without adding manual margins between each block.'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<Label
 						text='Character Overview'
@@ -76,11 +76,11 @@ export const DividerDemoScreen: FC = () => {
 							font='titleSm'
 							color={Colors.gold}
 						/>
-						<Label
+						<WrappedLabel
 							text='Useful for inline stats, toolbars, and compact HUD rows.'
+							width={240}
 							font='bodySm'
 							color={Colors.silver}
-							wrap
 						/>
 					</layoutContainer>
 					<Divider direction='vertical' />
@@ -103,11 +103,11 @@ export const DividerDemoScreen: FC = () => {
 
 				<Panel layout={{ width: 420, gap: 14 }}>
 					<Label text='Variants' font='titleSm' color={Colors.gold} />
-					<Label
+					<WrappedLabel
 						text='Thickness and color stay controlled by props while the parent layout defines spacing.'
+						width={360}
 						font='bodySm'
 						color={Colors.silver}
-						wrap
 					/>
 					<Label
 						text='Default horizontal'
