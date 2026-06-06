@@ -32,7 +32,7 @@ type SelectableListItemProps = {
 const DEFAULT_ITEM_MIN_HEIGHT = 44
 const ITEM_HORIZONTAL_PADDING = 14
 const ITEM_VERTICAL_PADDING = 10
-const ITEM_GAP = 4
+const ITEM_GAP = 0
 const NORMAL_ROW_COLOR = 0x241713
 const HOVER_ROW_COLOR = 0x31211b
 const SELECTED_ROW_COLOR = 0x4d372c
@@ -120,7 +120,6 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 				paddingBottom: ITEM_VERTICAL_PADDING,
 				justifyContent: 'center',
 				backgroundColor,
-				borderRadius: 8,
 			}}
 			alpha={disabled ? 0.45 : 1}
 			{...pressableProps}
