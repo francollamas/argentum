@@ -34,6 +34,7 @@ export const ListDemoScreen: FC = () => {
 	const [selectedSpell, setSelectedSpell] = useState<number | null>(null)
 	const [selectedCompact, setSelectedCompact] = useState(0)
 	const [selectedTall, setSelectedTall] = useState(2)
+	const [selectedLongLabel, setSelectedLongLabel] = useState(1)
 
 	return (
 		<layoutContainer
@@ -113,12 +114,18 @@ export const ListDemoScreen: FC = () => {
 				</Panel>
 
 				<Panel layout={{ width: 320, gap: 16 }}>
-					<Label
+					<WrappedLabel
 						text='Long Labels In Narrow Panel'
+						width={280}
 						font='titleSm'
 						color={Colors.gold}
 					/>
-					<List items={LONG_TEXT_ITEMS} selectedIndex={1} itemTextWidth={240} />
+					<List
+						items={LONG_TEXT_ITEMS}
+						selectedIndex={selectedLongLabel}
+						onChange={setSelectedLongLabel}
+						itemTextWidth={240}
+					/>
 				</Panel>
 
 				<Panel layout={{ width: 360, gap: 16 }}>
