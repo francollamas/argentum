@@ -1,5 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
+import type { Container } from 'pixi.js'
 import type { FC } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { usePressableState } from '../../hooks/usePressableState'
 import { Colors } from './colors'
 import { WrappedLabel } from './WrappedLabel'
@@ -34,6 +36,15 @@ const ITEM_GAP = 4
 const NORMAL_ROW_COLOR = 0x241713
 const HOVER_ROW_COLOR = 0x31211b
 const SELECTED_ROW_COLOR = 0x4d372c
+const DEFAULT_ITEM_TEXT_WIDTH = 300
+
+type LayoutNode = Container & {
+	layout?: {
+		computedLayout?: {
+			width: number
+		}
+	}
+}
 
 const SelectableListItem: FC<SelectableListItemProps> = ({
 	text,
@@ -43,6 +54,40 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 	itemTextWidth,
 	onPress,
 }) => {
+	const [measuredTextWidth, setMeasuredTextWidth] = useState(itemTextWidth)
+	const contentNodeRef = useRef<LayoutNode | null>(null)
+	const contentRef = useCallback(
+		(node: LayoutNode | null) => {
+			const previousNode = contentNodeRef.current
+
+			if (previousNode) {
+				previousNode.off('layout', handleLayout)
+			}
+
+			contentNodeRef.current = node
+
+			if (node) {
+				node.on('layout', handleLayout)
+				handleLayout()
+			}
+
+			function handleLayout() {
+				if (itemTextWidth != null) {
+					return
+				}
+
+				const width = node?.layout?.computedLayout?.width
+				if (width == null || width <= 0) {
+					return
+				}
+
+				setMeasuredTextWidth((currentWidth) =>
+					currentWidth === width ? currentWidth : width,
+				)
+			}
+		},
+		[itemTextWidth],
+	)
 	const { isHovered, ...pressableProps } = usePressableState({
 		disabled,
 		onPress: selected ? undefined : onPress,
@@ -58,6 +103,8 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 		: selected
 			? Colors.metalHighlight
 			: Colors.silver
+	const resolvedTextWidth =
+		itemTextWidth ?? measuredTextWidth ?? DEFAULT_ITEM_TEXT_WIDTH
 
 	return (
 		<layoutContainer
@@ -79,6 +126,7 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 			{...pressableProps}
 		>
 			<layoutContainer
+				ref={contentRef}
 				layout={{
 					...tw`w-full`,
 					minWidth: 0,
@@ -86,9 +134,10 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 			>
 				<WrappedLabel
 					text={text}
-					width={itemTextWidth}
+					width={resolvedTextWidth}
 					font='bodySm'
 					color={textColor}
+					align='center'
 				/>
 			</layoutContainer>
 		</layoutContainer>
@@ -100,7 +149,7 @@ export const List: FC<ListProps> = ({
 	selectedIndex = null,
 	onChange,
 	itemHeight,
-	itemTextWidth = 300,
+	itemTextWidth,
 	disabled = false,
 	layout,
 }) => {

@@ -1,11 +1,14 @@
 import type { FC } from 'react'
 import { FONTS, type FontType } from '../../config/typography'
 
+type WrappedLabelAlign = 'left' | 'center' | 'right'
+
 type WrappedLabelProps = {
 	text: string
 	width: number
 	font?: FontType
 	color?: number
+	align?: WrappedLabelAlign
 	layout?: Record<string, unknown>
 }
 
@@ -14,6 +17,7 @@ export const WrappedLabel: FC<WrappedLabelProps> = ({
 	width,
 	font = 'body',
 	color = 0xffffff,
+	align = 'left',
 	layout,
 }) => {
 	const fontConfig = FONTS[font]
@@ -31,6 +35,7 @@ export const WrappedLabel: FC<WrappedLabelProps> = ({
 				fontFamily: fontConfig.fontFamily,
 				fontSize: fontConfig.fontSize,
 				fill: color,
+				align,
 				wordWrap: true,
 				wordWrapWidth: width,
 			}}
