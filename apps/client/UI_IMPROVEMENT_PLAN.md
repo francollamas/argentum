@@ -451,24 +451,83 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 **Status**: `pending`
 
 **What**:
-- Reusable selectable list component designed to work standalone or inside `ScrollView`.
-- Renders items in a vertical layout by default.
-- Each item is selectable and exposes `selectedIndex` / `onChange`.
-- Supports item labels via `{ text: string }` initially.
-- Uses flex layout only: no `x`/`y`, no manual positioning.
-- Visual selected state should be clearly distinguishable from hover/normal state.
-- Props: `items`, `selectedIndex`, `onChange`, `width`, `itemHeight`, `disabled`, `layout`.
+- Build a reusable selectable list component for vertical item selection use cases such as quest choices, spell selection, dialog options, or similar stacked entries.
+- The component renders items one below another using flex layout only.
+- Keep the initial data model simple: `items={[{ text: string }]}`.
+- The component supports a single selected item, with optional empty selection state:
+  - `selectedIndex?: number | null`
+  - `onChange?: (selectedIndex: number) => void`
+- Clicking an enabled item selects it.
+- Clicking the already selected item should keep selection unchanged and should not emit duplicate `onChange` calls.
+- `disabled` disables the full list visually and functionally.
+- The component does not own scrolling and should not include any `ScrollView`-specific behavior for now.
+
+**Visual / interaction rules**:
+- Use a flat minimal-dark visual style: no heavy borders, no ornate frame treatment, no inventory-slot styling.
+- Each row should read as a clean selectable strip:
+  - full-width within the list
+  - consistent horizontal and vertical padding
+  - vertically centered content
+  - no manual positioning
+- States must be clearly distinguishable:
+  - normal: neutral, low-contrast row background (or transparent base) with text in `Colors.silver`
+  - hover: subtle dark background emphasis
+  - selected: stronger flat filled highlight than hover, still minimal, with text in `Colors.metalHighlight`
+  - disabled: muted contrast / alpha, no interaction
+- The selected state should remain visually obvious even when the pointer is no longer hovering that row.
+- Keep the component visually minimal and modern within the existing UI language.
+
+**Sizing / text behavior**:
+- The list should stretch cleanly inside bounded containers such as `Panel`.
+- Rows should use a practical minimum height by default.
+- `itemHeight` can be provided to force denser or taller rows when needed.
+- Long labels must remain readable:
+  - no text scaling
+  - text can wrap if needed
+  - rows may grow vertically when `itemHeight` is not forcing a fixed size
+
+**Props**:
+- `items`
+- `selectedIndex`
+- `onChange`
+- `itemHeight?`
+- `disabled?`
+- `layout?`
 
 **API**:
 ```tsx
 <List
-  items={[{ text: 'Espada' }, { text: 'Escudo' }, { text: 'Pocion' }]}
-  selectedIndex={selectedItem}
-  onChange={setSelectedItem}
+  items={[{ text: 'Mision del herrero' }, { text: 'Encargo del mago' }]}
+  selectedIndex={selectedQuest}
+  onChange={setSelectedQuest}
+ />
+
+ <List
+  items={[{ text: 'Curar' }, { text: 'Misil magico' }, { text: 'Inmovilizar' }]}
+  selectedIndex={selectedSpell}
+  onChange={setSelectedSpell}
+  itemHeight={44}
+  layout={{ width: '100%' }}
 />
 ```
 
-**Verify**: Create `src/components/screens/demos/ListDemoScreen.tsx`. Show selectable items, selected state, disabled state, long labels, and usage inside a `Panel`. Add button to DemoHub. Later verify it also works as children/content inside `ScrollView`.
+**Acceptance criteria**:
+- `List` participates correctly in parent flex layouts.
+- Items render as full-width vertical selectable rows.
+- Hover, selected, and disabled states are visually distinct.
+- No `x` / `y`, no manual positioning, no invisible hit-area hacks.
+- Long labels remain readable without text scaling.
+- The component works correctly inside `Panel`.
+
+**Verify**: Create `src/components/screens/demos/ListDemoScreen.tsx`. Show:
+- basic selectable list
+- list with `selectedIndex={null}` initial state
+- disabled list
+- long labels in a narrow panel
+- compact vs taller rows via `itemHeight`
+- usage inside a `Panel`
+
+Add button to `DemoHub`.
 
 ---
 
