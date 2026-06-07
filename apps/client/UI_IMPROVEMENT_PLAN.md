@@ -448,7 +448,7 @@ Instead of a single monolithic `LayoutDemoScreen`, we use:
 ---
 
 ### Step 16: List (NEW)
-**Status**: `done`
+**Status**: `done` ✅
 
 **What**:
 - Build a reusable selectable list component for vertical item selection use cases such as quest choices, spell selection, dialog options, or similar stacked entries.
