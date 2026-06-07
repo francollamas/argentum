@@ -77,6 +77,7 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}
+				eventMode='none'
 			>
 				<Label text={text} font='bodySm' color={textColor} />
 			</layoutContainer>

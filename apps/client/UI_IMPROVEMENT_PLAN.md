@@ -532,7 +532,7 @@ Add button to `DemoHub`.
 ---
 
 ### Step 17: ScrollView (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Build a reusable **vertical-only** `ScrollView` using `@pixi/layout`.

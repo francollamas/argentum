@@ -166,7 +166,7 @@ export const ScrollViewDemoScreen: FC = () => {
 					/>
 					<ScrollView
 						height={260}
-						layout={{ backgroundColor: 0x1b120f }}
+						layout={{ backgroundColor: 0x1b120f, borderRadius: 8 }}
 						contentLayout={{ width: '100%' }}
 					>
 						<List
