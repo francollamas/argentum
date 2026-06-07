@@ -535,19 +535,70 @@ Add button to `DemoHub`.
 **Status**: `pending`
 
 **What**:
-- Wraps `layoutContainer` with `overflow: 'scroll'` and `trackpad` physics config.
-- Props: `width`, `height`, `direction` (vertical/horizontal/both), `children`.
-- Handles scroll physics configuration internally (maxSpeed, constrain, etc.).
-- Direction maps to constraining the unused axis.
+- Build a reusable **vertical-only** `ScrollView` using `@pixi/layout`.
+- The component is a thin wrapper around `layoutContainer` with:
+  - `overflow: 'scroll'`
+  - vertical `trackpad` configuration
+  - horizontal scrolling constrained / disabled
+- The first version supports **children-based composition**.
+- This component does **not** implement virtualization.
+- Offscreen content is handled by Pixi Layout clipping / scrolling behavior, which is sufficient for the expected item counts in this project.
+- The component must work well inside `Panel` and with existing stacked UI content such as `List`-like rows.
+
+**Behavior rules**:
+- Vertical scrolling only.
+- No horizontal scroll behavior for now.
+- Works smoothly with wheel / trackpad input.
+- Content outside the viewport is clipped to the visible bounds.
+- Stretches correctly inside bounded flex layouts.
+- Accepts arbitrary children, but the main intended usage is vertical stacked content.
+
+**Props**:
+- `width?`
+- `height?`
+- `children?`
+- `layout?`
+- `contentLayout?`
+- `maxSpeed?`
 
 **API**:
 ```tsx
-<ScrollView width={300} height={200}>
-  {items.map(item => <Label key={item.id} text={item.name} font="body" />)}
+<ScrollView height={260}>
+  {items.map((item) => (
+    <Label key={item.id} text={item.name} font="body" />
+  ))}
 </ScrollView>
 ```
 
-**Verify**: Create `src/components/screens/demos/ScrollViewDemoScreen.tsx`. Show ScrollView with 20+ items, verify scroll/drag works smoothly, inside a Panel. Add button to DemoHub. Screenshot review with user.
+**Internal structure target**:
+```tsx
+<layoutContainer layout={rootLayout}>
+  <layoutContainer
+    layout={viewportLayout}
+    trackpad={verticalTrackpadConfig}
+  >
+    <layoutContainer layout={contentLayout}>
+      {children}
+    </layoutContainer>
+  </layoutContainer>
+</layoutContainer>
+```
+
+**Acceptance criteria**:
+- Vertical scrolling works smoothly.
+- Horizontal scrolling is disabled / constrained.
+- Content outside the viewport is visually clipped.
+- The component works inside `Panel`.
+- The component participates correctly in parent flex layouts.
+- The component is suitable for small and medium content sets without additional virtualization logic.
+
+**Verify**: Create `src/components/screens/demos/ScrollViewDemoScreen.tsx`. Show:
+- a basic vertical scroll area with 20+ rows
+- a `Panel` containing a bounded `ScrollView`
+- a demo visually similar to `List`
+- a narrow / tall case to validate clipping and scroll behavior
+
+Add button to `DemoHub`. Screenshot review with user.
 
 ---
 
