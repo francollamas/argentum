@@ -1,7 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Colors, Label, List, Panel } from '../../ui'
+import { Colors, Label, List, Panel, WrappedLabel } from '../../ui'
 
 const QUEST_ITEMS = [
 	{ text: 'Mision del herrero' },
@@ -88,8 +88,9 @@ export const ListDemoScreen: FC = () => {
 				<Panel layout={{ alignSelf: 'stretch', gap: 16 }}>
 					<Label text='Disabled List' font='titleSm' color={Colors.gold} />
 					<List items={QUEST_ITEMS.slice(0, 3)} selectedIndex={1} disabled />
-					<Label
+					<WrappedLabel
 						text='Disabled lists keep their selected row visible and ignore hover/click interactions.'
+						width={280}
 						font='bodySm'
 						color={Colors.silver}
 					/>
