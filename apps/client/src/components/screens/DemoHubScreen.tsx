@@ -16,6 +16,7 @@ import { ListDemoScreen } from './demos/ListDemoScreen'
 import { PanelDemoScreen } from './demos/PanelDemoScreen'
 import { ProgressBarDemoScreen } from './demos/ProgressBarDemoScreen'
 import { RadioGroupDemoScreen } from './demos/RadioGroupDemoScreen'
+import { ScrollViewDemoScreen } from './demos/ScrollViewDemoScreen'
 import { SliderDemoScreen } from './demos/SliderDemoScreen'
 import { SwitchDemoScreen } from './demos/SwitchDemoScreen'
 import { TabBarDemoScreen } from './demos/TabBarDemoScreen'
@@ -50,6 +51,7 @@ const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
 const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
 const ListDemoRoute: FC<FramedDemoProps> = () => <ListDemoScreen />
 const IconButtonDemoRoute: FC<FramedDemoProps> = () => <IconButtonDemoScreen />
+const ScrollViewDemoRoute: FC<FramedDemoProps> = () => <ScrollViewDemoScreen />
 const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
 const DividerDemoRoute: FC<FramedDemoProps> = () => <DividerDemoScreen />
 const SliderDemoRoute: FC<FramedDemoProps> = () => <SliderDemoScreen />
@@ -158,7 +160,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: TabBarDemoRoute,
 	},
-	{ id: 'scrollview', label: 'ScrollView', presentation: 'framed' },
+	{
+		id: 'scrollview',
+		label: 'ScrollView',
+		presentation: 'framed',
+		render: ScrollViewDemoRoute,
+	},
 	{ id: 'tooltip', label: 'Tooltip', presentation: 'framed' },
 	{ id: 'dialog', label: 'Dialog', presentation: 'framed' },
 	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
