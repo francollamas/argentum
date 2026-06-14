@@ -4,6 +4,7 @@ import type { FC } from 'react'
 import { useEffect } from 'react'
 import { ScreenRoot } from '../components/layout'
 import { DemoHubScreen } from '../components/screens/DemoHubScreen'
+import { TooltipLayerProvider } from '../components/ui/TooltipLayer'
 import { usePixelDensitySync } from '../hooks/usePixelDensitySync'
 import { useResources } from '../hooks/useResources'
 import '@pixi/layout/devtools'
@@ -24,7 +25,9 @@ const App: FC = () => {
 
 	return (
 		<ScreenRoot>
-			<DemoHubScreen />
+			<TooltipLayerProvider>
+				<DemoHubScreen />
+			</TooltipLayerProvider>
 		</ScreenRoot>
 	)
 }

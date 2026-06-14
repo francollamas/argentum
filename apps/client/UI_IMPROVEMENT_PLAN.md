@@ -608,8 +608,9 @@ Add button to `DemoHub`. Screenshot review with user.
 **What**:
 - Appears on `onPointerOver` of a target element, disappears on `onPointerOut`.
 - Panel-styled popup with text content.
-- Positioned near the pointer using absolute positioning relative to the layout root.
-- Auto-positions to avoid going off-screen edges.
+- Position is based on the target element, not the live pointer position. No need to keep the tooltip attached to the mouse.
+- Support a simple placement hint such as `top`, `bottom`, `left`, or `right`.
+- Keep the first version simple: no edge-aware auto-positioning logic is required in the plan.
 - Props: wraps children, `content` (string or ReactNode), `position` hint (top/bottom/left/right).
 
 **API**:
@@ -619,7 +620,7 @@ Add button to `DemoHub`. Screenshot review with user.
 </Tooltip>
 ```
 
-**Verify**: Create `src/components/screens/demos/TooltipDemoScreen.tsx`. Show elements with tooltips on hover, verify positioning near edges of screen. Add button to DemoHub. Screenshot review with user.
+**Verify**: Create `src/components/screens/demos/TooltipDemoScreen.tsx`. Show elements with tooltips on hover and validate each supported placement hint. Add button to DemoHub. Screenshot review with user.
 
 ---
 

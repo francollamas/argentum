@@ -21,6 +21,7 @@ import { SliderDemoScreen } from './demos/SliderDemoScreen'
 import { SwitchDemoScreen } from './demos/SwitchDemoScreen'
 import { TabBarDemoScreen } from './demos/TabBarDemoScreen'
 import { TextAreaDemoScreen } from './demos/TextAreaDemoScreen'
+import { TooltipDemoScreen } from './demos/TooltipDemoScreen'
 
 type FramedDemoProps = {
 	onBack: () => void
@@ -56,6 +57,7 @@ const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
 const DividerDemoRoute: FC<FramedDemoProps> = () => <DividerDemoScreen />
 const SliderDemoRoute: FC<FramedDemoProps> = () => <SliderDemoScreen />
 const TabBarDemoRoute: FC<FramedDemoProps> = () => <TabBarDemoScreen />
+const TooltipDemoRoute: FC<FramedDemoProps> = () => <TooltipDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -166,7 +168,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'framed',
 		render: ScrollViewDemoRoute,
 	},
-	{ id: 'tooltip', label: 'Tooltip', presentation: 'framed' },
+	{
+		id: 'tooltip',
+		label: 'Tooltip',
+		presentation: 'framed',
+		render: TooltipDemoRoute,
+	},
 	{ id: 'dialog', label: 'Dialog', presentation: 'framed' },
 	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
 ]
