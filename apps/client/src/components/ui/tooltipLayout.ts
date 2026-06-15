@@ -12,10 +12,10 @@ export type LayoutMeasuredContainer = Container & {
 }
 
 export const TOOLTIP_GAP = 8
-export const TOOLTIP_SLICE_SIZE = 8
+export const TOOLTIP_SLICE_SIZE = 16
 export const TOOLTIP_PADDING_X = 14
 export const TOOLTIP_PADDING_Y = 10
-export const TOOLTIP_CONTENT_GAP = 4
+export const TOOLTIP_CONTENT_GAP = 0
 
 export const getMeasuredSize = (node: LayoutMeasuredContainer) => {
 	const width =
