@@ -625,7 +625,7 @@ Add button to `DemoHub`. Screenshot review with user.
 ---
 
 ### Step 19: CloseButton (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Create a dedicated `CloseButton` component for window and dialog headers.
@@ -657,7 +657,7 @@ Add button to `DemoHub`. Screenshot review with user.
 ---
 
 ### Step 20: Window / ModalWindow (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Build a reusable fullscreen window primitive that renders above the current screen.

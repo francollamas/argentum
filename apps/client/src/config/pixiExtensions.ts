@@ -3,6 +3,7 @@ import { extend } from '@pixi/react'
 import {
 	AnimatedSprite,
 	BitmapText,
+	BlurFilter,
 	Container,
 	Graphics,
 	NineSliceSprite,
@@ -12,6 +13,7 @@ import {
 extend({
 	AnimatedSprite,
 	BitmapText,
+	BlurFilter,
 	Container,
 	Graphics,
 	LayoutBitmapText,

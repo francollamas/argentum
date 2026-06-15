@@ -27,7 +27,11 @@ export default defineConfig({
 	server: {
 		port: 1420,
 		strictPort: true,
-		host: host || false,
+		//host: host || false,
+		// for tunnels
+		host: host || "0.0.0.0",
+		allowedHosts: true,
+		// end for tunnels
 		hmr: host
 			? {
 					protocol: 'ws',

@@ -23,8 +23,9 @@ import { SwitchDemoScreen } from './demos/SwitchDemoScreen'
 import { TabBarDemoScreen } from './demos/TabBarDemoScreen'
 import { TextAreaDemoScreen } from './demos/TextAreaDemoScreen'
 import { TooltipDemoScreen } from './demos/TooltipDemoScreen'
+import { WindowDemoScreen } from './demos/WindowDemoScreen'
 
-type FramedDemoProps = {
+type DemoRouteProps = {
 	onBack: () => void
 }
 
@@ -32,36 +33,33 @@ type DemoDefinition = {
 	id: string
 	label: string
 	presentation: 'framed' | 'fullscreen'
-	render?: FC<FramedDemoProps>
+	render?: FC<DemoRouteProps>
 }
 
-const LabelDemoRoute: FC<FramedDemoProps> = () => <LabelDemoScreen />
-const ArrowButtonDemoRoute: FC<FramedDemoProps> = () => (
-	<ArrowButtonDemoScreen />
-)
-const ArrowSelectorDemoRoute: FC<FramedDemoProps> = () => (
+const LabelDemoRoute: FC<DemoRouteProps> = () => <LabelDemoScreen />
+const ArrowButtonDemoRoute: FC<DemoRouteProps> = () => <ArrowButtonDemoScreen />
+const ArrowSelectorDemoRoute: FC<DemoRouteProps> = () => (
 	<ArrowSelectorDemoScreen />
 )
-const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
-const CloseButtonDemoRoute: FC<FramedDemoProps> = () => (
-	<CloseButtonDemoScreen />
+const ButtonDemoRoute: FC<DemoRouteProps> = () => <ButtonDemoScreen />
+const CloseButtonDemoRoute: FC<DemoRouteProps> = () => <CloseButtonDemoScreen />
+const PanelDemoRoute: FC<DemoRouteProps> = () => <PanelDemoScreen />
+const CheckBoxDemoRoute: FC<DemoRouteProps> = () => <CheckBoxDemoScreen />
+const SwitchDemoRoute: FC<DemoRouteProps> = () => <SwitchDemoScreen />
+const RadioGroupDemoRoute: FC<DemoRouteProps> = () => <RadioGroupDemoScreen />
+const ProgressBarDemoRoute: FC<DemoRouteProps> = () => <ProgressBarDemoScreen />
+const InputDemoRoute: FC<DemoRouteProps> = () => <InputDemoScreen />
+const ListDemoRoute: FC<DemoRouteProps> = () => <ListDemoScreen />
+const IconButtonDemoRoute: FC<DemoRouteProps> = () => <IconButtonDemoScreen />
+const ScrollViewDemoRoute: FC<DemoRouteProps> = () => <ScrollViewDemoScreen />
+const TextAreaDemoRoute: FC<DemoRouteProps> = () => <TextAreaDemoScreen />
+const DividerDemoRoute: FC<DemoRouteProps> = () => <DividerDemoScreen />
+const SliderDemoRoute: FC<DemoRouteProps> = () => <SliderDemoScreen />
+const TabBarDemoRoute: FC<DemoRouteProps> = () => <TabBarDemoScreen />
+const TooltipDemoRoute: FC<DemoRouteProps> = () => <TooltipDemoScreen />
+const WindowDemoRoute: FC<DemoRouteProps> = ({ onBack }) => (
+	<WindowDemoScreen onBack={onBack} />
 )
-const PanelDemoRoute: FC<FramedDemoProps> = () => <PanelDemoScreen />
-const CheckBoxDemoRoute: FC<FramedDemoProps> = () => <CheckBoxDemoScreen />
-const SwitchDemoRoute: FC<FramedDemoProps> = () => <SwitchDemoScreen />
-const RadioGroupDemoRoute: FC<FramedDemoProps> = () => <RadioGroupDemoScreen />
-const ProgressBarDemoRoute: FC<FramedDemoProps> = () => (
-	<ProgressBarDemoScreen />
-)
-const InputDemoRoute: FC<FramedDemoProps> = () => <InputDemoScreen />
-const ListDemoRoute: FC<FramedDemoProps> = () => <ListDemoScreen />
-const IconButtonDemoRoute: FC<FramedDemoProps> = () => <IconButtonDemoScreen />
-const ScrollViewDemoRoute: FC<FramedDemoProps> = () => <ScrollViewDemoScreen />
-const TextAreaDemoRoute: FC<FramedDemoProps> = () => <TextAreaDemoScreen />
-const DividerDemoRoute: FC<FramedDemoProps> = () => <DividerDemoScreen />
-const SliderDemoRoute: FC<FramedDemoProps> = () => <SliderDemoScreen />
-const TabBarDemoRoute: FC<FramedDemoProps> = () => <TabBarDemoScreen />
-const TooltipDemoRoute: FC<FramedDemoProps> = () => <TooltipDemoScreen />
 
 const DEMOS: DemoDefinition[] = [
 	{
@@ -183,6 +181,12 @@ const DEMOS: DemoDefinition[] = [
 		label: 'Tooltip',
 		presentation: 'framed',
 		render: TooltipDemoRoute,
+	},
+	{
+		id: 'window',
+		label: 'Window',
+		presentation: 'fullscreen',
+		render: WindowDemoRoute,
 	},
 	{ id: 'dialog', label: 'Dialog', presentation: 'framed' },
 	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
