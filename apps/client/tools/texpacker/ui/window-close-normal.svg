@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="closeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7E312C;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#61221F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#451515;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="closeBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8B8A0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C463E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="closeGlyph" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF1D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F0B969;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="closeHighlight" x1="0%" y1="0%" x2="0%" y2="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.16" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="50" cy="50" r="47" fill="url(#closeBg)" stroke="url(#closeBorder)" stroke-width="5"/>
+  <ellipse cx="50" cy="23" rx="30" ry="15" fill="url(#closeHighlight)" stroke="none"/>
+  <path d="M 29 29 L 71 71 M 71 29 L 29 71" stroke="url(#closeGlyph)" stroke-width="12" stroke-linecap="round"/>
+</svg>

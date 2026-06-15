@@ -44,7 +44,10 @@ export const TooltipDemoScreen: FC = () => {
 									font='labelSm'
 									color={Colors.gold}
 								/>
-								<Label text='Pointer leave hides it instantly.' font='labelSm' />
+								<Label
+									text='Pointer leave hides it instantly.'
+									font='labelSm'
+								/>
 							</layoutContainer>
 						}
 					>
@@ -63,7 +66,10 @@ export const TooltipDemoScreen: FC = () => {
 									font='labelSm'
 									color={Colors.gold}
 								/>
-								<Label text='Useful for compact icon clusters.' font='labelSm' />
+								<Label
+									text='Useful for compact icon clusters.'
+									font='labelSm'
+								/>
 							</layoutContainer>
 						}
 					>
@@ -73,7 +79,11 @@ export const TooltipDemoScreen: FC = () => {
 						placement='right'
 						content={
 							<layoutContainer layout={{ ...tw`flex-col`, gap: 6 }}>
-								<Label text='Mixed content' font='labelSm' color={Colors.gold} />
+								<Label
+									text='Mixed content'
+									font='labelSm'
+									color={Colors.gold}
+								/>
 								<Label
 									text='Any ReactNode can live inside the shell.'
 									font='labelSm'

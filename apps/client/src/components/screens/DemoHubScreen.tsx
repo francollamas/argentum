@@ -7,6 +7,7 @@ import { ArrowButtonDemoScreen } from './demos/ArrowButtonDemoScreen'
 import { ArrowSelectorDemoScreen } from './demos/ArrowSelectorDemoScreen'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
+import { CloseButtonDemoScreen } from './demos/CloseButtonDemoScreen'
 import { DividerDemoScreen } from './demos/DividerDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { IconButtonDemoScreen } from './demos/IconButtonDemoScreen'
@@ -42,6 +43,9 @@ const ArrowSelectorDemoRoute: FC<FramedDemoProps> = () => (
 	<ArrowSelectorDemoScreen />
 )
 const ButtonDemoRoute: FC<FramedDemoProps> = () => <ButtonDemoScreen />
+const CloseButtonDemoRoute: FC<FramedDemoProps> = () => (
+	<CloseButtonDemoScreen />
+)
 const PanelDemoRoute: FC<FramedDemoProps> = () => <PanelDemoScreen />
 const CheckBoxDemoRoute: FC<FramedDemoProps> = () => <CheckBoxDemoScreen />
 const SwitchDemoRoute: FC<FramedDemoProps> = () => <SwitchDemoScreen />
@@ -101,6 +105,12 @@ const DEMOS: DemoDefinition[] = [
 		label: 'CheckBox',
 		presentation: 'framed',
 		render: CheckBoxDemoRoute,
+	},
+	{
+		id: 'closebutton',
+		label: 'CloseButton',
+		presentation: 'framed',
+		render: CloseButtonDemoRoute,
 	},
 	{
 		id: 'switch',
