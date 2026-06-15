@@ -1,5 +1,5 @@
 import { tw } from '@pixi/layout/tailwind'
-import { Texture } from 'pixi.js'
+import { Circle, Rectangle, Texture } from 'pixi.js'
 import type { FC } from 'react'
 import { useMemo } from 'react'
 import { usePressableState } from '../../hooks/usePressableState'
@@ -100,19 +100,27 @@ export const IconButton: FC<IconButtonProps> = ({
 				...layout,
 			}}
 			alpha={disabled ? 0.5 : 1}
-			{...pressableProps}
 		>
 			<pixiSprite
 				texture={currentTexture}
 				width={size}
 				height={size}
-				eventMode='none'
+				hitArea={
+					shape === 'circle'
+						? new Circle(
+								currentTexture.width / 2,
+								currentTexture.height / 2,
+								Math.min(currentTexture.width, currentTexture.height) / 2,
+							)
+						: new Rectangle(0, 0, currentTexture.width, currentTexture.height)
+				}
 				layout={{
 					position: 'absolute',
 					width: size,
 					height: size,
 					flexShrink: 0,
 				}}
+				{...pressableProps}
 			/>
 			<layoutContainer
 				eventMode='none'
