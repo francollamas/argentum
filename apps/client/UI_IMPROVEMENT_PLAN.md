@@ -603,7 +603,7 @@ Add button to `DemoHub`. Screenshot review with user.
 ---
 
 ### Step 18: Tooltip (NEW)
-**Status**: `pending`
+**Status**: `completed`
 
 **What**:
 - Appears on `onPointerOver` of a target element, disappears on `onPointerOut`.
