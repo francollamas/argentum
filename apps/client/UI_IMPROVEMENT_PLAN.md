@@ -624,15 +624,101 @@ Add button to `DemoHub`. Screenshot review with user.
 
 ---
 
-### Step 19: Dialog/Modal (NEW)
+### Step 19: CloseButton (NEW)
 **Status**: `pending`
 
 **What**:
-- Fullscreen overlay (semi-transparent `layoutContainer` with `backgroundColor` at low alpha) with centered Panel.
-- Panel has title bar, content area, and action buttons row at the bottom.
-- Uses flexbox: column for overall layout, row for the buttons.
-- Props: `title`, `children`, `actions` (array of `{ text, onPress }`), `onClose`, `visible`.
-- When `visible=false`, component returns null (excluded from layout).
+- Create a dedicated `CloseButton` component for window and dialog headers.
+- Do not make this a generic externally-textured icon button in the first pass.
+- `CloseButton` resolves its own internal UI textures:
+  - `window-close-normal`
+  - `window-close-hover`
+  - `window-close-pressed`
+- Reuse the same interaction model as `Button` and `ArrowButton`:
+  - `usePressableState`
+  - texture swap by `hover` and `pressed`
+  - `disabled` support
+- The texture should contain the full visual button, including the `X`, to keep centering and pressed-state art consistent.
+- Props:
+  - `size?`
+  - `onPress?`
+  - `disabled?`
+  - `layout?`
+- Keep the API semantic and minimal.
+
+**API**:
+```tsx
+<CloseButton onPress={handleClose} />
+<CloseButton size={32} onPress={handleClose} />
+```
+
+**Verify**: Create `src/components/screens/demos/CloseButtonDemoScreen.tsx`. Show normal, hover, pressed, different sizes, and disabled state. Add button to DemoHub. Screenshot review with user.
+
+---
+
+### Step 20: Window / ModalWindow (NEW)
+**Status**: `pending`
+
+**What**:
+- Build a reusable fullscreen window primitive that renders above the current screen.
+- This is not the final `Dialog` yet; it is the generic overlay window infrastructure.
+- Structure:
+  - fullscreen overlay root
+  - backdrop layer
+  - centered window body
+  - header row with title + `CloseButton`
+  - content area
+- Reuse `Panel` as the visual base of the window body where possible.
+- `visible=false` returns `null`.
+- The overlay must visually emphasize the active window:
+  - dim background with translucent fullscreen backdrop
+  - add slight blur to the background subtree while the window is open
+- Important architecture rule:
+  - blur must be applied to the background container subtree
+  - the overlay alone cannot blur content behind it
+- Props:
+  - `visible`
+  - `title`
+  - `children`
+  - `onClose`
+  - `width?`
+  - `height?`
+  - `layout?`
+  - `closeOnBackdropPress?` can be added later if needed, but is not required for the first pass
+- The first version should focus on layout, layering, close behavior, and visual emphasis.
+
+**API**:
+```tsx
+<Window
+  visible={showWindow}
+  title="Inventory Preview"
+  onClose={() => setShowWindow(false)}
+>
+  <Label text="Random placeholder content" font="body" />
+</Window>
+```
+
+**Verify**: Create `src/components/screens/demos/WindowDemoScreen.tsx`. Show a button that opens a generic window with placeholder content, title, close button, and backdrop emphasis. Add button to DemoHub. Screenshot review with user.
+
+---
+
+### Step 21: Dialog (NEW)
+**Status**: `pending`
+
+**What**:
+- Build `Dialog` as a composition on top of `Window`.
+- `Dialog` reuses the overlay, header, close handling, and centered body from `Window`.
+- Add a bottom actions row for confirm and cancel style flows.
+- Use flexbox:
+  - column for the overall content
+  - row for the actions footer
+- Props:
+  - `visible`
+  - `title`
+  - `children`
+  - `actions` as array of `{ text, onPress, variant? }`
+  - `onClose`
+- `Dialog` should stay thin and avoid duplicating window infrastructure.
 
 **API**:
 ```tsx
@@ -653,7 +739,7 @@ Add button to `DemoHub`. Screenshot review with user.
 
 ---
 
-### Step 20: Full Integration Demo
+### Step 22: Full Integration Demo
 **Status**: `pending`
 
 **What**:
@@ -667,7 +753,7 @@ Add button to `DemoHub`. Screenshot review with user.
 
 ---
 
-### Step 21: Final Cleanup
+### Step 23: Final Cleanup
 **Status**: `pending`
 
 **What**:
