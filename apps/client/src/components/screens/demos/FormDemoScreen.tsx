@@ -12,7 +12,15 @@ import {
 	FormTextAreaField,
 	FormTextField,
 } from '../../form'
-import { Button, Colors, Dialog, Label, Panel, WrappedLabel } from '../../ui'
+import {
+	Button,
+	Colors,
+	Dialog,
+	Label,
+	Panel,
+	ScrollView,
+	WrappedLabel,
+} from '../../ui'
 
 type FormDemoScreenProps = {
 	onBack: () => void
@@ -126,16 +134,18 @@ const DialogFormBody: FC<{
 	}
 
 	return (
-		<layoutContainer layout={{ ...tw`w-full flex-col`, gap: 16 }}>
-			<Panel layout={{ width: '100%', gap: 16 }}>
-				<WrappedLabel
-					text='This dialog uses the reusable footer actions for submit/cancel/reset, so it validates Pixi-driven submission without any native HTML form dependency.'
-					width={520}
-					font='bodySm'
-					color={Colors.silver}
-				/>
-				<CharacterFormFields form={form} status={status} />
-			</Panel>
+		<layoutContainer layout={{ ...tw`w-full flex-col`, flex: 1, gap: 16 }}>
+			<ScrollView layout={{ flex: 1 }} contentLayout={{ paddingRight: 4 }}>
+				<Panel layout={{ width: '100%', gap: 16 }}>
+					<WrappedLabel
+						text='This dialog uses the reusable footer actions for submit/cancel/reset, so it validates Pixi-driven submission without any native HTML form dependency.'
+						width={520}
+						font='bodySm'
+						color={Colors.silver}
+					/>
+					<CharacterFormFields form={form} status={status} />
+				</Panel>
+			</ScrollView>
 			<layoutContainer layout={tw`w-full flex-row justify-between`}>
 				<Button text='Reset' variant='small' onPress={resetDialog} />
 				<Button text='Cancel' variant='small' onPress={onCancel} />
@@ -282,6 +292,7 @@ export const FormDemoScreen: FC<FormDemoScreenProps> = ({ onBack }) => {
 			title='Form In Dialog'
 			onClose={() => setDialogOpen(false)}
 			width={620}
+			height={720}
 			backgroundContent={
 				<FormDemoBackground
 					onBack={onBack}
