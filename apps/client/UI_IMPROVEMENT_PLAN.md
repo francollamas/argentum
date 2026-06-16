@@ -703,7 +703,7 @@ Add button to `DemoHub`. Screenshot review with user.
 ---
 
 ### Step 21: Dialog (NEW)
-**Status**: `pending`
+**Status**: `done`
 
 **What**:
 - Build `Dialog` as a composition on top of `Window`.

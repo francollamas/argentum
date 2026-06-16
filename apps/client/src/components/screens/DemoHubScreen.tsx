@@ -8,6 +8,7 @@ import { ArrowSelectorDemoScreen } from './demos/ArrowSelectorDemoScreen'
 import { ButtonDemoScreen } from './demos/ButtonDemoScreen'
 import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { CloseButtonDemoScreen } from './demos/CloseButtonDemoScreen'
+import { DialogDemoScreen } from './demos/DialogDemoScreen'
 import { DividerDemoScreen } from './demos/DividerDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { IconButtonDemoScreen } from './demos/IconButtonDemoScreen'
@@ -54,6 +55,9 @@ const IconButtonDemoRoute: FC<DemoRouteProps> = () => <IconButtonDemoScreen />
 const ScrollViewDemoRoute: FC<DemoRouteProps> = () => <ScrollViewDemoScreen />
 const TextAreaDemoRoute: FC<DemoRouteProps> = () => <TextAreaDemoScreen />
 const DividerDemoRoute: FC<DemoRouteProps> = () => <DividerDemoScreen />
+const DialogDemoRoute: FC<DemoRouteProps> = ({ onBack }) => (
+	<DialogDemoScreen onBack={onBack} />
+)
 const SliderDemoRoute: FC<DemoRouteProps> = () => <SliderDemoScreen />
 const TabBarDemoRoute: FC<DemoRouteProps> = () => <TabBarDemoScreen />
 const TooltipDemoRoute: FC<DemoRouteProps> = () => <TooltipDemoScreen />
@@ -188,7 +192,12 @@ const DEMOS: DemoDefinition[] = [
 		presentation: 'fullscreen',
 		render: WindowDemoRoute,
 	},
-	{ id: 'dialog', label: 'Dialog', presentation: 'framed' },
+	{
+		id: 'dialog',
+		label: 'Dialog',
+		presentation: 'fullscreen',
+		render: DialogDemoRoute,
+	},
 	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
 ]
 
