@@ -12,6 +12,7 @@ import {
 } from 'react'
 import { FONTS } from '../../config/typography'
 import { useDomOverlayHost } from '../../hooks/useDomOverlayHost'
+import { useIsDomOverlayOccluded } from '../../hooks/useOverlayLayer'
 import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
 import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
@@ -69,6 +70,7 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 		const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 		const domTextAreaRef = useRef<HTMLTextAreaElement | null>(null)
 		const [active, setActive] = useState(false)
+		const isDomOverlayOccluded = useIsDomOverlayOccluded()
 
 		const inputTexture = useUITexture('input-field')
 		const { hostElement, overlayRoot } = useDomOverlayHost(app)
@@ -83,11 +85,11 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 		)
 
 		useEffect(() => {
-			if (disabled) {
+			if (disabled || isDomOverlayOccluded) {
 				domTextAreaRef.current?.blur()
 				setActive(false)
 			}
-		}, [disabled])
+		}, [disabled, isDomOverlayOccluded])
 
 		const computeOverlayStyle = useCallback(
 			({
@@ -159,24 +161,27 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 
 		useEffect(() => {
 			overlayRoot?.render(
-				<DomTextAreaOverlay
-					style={domTextAreaStyle}
-					placeholder={placeholder}
-					value={value}
-					textareaRef={domTextAreaRef}
-					maxLength={maxLength}
-					disabled={disabled}
-					onChange={onChange}
-					onFocus={() => setActive(true)}
-					onBlur={() => {
-						setActive(false)
-						onBlur?.()
-					}}
-				/>,
+				isDomOverlayOccluded ? null : (
+					<DomTextAreaOverlay
+						style={domTextAreaStyle}
+						placeholder={placeholder}
+						value={value}
+						textareaRef={domTextAreaRef}
+						maxLength={maxLength}
+						disabled={disabled}
+						onChange={onChange}
+						onFocus={() => setActive(true)}
+						onBlur={() => {
+							setActive(false)
+							onBlur?.()
+						}}
+					/>
+				),
 			)
 		}, [
 			disabled,
 			domTextAreaStyle,
+			isDomOverlayOccluded,
 			maxLength,
 			onBlur,
 			onChange,
@@ -200,7 +205,7 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 				eventMode='static'
 				cursor={disabled ? 'default' : 'text'}
 				onPointerDown={() => {
-					if (!disabled) {
+					if (!disabled && !isDomOverlayOccluded) {
 						domTextAreaRef.current?.focus()
 					}
 				}}

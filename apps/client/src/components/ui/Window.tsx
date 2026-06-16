@@ -3,6 +3,11 @@ import { tw } from '@pixi/layout/tailwind'
 import { BlurFilter, Rectangle } from 'pixi.js'
 import type { FC, ReactNode } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
+import {
+	OverlayLayerProvider,
+	useOverlayLayer,
+	useTopModalLayer,
+} from '../../hooks/useOverlayLayer'
 import { useScreenMetrics } from '../../store/viewportStore'
 import { CloseButton } from './CloseButton'
 import { Colors } from './colors'
@@ -35,6 +40,8 @@ export const Window: FC<WindowProps> = ({
 	backgroundContent,
 }) => {
 	const { screenWidth, screenHeight } = useScreenMetrics()
+	const currentLayer = useOverlayLayer()
+	const parentTopModalLayer = useTopModalLayer()
 	const backgroundContainerRef = useRef<PixiLayoutContainer | null>(null)
 	const blurFilter = useMemo(
 		() =>
@@ -49,6 +56,10 @@ export const Window: FC<WindowProps> = ({
 		() => new Rectangle(0, 0, screenWidth, screenHeight),
 		[screenHeight, screenWidth],
 	)
+	const modalLayer = currentLayer + 1
+	const topModalLayer = visible
+		? Math.max(parentTopModalLayer, modalLayer)
+		: parentTopModalLayer
 
 	useEffect(() => {
 		if (backgroundContainerRef.current) {
@@ -78,67 +89,77 @@ export const Window: FC<WindowProps> = ({
 					}}
 					filters={visible ? [blurFilter] : undefined}
 				>
-					{backgroundContent}
+					<OverlayLayerProvider
+						layer={currentLayer}
+						topModalLayer={topModalLayer}
+					>
+						{backgroundContent}
+					</OverlayLayerProvider>
 				</layoutContainer>
 			) : null}
 			{visible ? (
-				<layoutContainer
-					layout={{
-						...tw`w-full h-full items-center justify-center`,
-						position: backgroundContent ? 'absolute' : 'relative',
-						left: backgroundContent ? 0 : undefined,
-						top: backgroundContent ? 0 : undefined,
-					}}
-					eventMode='static'
-				>
+				<OverlayLayerProvider layer={modalLayer} topModalLayer={topModalLayer}>
 					<layoutContainer
 						layout={{
-							position: 'absolute',
-							left: 0,
-							top: 0,
-							width: '100%',
-							height: '100%',
-							backgroundColor: Colors.backgroundDark,
+							...tw`w-full h-full items-center justify-center`,
+							position: backgroundContent ? 'absolute' : 'relative',
+							left: backgroundContent ? 0 : undefined,
+							top: backgroundContent ? 0 : undefined,
 						}}
-						alpha={0.72}
-					/>
-					<Panel
-						layout={{
-							width,
-							...(height != null ? { height } : {}),
-							maxWidth: Math.max(280, screenWidth - 80),
-							maxHeight: Math.max(220, screenHeight - 80),
-							gap: 16,
-							padding: 20,
-							...layout,
-						}}
+						eventMode='static'
 					>
 						<layoutContainer
 							layout={{
-								...tw`w-full flex-row items-center justify-between`,
-								gap: 16,
-								flexShrink: 0,
+								position: 'absolute',
+								left: 0,
+								top: 0,
+								width: '100%',
+								height: '100%',
+								backgroundColor: Colors.backgroundDark,
 							}}
-						>
-							<Label
-								text={title}
-								font='titleSm'
-								color={Colors.gold}
-								layout={{ flex: 1 }}
-							/>
-							<CloseButton size={HEADER_CLOSE_BUTTON_SIZE} onPress={onClose} />
-						</layoutContainer>
-						<layoutContainer
+							alpha={0.72}
+						/>
+						<Panel
 							layout={{
-								...tw`w-full flex-col`,
-								...(height != null ? { flex: 1 } : {}),
-								gap: 12,
+								width,
+								...(height != null ? { height } : {}),
+								maxWidth: Math.max(280, screenWidth - 80),
+								maxHeight: Math.max(220, screenHeight - 80),
+								gap: 16,
+								padding: 20,
+								...layout,
 							}}
 						>
-							{children}
-						</layoutContainer>
-					</Panel>
-				</layoutContainer>
+							<layoutContainer
+								layout={{
+									...tw`w-full flex-row items-center justify-between`,
+									gap: 16,
+									flexShrink: 0,
+								}}
+							>
+								<Label
+									text={title}
+									font='titleSm'
+									color={Colors.gold}
+									layout={{ flex: 1 }}
+								/>
+								<CloseButton
+									size={HEADER_CLOSE_BUTTON_SIZE}
+									onPress={onClose}
+								/>
+							</layoutContainer>
+							<layoutContainer
+								layout={{
+									...tw`w-full flex-col`,
+									...(height != null ? { flex: 1 } : {}),
+									gap: 12,
+								}}
+							>
+								{children}
+							</layoutContainer>
+						</Panel>
+					</layoutContainer>
+				</OverlayLayerProvider>
 			) : null}
 		</layoutContainer>
 	)

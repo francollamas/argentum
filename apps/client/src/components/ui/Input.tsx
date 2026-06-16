@@ -12,6 +12,7 @@ import {
 } from 'react'
 import { FONTS } from '../../config/typography'
 import { useDomOverlayHost } from '../../hooks/useDomOverlayHost'
+import { useIsDomOverlayOccluded } from '../../hooks/useOverlayLayer'
 import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
 import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
@@ -72,6 +73,7 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 	const domInputRef = useRef<HTMLInputElement | null>(null)
 	const [active, setActive] = useState(false)
+	const isDomOverlayOccluded = useIsDomOverlayOccluded()
 
 	const inputTexture = useUITexture('input-field')
 	const { hostElement, overlayRoot } = useDomOverlayHost(app)
@@ -86,11 +88,11 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	)
 
 	useEffect(() => {
-		if (disabled) {
+		if (disabled || isDomOverlayOccluded) {
 			domInputRef.current?.blur()
 			setActive(false)
 		}
-	}, [disabled])
+	}, [disabled, isDomOverlayOccluded])
 
 	const computeOverlayStyle = useCallback(
 		({
@@ -154,26 +156,29 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 
 	useEffect(() => {
 		overlayRoot?.render(
-			<DomInputOverlay
-				style={domInputStyle}
-				placeholder={placeholder}
-				value={value}
-				inputRef={domInputRef}
-				maxLength={maxLength}
-				secure={secure}
-				disabled={disabled}
-				onChange={onChange}
-				onEnter={onEnter}
-				onFocus={() => setActive(true)}
-				onBlur={() => {
-					setActive(false)
-					onBlur?.()
-				}}
-			/>,
+			isDomOverlayOccluded ? null : (
+				<DomInputOverlay
+					style={domInputStyle}
+					placeholder={placeholder}
+					value={value}
+					inputRef={domInputRef}
+					maxLength={maxLength}
+					secure={secure}
+					disabled={disabled}
+					onChange={onChange}
+					onEnter={onEnter}
+					onFocus={() => setActive(true)}
+					onBlur={() => {
+						setActive(false)
+						onBlur?.()
+					}}
+				/>
+			),
 		)
 	}, [
 		disabled,
 		domInputStyle,
+		isDomOverlayOccluded,
 		maxLength,
 		onChange,
 		onBlur,
@@ -199,7 +204,7 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 			eventMode='static'
 			cursor={disabled ? 'default' : 'text'}
 			onPointerDown={() => {
-				if (!disabled) {
+				if (!disabled && !isDomOverlayOccluded) {
 					domInputRef.current?.focus()
 				}
 			}}

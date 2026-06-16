@@ -97,23 +97,163 @@ const CharacterFormFields: FC<{
 	)
 }
 
+const DialogFormBody: FC<{
+	onSubmit: (values: FormValues) => void
+	onCancel: () => void
+}> = ({ onSubmit, onCancel }) => {
+	const [status, setStatus] = useState('Ready to validate the dialog form')
+
+	const form = useForm<FormValues>({
+		resolver: zodResolver(formSchema),
+		defaultValues,
+	})
+
+	const submitDialog = form.handleSubmit(
+		(values) => {
+			setStatus('Validation passed')
+			onSubmit(values)
+		},
+		() => {
+			setStatus(
+				'Validation failed and focus moved to the first invalid text field',
+			)
+		},
+	)
+
+	const resetDialog = () => {
+		form.reset(defaultValues)
+		setStatus('Form reset to defaults')
+	}
+
+	return (
+		<layoutContainer layout={{ ...tw`w-full flex-col`, gap: 16 }}>
+			<Panel layout={{ width: '100%', gap: 16 }}>
+				<WrappedLabel
+					text='This dialog uses the reusable footer actions for submit/cancel/reset, so it validates Pixi-driven submission without any native HTML form dependency.'
+					width={520}
+					font='bodySm'
+					color={Colors.silver}
+				/>
+				<CharacterFormFields form={form} status={status} />
+			</Panel>
+			<layoutContainer layout={tw`w-full flex-row justify-between`}>
+				<Button text='Reset' variant='small' onPress={resetDialog} />
+				<Button text='Cancel' variant='small' onPress={onCancel} />
+				<Button text='Submit' onPress={submitDialog} />
+			</layoutContainer>
+		</layoutContainer>
+	)
+}
+
+const FormDemoBackground: FC<{
+	onBack: () => void
+	onOpenDialog: () => void
+	inlineForm: UseFormReturn<FormValues>
+	inlineStatus: string
+	inlinePayload: string
+	dialogPayload: string
+	onResetInline: () => void
+	onSubmitInline: () => void
+}> = ({
+	onBack,
+	onOpenDialog,
+	inlineForm,
+	inlineStatus,
+	inlinePayload,
+	dialogPayload,
+	onResetInline,
+	onSubmitInline,
+}) => {
+	return (
+		<layoutContainer
+			layout={{
+				...tw`w-full h-full flex-col`,
+				backgroundColor: Colors.backgroundDark,
+				padding: 32,
+				gap: 20,
+			}}
+		>
+			<layoutContainer
+				layout={tw`w-full flex-row items-center justify-between`}
+			>
+				<layoutContainer layout={tw`flex-col gap-1`}>
+					<Label text='Form Demo' font='title' color={Colors.gold} />
+					<WrappedLabel
+						text='This demo validates react-hook-form + zod integration on Pixi-rendered controls, both inline and inside a dialog.'
+						width={760}
+						font='bodySm'
+						color={Colors.silver}
+					/>
+				</layoutContainer>
+				<Button text='Back' variant='small' onPress={onBack} />
+			</layoutContainer>
+
+			<layoutContainer
+				layout={{
+					...tw`w-full flex-row`,
+					flex: 1,
+					gap: 24,
+				}}
+			>
+				<Panel layout={{ width: 560, height: '100%', gap: 16 }}>
+					<Label text='Inline Panel Form' font='titleSm' color={Colors.gold} />
+					<WrappedLabel
+						text='Submit empty to see errors, blur a text field to trigger touched state, select a class to clear its error, and toggle the checkbox and switch through RHF state.'
+						width={500}
+						font='bodySm'
+						color={Colors.silver}
+					/>
+					<CharacterFormFields form={inlineForm} status={inlineStatus} />
+					<layoutContainer layout={tw`w-full flex-row justify-between`}>
+						<Button text='Reset' variant='small' onPress={onResetInline} />
+						<Button text='Create character' onPress={onSubmitInline} />
+					</layoutContainer>
+				</Panel>
+
+				<Panel layout={{ flex: 1, height: '100%', gap: 16 }}>
+					<Label text='Submitted Payloads' font='titleSm' color={Colors.gold} />
+					<layoutContainer layout={tw`w-full flex-col gap-3`}>
+						<Label
+							text='Inline form'
+							font='label'
+							color={Colors.metalHighlight}
+						/>
+						<WrappedLabel
+							text={inlinePayload}
+							width={320}
+							font='labelSm'
+							color={Colors.silver}
+						/>
+					</layoutContainer>
+					<layoutContainer layout={tw`w-full flex-col gap-3`}>
+						<Label
+							text='Dialog form'
+							font='label'
+							color={Colors.metalHighlight}
+						/>
+						<WrappedLabel
+							text={dialogPayload}
+							width={320}
+							font='labelSm'
+							color={Colors.silver}
+						/>
+					</layoutContainer>
+					<Button text='Open dialog form' onPress={onOpenDialog} />
+				</Panel>
+			</layoutContainer>
+		</layoutContainer>
+	)
+}
+
 export const FormDemoScreen: FC<FormDemoScreenProps> = ({ onBack }) => {
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const [inlineStatus, setInlineStatus] = useState(
 		'Ready to validate the inline form',
 	)
-	const [dialogStatus, setDialogStatus] = useState(
-		'Ready to validate the dialog form',
-	)
 	const [inlinePayload, setInlinePayload] = useState('No submit yet')
 	const [dialogPayload, setDialogPayload] = useState('No dialog submit yet')
 
 	const inlineForm = useForm<FormValues>({
-		resolver: zodResolver(formSchema),
-		defaultValues,
-	})
-
-	const dialogForm = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues,
 	})
@@ -130,29 +270,10 @@ export const FormDemoScreen: FC<FormDemoScreenProps> = ({ onBack }) => {
 		},
 	)
 
-	const submitDialog = dialogForm.handleSubmit(
-		(values) => {
-			setDialogStatus('Validation passed')
-			setDialogPayload(JSON.stringify(values, null, 2))
-			setDialogOpen(false)
-		},
-		() => {
-			setDialogStatus(
-				'Validation failed and focus moved to the first invalid text field',
-			)
-		},
-	)
-
 	const resetInline = () => {
 		inlineForm.reset(defaultValues)
 		setInlineStatus('Form reset to defaults')
 		setInlinePayload('No submit yet')
-	}
-
-	const resetDialog = () => {
-		dialogForm.reset(defaultValues)
-		setDialogStatus('Form reset to defaults')
-		setDialogPayload('No dialog submit yet')
 	}
 
 	return (
@@ -161,115 +282,28 @@ export const FormDemoScreen: FC<FormDemoScreenProps> = ({ onBack }) => {
 			title='Form In Dialog'
 			onClose={() => setDialogOpen(false)}
 			width={620}
-			actions={[
-				{ text: 'Reset', variant: 'small', onPress: resetDialog },
-				{
-					text: 'Cancel',
-					variant: 'small',
-					onPress: () => setDialogOpen(false),
-				},
-				{ text: 'Submit', onPress: submitDialog },
-			]}
 			backgroundContent={
-				<layoutContainer
-					layout={{
-						...tw`w-full h-full flex-col`,
-						backgroundColor: Colors.backgroundDark,
-						padding: 32,
-						gap: 20,
-					}}
-				>
-					<layoutContainer
-						layout={tw`w-full flex-row items-center justify-between`}
-					>
-						<layoutContainer layout={tw`flex-col gap-1`}>
-							<Label text='Form Demo' font='title' color={Colors.gold} />
-							<WrappedLabel
-								text='This demo validates react-hook-form + zod integration on Pixi-rendered controls, both inline and inside a dialog.'
-								width={760}
-								font='bodySm'
-								color={Colors.silver}
-							/>
-						</layoutContainer>
-						<Button text='Back' variant='small' onPress={onBack} />
-					</layoutContainer>
-
-					<layoutContainer
-						layout={{
-							...tw`w-full flex-row`,
-							flex: 1,
-							gap: 24,
-						}}
-					>
-						<Panel layout={{ width: 560, height: '100%', gap: 16 }}>
-							<Label
-								text='Inline Panel Form'
-								font='titleSm'
-								color={Colors.gold}
-							/>
-							<WrappedLabel
-								text='Submit empty to see errors, blur a text field to trigger touched state, select a class to clear its error, and toggle the checkbox and switch through RHF state.'
-								width={500}
-								font='bodySm'
-								color={Colors.silver}
-							/>
-							<CharacterFormFields form={inlineForm} status={inlineStatus} />
-							<layoutContainer layout={tw`w-full flex-row justify-between`}>
-								<Button text='Reset' variant='small' onPress={resetInline} />
-								<Button text='Create character' onPress={submitInline} />
-							</layoutContainer>
-						</Panel>
-
-						<Panel layout={{ flex: 1, height: '100%', gap: 16 }}>
-							<Label
-								text='Submitted Payloads'
-								font='titleSm'
-								color={Colors.gold}
-							/>
-							<layoutContainer layout={tw`w-full flex-col gap-3`}>
-								<Label
-									text='Inline form'
-									font='label'
-									color={Colors.metalHighlight}
-								/>
-								<WrappedLabel
-									text={inlinePayload}
-									width={320}
-									font='labelSm'
-									color={Colors.silver}
-								/>
-							</layoutContainer>
-							<layoutContainer layout={tw`w-full flex-col gap-3`}>
-								<Label
-									text='Dialog form'
-									font='label'
-									color={Colors.metalHighlight}
-								/>
-								<WrappedLabel
-									text={dialogPayload}
-									width={320}
-									font='labelSm'
-									color={Colors.silver}
-								/>
-							</layoutContainer>
-							<Button
-								text='Open dialog form'
-								onPress={() => setDialogOpen(true)}
-							/>
-						</Panel>
-					</layoutContainer>
-				</layoutContainer>
+				<FormDemoBackground
+					onBack={onBack}
+					onOpenDialog={() => setDialogOpen(true)}
+					inlineForm={inlineForm}
+					inlineStatus={inlineStatus}
+					inlinePayload={inlinePayload}
+					dialogPayload={dialogPayload}
+					onResetInline={resetInline}
+					onSubmitInline={submitInline}
+				/>
 			}
 		>
-			<Panel layout={{ width: '100%', gap: 16 }}>
-				<WrappedLabel
-					text='This dialog uses the reusable footer actions for submit/cancel/reset, so it validates Pixi-driven submission without any native HTML form dependency.'
-					width={520}
-					font='bodySm'
-					color={Colors.silver}
+			{dialogOpen ? (
+				<DialogFormBody
+					onCancel={() => setDialogOpen(false)}
+					onSubmit={(values) => {
+						setDialogPayload(JSON.stringify(values, null, 2))
+						setDialogOpen(false)
+					}}
 				/>
-				<CharacterFormFields form={dialogForm} status={dialogStatus} />
-			</Panel>
+			) : null}
 		</Dialog>
 	)
 }
