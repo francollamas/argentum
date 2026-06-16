@@ -739,7 +739,198 @@ Add button to `DemoHub`. Screenshot review with user.
 
 ---
 
-### Step 22: Full Integration Demo
+### Step 22: Form Foundations (NEW)
+**Status**: `done`
+
+**What**:
+- Add form dependencies:
+  - `react-hook-form`
+  - `zod`
+  - `@hookform/resolvers`
+- Standardize form handling around **controlled Pixi components** plus `react-hook-form` `Controller` / `useController`.
+- Do **not** use native HTML `<form>` as a required runtime primitive for Pixi screens.
+- Do **not** use `register()` as the default integration path for Pixi UI primitives.
+- `Input` and `TextArea` may continue to use their hidden DOM overlays internally, but that DOM must remain an implementation detail of the component, not the public form API.
+- Create a small reusable form layer in a dedicated folder such as `src/components/form/`:
+  - `FormField`
+  - `FormTextField`
+  - `FormTextAreaField`
+  - `FormCheckboxField`
+  - `FormRadioGroupField`
+  - `FormSwitchField`
+- Keep low-level UI primitives (`Input`, `TextArea`, `CheckBox`, `RadioGroup`, `Switch`) **react-hook-form agnostic**. They should only expose the state and callbacks needed by adapters.
+
+**Required primitive adaptations**:
+- `Input`
+  - add `invalid?: boolean`
+  - add `disabled?: boolean`
+  - add `onBlur?: () => void`
+  - keep `onChange`
+  - expose an imperative ref with at least `focus()` and `blur()` so RHF can focus invalid fields
+  - support invalid visual state (red border / red tint)
+- `TextArea`
+  - same contract as `Input`
+  - `Enter` remains newline input only, never implicit submit
+- `CheckBox`
+  - add `invalid?: boolean`
+  - add `disabled?: boolean`
+  - support invalid visual state on the whole control
+- `Switch`
+  - add `invalid?: boolean`
+  - add `disabled?: boolean`
+- `RadioGroup`
+  - add `invalid?: boolean`
+  - add `disabled?: boolean`
+  - allow an initially unselected state for required-choice forms
+  - keep the existing `selectedIndex` API if desired, but the form adapter should map stable schema values to indexes internally so the schema is not coupled to item order
+- `Label`
+  - no form-specific behavior required in the primitive itself
+  - error/help text should be rendered by form composition components using existing typography primitives
+
+**Field composition rule**:
+- Error text should be rendered by a reusable wrapper component such as `FormField`, not duplicated inside every primitive.
+- `FormField` is responsible for:
+  - optional field label
+  - optional helper text
+  - error message below the control
+  - consistent vertical spacing
+- The primitive is responsible only for:
+  - value display
+  - interaction
+  - invalid / disabled visuals
+
+**Recommended `FormField` API**:
+```tsx
+<FormField
+  label="Character name"
+  error={fieldState.error?.message}
+  helperText="3 to 16 characters"
+>
+  <Input value={field.value} onChange={field.onChange} onBlur={field.onBlur} />
+</FormField>
+```
+
+**Recommended RHF integration rule**:
+- Use `useController` inside each form adapter.
+- Adapters map:
+  - `field.value`
+  - `field.onChange`
+  - `field.onBlur`
+  - `field.disabled`
+  - `fieldState.error`
+- For pointer-only controls (`CheckBox`, `Switch`, `RadioGroup`), the adapter may call `field.onBlur()` immediately after a committed selection change so touched/error behavior works correctly without DOM focus semantics.
+
+**Validation rules**:
+- Use `zodResolver(schema)` as the default validation bridge.
+- Use explicit `defaultValues` for all fields. No field should initialize with `undefined`.
+- Prefer one visible error message per field in the first pass.
+- Keep first-pass validation synchronous unless a real async validation requirement appears.
+
+**Submission rules**:
+- Submit via `handleSubmit(onValid, onInvalid)` triggered from Pixi buttons or dialog actions.
+- `Input` may optionally call submit through `onEnter` when used in single-line forms.
+- `TextArea` never submits on `Enter`.
+- Dialog-based forms must work without any dependency on a native `<form>` submit event.
+
+**API after refactor**:
+```tsx
+const schema = z.object({
+  characterName: z.string().min(3, 'Name must be at least 3 characters'),
+  bio: z.string().max(120, 'Bio must be 120 characters or less'),
+  classId: z.string().min(1, 'Select a class'),
+  acceptRules: z.boolean(),
+  musicEnabled: z.boolean(),
+})
+
+type FormValues = z.infer<typeof schema>
+
+const form = useForm<FormValues>({
+  resolver: zodResolver(schema),
+  defaultValues: {
+    characterName: '',
+    bio: '',
+    classId: '',
+    acceptRules: false,
+    musicEnabled: true,
+  },
+})
+
+<FormTextField
+  control={form.control}
+  name='characterName'
+  label='Character name'
+  helperText='3 to 16 characters'
+  placeholder='Enter name'
+/>
+
+<FormTextAreaField
+  control={form.control}
+  name='bio'
+  label='Biography'
+  placeholder='Short character background'
+/>
+
+<FormRadioGroupField
+  control={form.control}
+  name='classId'
+  label='Class'
+  items={[
+    { text: 'Warrior', value: 'warrior' },
+    { text: 'Mage', value: 'mage' },
+    { text: 'Archer', value: 'archer' },
+  ]}
+/>
+
+<FormCheckboxField
+  control={form.control}
+  name='acceptRules'
+  text='I accept the rules'
+/>
+
+<FormSwitchField
+  control={form.control}
+  name='musicEnabled'
+  text='Music enabled'
+/>
+
+<Button text='Create character' onPress={form.handleSubmit(onSubmit)} />
+```
+
+**Acceptance criteria**:
+- `react-hook-form` works with Pixi-rendered controls without exposing DOM-specific API at the usage site.
+- `zod` validation messages are shown below each field through a reusable field wrapper.
+- `Input` and `TextArea` support `onBlur`, `disabled`, `invalid`, and imperative focus.
+- `CheckBox`, `Switch`, and `RadioGroup` support `disabled` and `invalid`.
+- `RadioGroup` supports required forms with an initially unselected state.
+- Forms can be submitted from `Button` and from `Dialog` actions without requiring native form submission.
+- Invalid fields render a clear error state and error message.
+- A successful submit yields typed, validated form data from the schema.
+
+**Verify**:
+- Create `src/components/screens/demos/FormDemoScreen.tsx`.
+- The demo should include:
+  - inline panel form
+  - same form inside a `Dialog`
+  - required text field
+  - multiline text field
+  - required radio selection
+  - checkbox validation case
+  - optional switch
+  - submit button
+  - reset button
+  - visible submitted payload preview
+- Validation scenarios to prove:
+  - submit empty form -> errors render correctly
+  - blur text input -> touched/error behavior works
+  - select radio option after error -> error clears
+  - checkbox toggles correctly through RHF state
+  - dialog submit works through footer button
+  - first invalid text field can be focused programmatically
+- Add the demo button to `DemoHub`.
+
+---
+
+### Step 23: Full Integration Demo
 **Status**: `pending`
 
 **What**:
@@ -753,7 +944,7 @@ Add button to `DemoHub`. Screenshot review with user.
 
 ---
 
-### Step 23: Final Cleanup
+### Step 24: Final Cleanup
 **Status**: `pending`
 
 **What**:

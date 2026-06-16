@@ -1,6 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
+import { Colors } from './colors'
 import { Label } from './Label'
 
 type SwitchProps = {
@@ -9,6 +10,8 @@ type SwitchProps = {
 	text?: string
 	textColor?: number
 	size?: number
+	disabled?: boolean
+	invalid?: boolean
 	layout?: Record<string, unknown>
 }
 
@@ -18,6 +21,8 @@ export const Switch: FC<SwitchProps> = ({
 	text,
 	textColor = 0xffffff,
 	size = 44,
+	disabled = false,
+	invalid = false,
 	layout,
 }) => {
 	const offTexture = useUITexture('switch-off')
@@ -31,13 +36,24 @@ export const Switch: FC<SwitchProps> = ({
 	const switchHeight = size
 	const switchWidth = Math.round(switchHeight * aspectRatio)
 
-	const handleToggle = () => onChange?.(!enabled)
+	const handleToggle = () => {
+		if (!disabled) {
+			onChange?.(!enabled)
+		}
+	}
+
+	const resolvedTextColor = disabled
+		? Colors.disabled
+		: invalid
+			? Colors.statusError
+			: textColor
 
 	return (
 		<layoutContainer
 			eventMode='static'
-			cursor='pointer'
+			cursor={disabled ? 'default' : 'pointer'}
 			onPointerDown={handleToggle}
+			alpha={disabled ? 0.6 : 1}
 			layout={{
 				...tw`flex-row items-center`,
 				gap: text ? 8 : 0,
@@ -48,6 +64,7 @@ export const Switch: FC<SwitchProps> = ({
 				texture={texture}
 				width={switchWidth}
 				height={switchHeight}
+				tint={invalid && !disabled ? Colors.statusError : 0xffffff}
 				layout={{
 					width: switchWidth,
 					height: switchHeight,
@@ -58,7 +75,7 @@ export const Switch: FC<SwitchProps> = ({
 				<Label
 					text={text}
 					font='label'
-					color={textColor}
+					color={resolvedTextColor}
 					layout={{
 						minWidth: 0,
 					}}

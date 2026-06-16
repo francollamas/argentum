@@ -29,7 +29,7 @@ export default defineConfig({
 		strictPort: true,
 		//host: host || false,
 		// for tunnels
-		host: host || "0.0.0.0",
+		host: host || '0.0.0.0',
 		allowedHosts: true,
 		// end for tunnels
 		hmr: host

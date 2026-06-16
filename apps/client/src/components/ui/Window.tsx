@@ -1,7 +1,8 @@
+import type { LayoutContainer as PixiLayoutContainer } from '@pixi/layout/components'
 import { tw } from '@pixi/layout/tailwind'
 import { BlurFilter, Rectangle } from 'pixi.js'
 import type { FC, ReactNode } from 'react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useScreenMetrics } from '../../store/viewportStore'
 import { CloseButton } from './CloseButton'
 import { Colors } from './colors'
@@ -34,6 +35,7 @@ export const Window: FC<WindowProps> = ({
 	backgroundContent,
 }) => {
 	const { screenWidth, screenHeight } = useScreenMetrics()
+	const backgroundContainerRef = useRef<PixiLayoutContainer | null>(null)
 	const blurFilter = useMemo(
 		() =>
 			new BlurFilter({
@@ -48,6 +50,12 @@ export const Window: FC<WindowProps> = ({
 		[screenHeight, screenWidth],
 	)
 
+	useEffect(() => {
+		if (backgroundContainerRef.current) {
+			backgroundContainerRef.current.filterArea = filterArea
+		}
+	}, [filterArea])
+
 	if (!visible && !backgroundContent) {
 		return null
 	}
@@ -61,6 +69,7 @@ export const Window: FC<WindowProps> = ({
 		>
 			{backgroundContent ? (
 				<layoutContainer
+					ref={backgroundContainerRef}
 					layout={{
 						...tw`w-full h-full`,
 						position: 'absolute',
@@ -68,7 +77,6 @@ export const Window: FC<WindowProps> = ({
 						top: 0,
 					}}
 					filters={visible ? [blurFilter] : undefined}
-					filterArea={filterArea}
 				>
 					{backgroundContent}
 				</layoutContainer>

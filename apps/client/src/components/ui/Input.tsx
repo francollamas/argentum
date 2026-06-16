@@ -1,14 +1,27 @@
 import type { LayoutOptions } from '@pixi/layout'
 import { useApplication } from '@pixi/react'
 import type { Bounds, Container, NineSliceSprite } from 'pixi.js'
-import type { CSSProperties, FC } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
+import {
+	forwardRef,
+	useCallback,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from 'react'
 import { FONTS } from '../../config/typography'
 import { useDomOverlayHost } from '../../hooks/useDomOverlayHost'
 import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
 import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
+import { Colors } from './colors'
 import { DomInputOverlay } from './DomInputOverlay'
+
+export type InputHandle = {
+	focus: () => void
+	blur: () => void
+}
 
 type InputProps = {
 	width?: number
@@ -19,7 +32,10 @@ type InputProps = {
 	secure?: boolean
 	align?: 'left' | 'center' | 'right'
 	textColor?: number
+	disabled?: boolean
+	invalid?: boolean
 	onChange?: (value: string) => void
+	onBlur?: () => void
 	onEnter?: (value: string) => void
 	layout?: Record<string, unknown>
 }
@@ -33,25 +49,48 @@ type DomInputStyle = CSSProperties & {
 const INPUT_DOM_FONT_FAMILY = FONTS.input.domFontFamily
 const INPUT_FONT_SIZE = FONTS.input.fontSize
 
-export const Input: FC<InputProps> = ({
-	width,
-	height = 40,
-	placeholder = '',
-	value = '',
-	maxLength,
-	secure = false,
-	align = 'left',
-	textColor = 0xffffff,
-	onChange,
-	onEnter,
-	layout,
-}) => {
+export const Input = forwardRef<InputHandle, InputProps>(function Input(
+	{
+		width,
+		height = 40,
+		placeholder = '',
+		value = '',
+		maxLength,
+		secure = false,
+		align = 'left',
+		textColor = 0xffffff,
+		disabled = false,
+		invalid = false,
+		onChange,
+		onBlur,
+		onEnter,
+		layout,
+	},
+	ref,
+) {
 	const { app } = useApplication()
 	const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
+	const domInputRef = useRef<HTMLInputElement | null>(null)
 	const [active, setActive] = useState(false)
 
 	const inputTexture = useUITexture('input-field')
 	const { hostElement, overlayRoot } = useDomOverlayHost(app)
+
+	useImperativeHandle(
+		ref,
+		() => ({
+			focus: () => domInputRef.current?.focus(),
+			blur: () => domInputRef.current?.blur(),
+		}),
+		[],
+	)
+
+	useEffect(() => {
+		if (disabled) {
+			domInputRef.current?.blur()
+			setActive(false)
+		}
+	}, [disabled])
 
 	const computeOverlayStyle = useCallback(
 		({
@@ -71,6 +110,7 @@ export const Input: FC<InputProps> = ({
 			const fontSize = Math.max(12, INPUT_FONT_SIZE * domScale)
 			const lineHeight = Math.max(1, renderedHeight - 2)
 			const borderRadius = Math.max(6, 6 * domScale)
+			const effectiveTextColor = disabled ? Colors.disabled : textColor
 
 			return {
 				position: 'absolute',
@@ -84,20 +124,21 @@ export const Input: FC<InputProps> = ({
 				border: 'none',
 				borderRadius,
 				background: 'transparent',
-				color: toCssColor(textColor),
-				caretColor: toCssColor(textColor),
+				color: toCssColor(effectiveTextColor),
+				caretColor: toCssColor(effectiveTextColor),
 				textAlign: align,
 				fontSize,
 				fontFamily: INPUT_DOM_FONT_FAMILY,
 				lineHeight: `${lineHeight}px`,
 				appearance: 'none',
 				outline: 'none',
-				pointerEvents: 'auto',
+				pointerEvents: disabled ? 'none' : 'auto',
+				opacity: disabled ? 0.7 : 1,
 				zIndex: 999,
 				'--input-placeholder-color': '#888888',
 			}
 		},
-		[align, height, textColor],
+		[align, disabled, height, textColor],
 	)
 
 	const { style: domInputStyle, scheduleSync: scheduleOverlaySync } =
@@ -117,18 +158,25 @@ export const Input: FC<InputProps> = ({
 				style={domInputStyle}
 				placeholder={placeholder}
 				value={value}
+				inputRef={domInputRef}
 				maxLength={maxLength}
 				secure={secure}
+				disabled={disabled}
 				onChange={onChange}
 				onEnter={onEnter}
 				onFocus={() => setActive(true)}
-				onBlur={() => setActive(false)}
+				onBlur={() => {
+					setActive(false)
+					onBlur?.()
+				}}
 			/>,
 		)
 	}, [
+		disabled,
 		domInputStyle,
 		maxLength,
 		onChange,
+		onBlur,
 		onEnter,
 		overlayRoot,
 		placeholder,
@@ -149,8 +197,14 @@ export const Input: FC<InputProps> = ({
 		<layoutContainer
 			ref={inputContainerRef}
 			eventMode='static'
-			cursor='text'
+			cursor={disabled ? 'default' : 'text'}
+			onPointerDown={() => {
+				if (!disabled) {
+					domInputRef.current?.focus()
+				}
+			}}
 			layout={rootLayout}
+			alpha={disabled ? 0.7 : 1}
 		>
 			<pixiNineSliceSprite
 				ref={backgroundSpriteRef}
@@ -159,7 +213,15 @@ export const Input: FC<InputProps> = ({
 				topHeight={10}
 				rightWidth={10}
 				bottomHeight={10}
-				tint={active ? 0xffffff : 0xcccccc}
+				tint={
+					disabled
+						? Colors.disabled
+						: invalid
+							? Colors.statusError
+							: active
+								? 0xffffff
+								: 0xcccccc
+				}
 				layout={{
 					position: 'absolute',
 					width: '100%',
@@ -169,4 +231,4 @@ export const Input: FC<InputProps> = ({
 			/>
 		</layoutContainer>
 	)
-}
+})

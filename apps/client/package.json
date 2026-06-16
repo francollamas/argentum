@@ -18,6 +18,7 @@
 		"generate-fonts": "pnpm exec tsx scripts/assets/generate-assets.ts fonts"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.4.0",
 		"@pixi/devtools": "^2.0.1",
 		"@pixi/layout": "^3.2.0",
 		"@pixi/react": "^8.0.5",
@@ -27,6 +28,8 @@
 		"pixi.js": "^8.17.1",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
+		"react-hook-form": "^7.79.0",
+		"zod": "^3.25.76",
 		"zustand": "^5.0.12"
 	},
 	"devDependencies": {

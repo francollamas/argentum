@@ -1,4 +1,4 @@
-import type { CSSProperties, FC } from 'react'
+import type { CSSProperties, FC, RefObject } from 'react'
 
 type DomTextAreaOverlayStyle = CSSProperties & {
 	'--input-placeholder-color'?: string
@@ -8,7 +8,9 @@ type DomTextAreaOverlayProps = {
 	style: DomTextAreaOverlayStyle | null
 	placeholder: string
 	value: string
+	textareaRef?: RefObject<HTMLTextAreaElement | null>
 	maxLength?: number
+	disabled?: boolean
 	onChange?: (value: string) => void
 	onFocus?: () => void
 	onBlur?: () => void
@@ -18,7 +20,9 @@ export const DomTextAreaOverlay: FC<DomTextAreaOverlayProps> = ({
 	style,
 	placeholder,
 	value,
+	textareaRef,
 	maxLength,
+	disabled = false,
 	onChange,
 	onFocus,
 	onBlur,
@@ -74,8 +78,10 @@ export const DomTextAreaOverlay: FC<DomTextAreaOverlayProps> = ({
 		<div className='textarea-overlay-shell' style={shellStyle}>
 			<div className='textarea-overlay-viewport' style={viewportStyle}>
 				<textarea
+					ref={textareaRef}
 					className='textarea-overlay'
 					maxLength={maxLength}
+					disabled={disabled}
 					autoComplete='off'
 					spellCheck={false}
 					placeholder={placeholder}

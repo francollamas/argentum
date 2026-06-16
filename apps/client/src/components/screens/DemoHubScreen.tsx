@@ -10,6 +10,7 @@ import { CheckBoxDemoScreen } from './demos/CheckBoxDemoScreen'
 import { CloseButtonDemoScreen } from './demos/CloseButtonDemoScreen'
 import { DialogDemoScreen } from './demos/DialogDemoScreen'
 import { DividerDemoScreen } from './demos/DividerDemoScreen'
+import { FormDemoScreen } from './demos/FormDemoScreen'
 import { GameMapDemoScreen } from './demos/GameMapDemoScreen'
 import { IconButtonDemoScreen } from './demos/IconButtonDemoScreen'
 import { InputDemoScreen } from './demos/InputDemoScreen'
@@ -57,6 +58,9 @@ const TextAreaDemoRoute: FC<DemoRouteProps> = () => <TextAreaDemoScreen />
 const DividerDemoRoute: FC<DemoRouteProps> = () => <DividerDemoScreen />
 const DialogDemoRoute: FC<DemoRouteProps> = ({ onBack }) => (
 	<DialogDemoScreen onBack={onBack} />
+)
+const FormDemoRoute: FC<DemoRouteProps> = ({ onBack }) => (
+	<FormDemoScreen onBack={onBack} />
 )
 const SliderDemoRoute: FC<DemoRouteProps> = () => <SliderDemoScreen />
 const TabBarDemoRoute: FC<DemoRouteProps> = () => <TabBarDemoScreen />
@@ -197,6 +201,12 @@ const DEMOS: DemoDefinition[] = [
 		label: 'Dialog',
 		presentation: 'fullscreen',
 		render: DialogDemoRoute,
+	},
+	{
+		id: 'form',
+		label: 'Form',
+		presentation: 'fullscreen',
+		render: FormDemoRoute,
 	},
 	{ id: 'full-integration', label: 'Full Integration', presentation: 'framed' },
 ]

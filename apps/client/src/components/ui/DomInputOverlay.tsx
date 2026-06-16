@@ -1,11 +1,13 @@
-import type { CSSProperties, FC, KeyboardEvent } from 'react'
+import type { CSSProperties, FC, KeyboardEvent, RefObject } from 'react'
 
 type DomInputOverlayProps = {
 	style: CSSProperties | null
 	placeholder: string
 	value: string
+	inputRef?: RefObject<HTMLInputElement | null>
 	maxLength?: number
 	secure?: boolean
+	disabled?: boolean
 	onChange?: (value: string) => void
 	onEnter?: (value: string) => void
 	onFocus?: () => void
@@ -16,8 +18,10 @@ export const DomInputOverlay: FC<DomInputOverlayProps> = ({
 	style,
 	placeholder,
 	value,
+	inputRef,
 	maxLength,
 	secure = false,
+	disabled = false,
 	onChange,
 	onEnter,
 	onFocus,
@@ -38,9 +42,11 @@ export const DomInputOverlay: FC<DomInputOverlayProps> = ({
 
 	return (
 		<input
+			ref={inputRef}
 			className='input-overlay'
 			type={secure ? 'password' : 'text'}
 			maxLength={maxLength}
+			disabled={disabled}
 			autoComplete='off'
 			spellCheck={false}
 			placeholder={placeholder}

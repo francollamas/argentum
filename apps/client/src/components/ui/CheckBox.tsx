@@ -1,6 +1,7 @@
 import { tw } from '@pixi/layout/tailwind'
 import type { FC } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
+import { Colors } from './colors'
 import { Label } from './Label'
 
 type CheckBoxVariant = 'normal' | 'radio'
@@ -12,6 +13,8 @@ type CheckBoxProps = {
 	text?: string
 	textColor?: number
 	size?: number
+	disabled?: boolean
+	invalid?: boolean
 	layout?: Record<string, unknown>
 }
 
@@ -22,6 +25,8 @@ export const CheckBox: FC<CheckBoxProps> = ({
 	text,
 	textColor = 0xffffff,
 	size = 36,
+	disabled = false,
+	invalid = false,
 	layout,
 }) => {
 	const prefix = variant === 'radio' ? 'radio' : 'checkbox'
@@ -29,13 +34,24 @@ export const CheckBox: FC<CheckBoxProps> = ({
 	const checkedTexture = useUITexture(`${prefix}-checked`)
 	const texture = checked ? checkedTexture : uncheckedTexture
 
-	const handleToggle = () => onChange?.(!checked)
+	const handleToggle = () => {
+		if (!disabled) {
+			onChange?.(!checked)
+		}
+	}
+
+	const resolvedTextColor = disabled
+		? Colors.disabled
+		: invalid
+			? Colors.statusError
+			: textColor
 
 	return (
 		<layoutContainer
 			eventMode='static'
-			cursor='pointer'
+			cursor={disabled ? 'default' : 'pointer'}
 			onPointerDown={handleToggle}
+			alpha={disabled ? 0.6 : 1}
 			layout={{
 				...tw`flex-row items-center`,
 				gap: text ? 8 : 0,
@@ -46,6 +62,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
 				texture={texture}
 				width={size}
 				height={size}
+				tint={invalid && !disabled ? Colors.statusError : 0xffffff}
 				layout={{
 					width: size,
 					height: size,
@@ -56,7 +73,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
 				<Label
 					text={text}
 					font='label'
-					color={textColor}
+					color={resolvedTextColor}
 					layout={{
 						minWidth: 0,
 					}}

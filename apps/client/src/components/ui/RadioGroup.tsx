@@ -8,21 +8,25 @@ type RadioGroupItem = {
 
 type RadioGroupProps = {
 	items: RadioGroupItem[]
-	selectedIndex?: number
+	selectedIndex?: number | null
 	onChange?: (selectedIndex: number) => void
 	direction?: 'vertical' | 'horizontal'
 	gap?: number
 	textColor?: number
+	disabled?: boolean
+	invalid?: boolean
 	layout?: Record<string, unknown>
 }
 
 export const RadioGroup: FC<RadioGroupProps> = ({
 	items,
-	selectedIndex = 0,
+	selectedIndex = null,
 	onChange,
 	direction = 'vertical',
 	gap = 8,
 	textColor = 0xffffff,
+	disabled = false,
+	invalid = false,
 	layout,
 }) => {
 	return (
@@ -42,6 +46,8 @@ export const RadioGroup: FC<RadioGroupProps> = ({
 						onChange={() => onChange?.(index)}
 						text={item.text}
 						textColor={textColor}
+						disabled={disabled}
+						invalid={invalid}
 					/>
 				)
 			})}
