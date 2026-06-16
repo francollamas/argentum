@@ -1,12 +1,12 @@
 import type { LayoutOptions } from '@pixi/layout'
 import { useApplication } from '@pixi/react'
 import type { Bounds, Container, NineSliceSprite } from 'pixi.js'
-import type { CSSProperties } from 'react'
 import {
 	forwardRef,
 	useCallback,
 	useEffect,
 	useImperativeHandle,
+	useMemo,
 	useRef,
 	useState,
 } from 'react'
@@ -17,7 +17,10 @@ import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
 import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
-import { DomTextAreaOverlay } from './DomTextAreaOverlay'
+import { DomEditor } from './editor/DomEditor'
+import { EditorVisuals } from './editor/EditorVisuals'
+import { buildEditorStyleBundle, buildTextStyle } from './editor/editorStyles'
+import { useDomEditorEvents } from './editor/useDomEditorEvents'
 
 export type TextAreaHandle = {
 	focus: () => void
@@ -39,14 +42,9 @@ type TextAreaProps = {
 	layout?: Record<string, unknown>
 }
 
-const toCssColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`
-
-type DomTextAreaStyle = CSSProperties & {
-	'--input-placeholder-color': string
-}
-
-const TEXTAREA_DOM_FONT_FAMILY = FONTS.body.domFontFamily
 const TEXTAREA_FONT_SIZE = FONTS.body.fontSize
+const TEXTAREA_FONT_FAMILY = FONTS.body.fontFamily
+const TEXTAREA_DOM_FONT_FAMILY = FONTS.body.domFontFamily
 
 export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 	function TextArea(
@@ -69,11 +67,12 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 		const { app } = useApplication()
 		const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 		const domTextAreaRef = useRef<HTMLTextAreaElement | null>(null)
-		const [active, setActive] = useState(false)
+		const [focused, setFocused] = useState(false)
 		const isDomOverlayOccluded = useIsDomOverlayOccluded()
 
 		const inputTexture = useUITexture('input-field')
 		const { hostElement, overlayRoot } = useDomOverlayHost(app)
+		const snapshot = useDomEditorEvents(domTextAreaRef, 'textarea')
 
 		useImperativeHandle(
 			ref,
@@ -87,9 +86,24 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 		useEffect(() => {
 			if (disabled || isDomOverlayOccluded) {
 				domTextAreaRef.current?.blur()
-				setActive(false)
+				setFocused(false)
 			}
 		}, [disabled, isDomOverlayOccluded])
+
+		const textStyle = useMemo(
+			() =>
+				buildTextStyle({
+					fontFamily: TEXTAREA_FONT_FAMILY,
+					domFontFamily: TEXTAREA_DOM_FONT_FAMILY,
+					fontSize: TEXTAREA_FONT_SIZE,
+					renderedHeight: height,
+					align,
+					textColor,
+					disabled,
+					kind: 'textarea',
+				}),
+			[align, disabled, height, textColor],
+		)
 
 		const computeOverlayStyle = useCallback(
 			({
@@ -100,52 +114,24 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 				bounds: Bounds
 				canvasRect: DOMRect
 				containerRect: DOMRect
-			}): DomTextAreaStyle => {
-				const left = canvasRect.left - containerRect.left + bounds.x
-				const top = canvasRect.top - containerRect.top + bounds.y
-				const renderedHeight = bounds.height
-				const domScale = height > 0 ? renderedHeight / height : 1
-				const paddingInline = Math.max(8, 12 * domScale)
-				const paddingTop = Math.max(10, 12 * domScale)
-				const paddingBottom = Math.max(12, 14 * domScale)
-				const fontSize = Math.max(12, TEXTAREA_FONT_SIZE * domScale)
-				const lineHeight = Math.max(fontSize * 1.6, fontSize + 10)
-				const borderRadius = Math.max(6, 6 * domScale)
-				const effectiveTextColor = disabled ? Colors.disabled : textColor
-
-				return {
-					position: 'absolute',
-					top,
-					left,
-					width: bounds.width,
-					height: renderedHeight,
-					paddingTop,
-					paddingRight: paddingInline,
-					paddingBottom,
-					paddingLeft: paddingInline,
-					margin: 0,
-					boxSizing: 'border-box',
-					border: 'none',
-					borderRadius,
-					background: 'transparent',
-					color: toCssColor(effectiveTextColor),
-					caretColor: toCssColor(effectiveTextColor),
-					textAlign: align,
-					fontSize,
-					fontFamily: TEXTAREA_DOM_FONT_FAMILY,
-					lineHeight: `${lineHeight}px`,
-					appearance: 'none',
-					outline: 'none',
-					pointerEvents: disabled ? 'none' : 'auto',
-					opacity: disabled ? 0.7 : 1,
-					resize: 'none',
-					overflowX: 'hidden',
-					overflowY: 'auto',
-					zIndex: 999,
-					'--input-placeholder-color': '#888888',
-				}
+			}) => {
+				return buildEditorStyleBundle(
+					{
+						bounds: {
+							x: bounds.x,
+							y: bounds.y,
+							width: bounds.width,
+							height: bounds.height,
+						},
+						canvasRect,
+						containerRect,
+						zIndex: 999,
+						disabled,
+					},
+					textStyle,
+				).boxStyle
 			},
-			[align, disabled, height, textColor],
+			[disabled, textStyle],
 		)
 
 		const { style: domTextAreaStyle, scheduleSync: scheduleOverlaySync } =
@@ -159,20 +145,22 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 		const { refCallback: textAreaContainerRef } =
 			usePixiLayoutListener<Container>(scheduleOverlaySync)
 
+		const box = useMemo(() => ({ width: width ?? 0, height }), [width, height])
+
 		useEffect(() => {
 			overlayRoot?.render(
 				isDomOverlayOccluded ? null : (
-					<DomTextAreaOverlay
+					<DomEditor
+						kind='textarea'
 						style={domTextAreaStyle}
-						placeholder={placeholder}
 						value={value}
 						textareaRef={domTextAreaRef}
 						maxLength={maxLength}
 						disabled={disabled}
 						onChange={onChange}
-						onFocus={() => setActive(true)}
+						onFocus={() => setFocused(true)}
 						onBlur={() => {
-							setActive(false)
+							setFocused(false)
 							onBlur?.()
 						}}
 					/>
@@ -186,7 +174,6 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 			onBlur,
 			onChange,
 			overlayRoot,
-			placeholder,
 			value,
 		])
 
@@ -224,7 +211,7 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 							? Colors.disabled
 							: invalid
 								? Colors.statusError
-								: active
+								: focused
 									? 0xffffff
 									: 0xcccccc
 					}
@@ -234,6 +221,14 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 						height: '100%',
 						applySizeDirectly: true,
 					}}
+				/>
+				<EditorVisuals
+					kind='textarea'
+					snapshot={snapshot}
+					propValue={value}
+					placeholder={placeholder}
+					textStyle={textStyle}
+					box={box}
 				/>
 			</layoutContainer>
 		)

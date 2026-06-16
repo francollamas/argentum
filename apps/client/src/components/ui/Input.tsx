@@ -1,12 +1,12 @@
 import type { LayoutOptions } from '@pixi/layout'
 import { useApplication } from '@pixi/react'
 import type { Bounds, Container, NineSliceSprite } from 'pixi.js'
-import type { CSSProperties } from 'react'
 import {
 	forwardRef,
 	useCallback,
 	useEffect,
 	useImperativeHandle,
+	useMemo,
 	useRef,
 	useState,
 } from 'react'
@@ -17,7 +17,10 @@ import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
 import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
-import { DomInputOverlay } from './DomInputOverlay'
+import { DomEditor } from './editor/DomEditor'
+import { EditorVisuals } from './editor/EditorVisuals'
+import { buildEditorStyleBundle, buildTextStyle } from './editor/editorStyles'
+import { useDomEditorEvents } from './editor/useDomEditorEvents'
 
 export type InputHandle = {
 	focus: () => void
@@ -41,14 +44,9 @@ type InputProps = {
 	layout?: Record<string, unknown>
 }
 
-const toCssColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`
-
-type DomInputStyle = CSSProperties & {
-	'--input-placeholder-color': string
-}
-
-const INPUT_DOM_FONT_FAMILY = FONTS.input.domFontFamily
 const INPUT_FONT_SIZE = FONTS.input.fontSize
+const INPUT_FONT_FAMILY = FONTS.input.fontFamily
+const INPUT_DOM_FONT_FAMILY = FONTS.input.domFontFamily
 
 export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	{
@@ -72,11 +70,12 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	const { app } = useApplication()
 	const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 	const domInputRef = useRef<HTMLInputElement | null>(null)
-	const [active, setActive] = useState(false)
+	const [focused, setFocused] = useState(false)
 	const isDomOverlayOccluded = useIsDomOverlayOccluded()
 
 	const inputTexture = useUITexture('input-field')
 	const { hostElement, overlayRoot } = useDomOverlayHost(app)
+	const snapshot = useDomEditorEvents(domInputRef, 'input')
 
 	useImperativeHandle(
 		ref,
@@ -90,9 +89,24 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	useEffect(() => {
 		if (disabled || isDomOverlayOccluded) {
 			domInputRef.current?.blur()
-			setActive(false)
+			setFocused(false)
 		}
 	}, [disabled, isDomOverlayOccluded])
+
+	const textStyle = useMemo(
+		() =>
+			buildTextStyle({
+				fontFamily: INPUT_FONT_FAMILY,
+				domFontFamily: INPUT_DOM_FONT_FAMILY,
+				fontSize: INPUT_FONT_SIZE,
+				renderedHeight: height,
+				align,
+				textColor,
+				disabled,
+				kind: 'input',
+			}),
+		[align, disabled, height, textColor],
+	)
 
 	const computeOverlayStyle = useCallback(
 		({
@@ -103,44 +117,24 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 			bounds: Bounds
 			canvasRect: DOMRect
 			containerRect: DOMRect
-		}): DomInputStyle => {
-			const left = canvasRect.left - containerRect.left + bounds.x
-			const top = canvasRect.top - containerRect.top + bounds.y
-			const renderedHeight = bounds.height
-			const domScale = height > 0 ? renderedHeight / height : 1
-			const paddingInline = Math.max(8, 12 * domScale)
-			const fontSize = Math.max(12, INPUT_FONT_SIZE * domScale)
-			const lineHeight = Math.max(1, renderedHeight - 2)
-			const borderRadius = Math.max(6, 6 * domScale)
-			const effectiveTextColor = disabled ? Colors.disabled : textColor
-
-			return {
-				position: 'absolute',
-				top,
-				left,
-				width: bounds.width,
-				height: renderedHeight,
-				padding: `0 ${paddingInline}px`,
-				margin: 0,
-				boxSizing: 'border-box',
-				border: 'none',
-				borderRadius,
-				background: 'transparent',
-				color: toCssColor(effectiveTextColor),
-				caretColor: toCssColor(effectiveTextColor),
-				textAlign: align,
-				fontSize,
-				fontFamily: INPUT_DOM_FONT_FAMILY,
-				lineHeight: `${lineHeight}px`,
-				appearance: 'none',
-				outline: 'none',
-				pointerEvents: disabled ? 'none' : 'auto',
-				opacity: disabled ? 0.7 : 1,
-				zIndex: 999,
-				'--input-placeholder-color': '#888888',
-			}
+		}) => {
+			return buildEditorStyleBundle(
+				{
+					bounds: {
+						x: bounds.x,
+						y: bounds.y,
+						width: bounds.width,
+						height: bounds.height,
+					},
+					canvasRect,
+					containerRect,
+					zIndex: 999,
+					disabled,
+				},
+				textStyle,
+			).boxStyle
 		},
-		[align, disabled, height, textColor],
+		[disabled, textStyle],
 	)
 
 	const { style: domInputStyle, scheduleSync: scheduleOverlaySync } =
@@ -154,12 +148,14 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	const { refCallback: inputContainerRef } =
 		usePixiLayoutListener<Container>(scheduleOverlaySync)
 
+	const box = useMemo(() => ({ width: width ?? 0, height }), [width, height])
+
 	useEffect(() => {
 		overlayRoot?.render(
 			isDomOverlayOccluded ? null : (
-				<DomInputOverlay
+				<DomEditor
+					kind='input'
 					style={domInputStyle}
-					placeholder={placeholder}
 					value={value}
 					inputRef={domInputRef}
 					maxLength={maxLength}
@@ -167,9 +163,9 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 					disabled={disabled}
 					onChange={onChange}
 					onEnter={onEnter}
-					onFocus={() => setActive(true)}
+					onFocus={() => setFocused(true)}
 					onBlur={() => {
-						setActive(false)
+						setFocused(false)
 						onBlur?.()
 					}}
 				/>
@@ -184,7 +180,6 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 		onBlur,
 		onEnter,
 		overlayRoot,
-		placeholder,
 		secure,
 		value,
 	])
@@ -223,7 +218,7 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 						? Colors.disabled
 						: invalid
 							? Colors.statusError
-							: active
+							: focused
 								? 0xffffff
 								: 0xcccccc
 				}
@@ -233,6 +228,14 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 					height: '100%',
 					applySizeDirectly: true,
 				}}
+			/>
+			<EditorVisuals
+				kind='input'
+				snapshot={snapshot}
+				propValue={value}
+				placeholder={placeholder}
+				textStyle={textStyle}
+				box={box}
 			/>
 		</layoutContainer>
 	)
