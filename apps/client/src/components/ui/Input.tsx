@@ -1,23 +1,34 @@
 import type { LayoutOptions } from '@pixi/layout'
 import { useApplication } from '@pixi/react'
-import type { Bounds, Container, NineSliceSprite } from 'pixi.js'
-import type { CSSProperties } from 'react'
+import type { FederatedPointerEvent, NineSliceSprite } from 'pixi.js'
 import {
 	forwardRef,
 	useCallback,
 	useEffect,
+	useId,
 	useImperativeHandle,
+	useMemo,
 	useRef,
-	useState,
 } from 'react'
-import { FONTS } from '../../config/typography'
-import { useDomOverlayHost } from '../../hooks/useDomOverlayHost'
 import { useIsDomOverlayOccluded } from '../../hooks/useOverlayLayer'
-import { useOverlayPositionSync } from '../../hooks/useOverlayPositionSync'
-import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
-import { DomInputOverlay } from './DomInputOverlay'
+import {
+	INPUT_CARET_HEIGHT,
+	INPUT_FONT_SIZE,
+	INPUT_HEIGHT,
+	INPUT_PADDING_X,
+	maskTextValue,
+} from './textEditor/textMeasurement'
+import {
+	getSingleLineCaretPosition,
+	getSingleLineIndexAtX,
+	getSingleLineSelectionRects,
+} from './textEditor/textSelection'
+import type { TextEditorRegistration } from './textEditor/types'
+import { useActiveTextEditor } from './textEditor/useActiveTextEditor'
+import { useEditorBounds } from './textEditor/useEditorBounds'
+import { useTextEditorRegistration } from './textEditor/useTextEditorRegistration'
 
 export type InputHandle = {
 	focus: () => void
@@ -38,22 +49,16 @@ type InputProps = {
 	onChange?: (value: string) => void
 	onBlur?: () => void
 	onEnter?: (value: string) => void
+	tabIndex?: number
 	layout?: Record<string, unknown>
 }
 
-const toCssColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`
-
-type DomInputStyle = CSSProperties & {
-	'--input-placeholder-color': string
-}
-
-const INPUT_DOM_FONT_FAMILY = FONTS.input.domFontFamily
-const INPUT_FONT_SIZE = FONTS.input.fontSize
+const SELECTION_COLOR = 0xffd666
 
 export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	{
 		width,
-		height = 40,
+		height = INPUT_HEIGHT,
 		placeholder = '',
 		value = '',
 		maxLength,
@@ -65,129 +70,111 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 		onChange,
 		onBlur,
 		onEnter,
+		tabIndex,
 		layout,
 	},
 	ref,
 ) {
+	const id = useId().replace(/:/g, '_')
 	const { app } = useApplication()
 	const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
-	const domInputRef = useRef<HTMLInputElement | null>(null)
-	const [active, setActive] = useState(false)
 	const isDomOverlayOccluded = useIsDomOverlayOccluded()
-
 	const inputTexture = useUITexture('input-field')
-	const { hostElement, overlayRoot } = useDomOverlayHost(app)
+	const bounds = useEditorBounds(backgroundSpriteRef, width ?? 200, height)
+
+	const registration = useMemo<TextEditorRegistration>(
+		() => ({
+			id,
+			kind: 'input',
+			getValue: () => value,
+			setValue: (nextValue) => onChange?.(nextValue),
+			onBlur,
+			onEnter,
+			isDisabled: () => disabled || isDomOverlayOccluded,
+			getVisibleRect: () => {
+				const bounds = backgroundSpriteRef.current?.getBounds()
+				if (!bounds || !app?.canvas) {
+					return null
+				}
+
+				const canvasRect = app.canvas.getBoundingClientRect()
+				return new DOMRect(
+					canvasRect.left + bounds.x,
+					canvasRect.top + bounds.y,
+					bounds.width,
+					bounds.height,
+				)
+			},
+			getConfig: () => ({
+				placeholder,
+				secure,
+				maxLength,
+				align,
+			}),
+		}),
+		[
+			align,
+			app,
+			disabled,
+			id,
+			isDomOverlayOccluded,
+			maxLength,
+			onBlur,
+			onChange,
+			onEnter,
+			placeholder,
+			secure,
+			value,
+		],
+	)
+
+	const { activate, blur, updateSelection } =
+		useTextEditorRegistration(registration)
+	const activeEditor = useActiveTextEditor(id)
+	const active = Boolean(activeEditor?.focused)
+	const effectiveTextColor = disabled ? Colors.disabled : textColor
+	const displayValue = activeEditor?.value ?? value
+	const displayText = maskTextValue(displayValue, secure)
+	const scrollLeft = activeEditor?.scroll.left ?? 0
+	const viewportWidth = Math.max(0, bounds.width - INPUT_PADDING_X * 2)
+	const caretPosition = activeEditor
+		? getSingleLineCaretPosition({
+				value: displayValue,
+				secure,
+				index: activeEditor.selection.end,
+				viewportWidth,
+				align,
+				scrollLeft,
+				caretHeight: INPUT_CARET_HEIGHT,
+				contentHeight: height,
+			})
+		: null
+	const selectionRects = activeEditor
+		? getSingleLineSelectionRects({
+				value: displayValue,
+				secure,
+				selection: activeEditor.selection,
+				viewportWidth,
+				align,
+				scrollLeft,
+				height,
+			})
+		: []
 
 	useImperativeHandle(
 		ref,
 		() => ({
-			focus: () => domInputRef.current?.focus(),
-			blur: () => domInputRef.current?.blur(),
+			focus: () => activate(),
+			blur,
 		}),
-		[],
+		[activate, blur],
 	)
 
 	useEffect(() => {
 		if (disabled || isDomOverlayOccluded) {
-			domInputRef.current?.blur()
-			setActive(false)
+			blur()
 		}
-	}, [disabled, isDomOverlayOccluded])
-
-	const computeOverlayStyle = useCallback(
-		({
-			bounds,
-			canvasRect,
-			containerRect,
-		}: {
-			bounds: Bounds
-			canvasRect: DOMRect
-			containerRect: DOMRect
-		}): DomInputStyle => {
-			const left = canvasRect.left - containerRect.left + bounds.x
-			const top = canvasRect.top - containerRect.top + bounds.y
-			const renderedHeight = bounds.height
-			const domScale = height > 0 ? renderedHeight / height : 1
-			const paddingInline = Math.max(8, 12 * domScale)
-			const fontSize = Math.max(12, INPUT_FONT_SIZE * domScale)
-			const lineHeight = Math.max(1, renderedHeight - 2)
-			const borderRadius = Math.max(6, 6 * domScale)
-			const effectiveTextColor = disabled ? Colors.disabled : textColor
-
-			return {
-				position: 'absolute',
-				top,
-				left,
-				width: bounds.width,
-				height: renderedHeight,
-				padding: `0 ${paddingInline}px`,
-				margin: 0,
-				boxSizing: 'border-box',
-				border: 'none',
-				borderRadius,
-				background: 'transparent',
-				color: toCssColor(effectiveTextColor),
-				caretColor: toCssColor(effectiveTextColor),
-				textAlign: align,
-				fontSize,
-				fontFamily: INPUT_DOM_FONT_FAMILY,
-				lineHeight: `${lineHeight}px`,
-				appearance: 'none',
-				outline: 'none',
-				pointerEvents: disabled ? 'none' : 'auto',
-				opacity: disabled ? 0.7 : 1,
-				zIndex: 999,
-				'--input-placeholder-color': '#888888',
-			}
-		},
-		[align, disabled, height, textColor],
-	)
-
-	const { style: domInputStyle, scheduleSync: scheduleOverlaySync } =
-		useOverlayPositionSync({
-			app,
-			hostElement,
-			targetRef: backgroundSpriteRef,
-			computeStyle: computeOverlayStyle,
-		})
-
-	const { refCallback: inputContainerRef } =
-		usePixiLayoutListener<Container>(scheduleOverlaySync)
-
-	useEffect(() => {
-		overlayRoot?.render(
-			isDomOverlayOccluded ? null : (
-				<DomInputOverlay
-					style={domInputStyle}
-					placeholder={placeholder}
-					value={value}
-					inputRef={domInputRef}
-					maxLength={maxLength}
-					secure={secure}
-					disabled={disabled}
-					onChange={onChange}
-					onEnter={onEnter}
-					onFocus={() => setActive(true)}
-					onBlur={() => {
-						setActive(false)
-						onBlur?.()
-					}}
-				/>
-			),
-		)
-	}, [
-		disabled,
-		domInputStyle,
-		isDomOverlayOccluded,
-		maxLength,
-		onChange,
-		onBlur,
-		onEnter,
-		overlayRoot,
-		placeholder,
-		secure,
-		value,
-	])
+	}, [blur, disabled, isDomOverlayOccluded])
 
 	const rootLayout = {
 		...(width != null ? { width } : { width: '100%' }),
@@ -198,16 +185,76 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 		...layout,
 	} as unknown as Omit<LayoutOptions, 'target'>
 
+	const resolveSelectionIndex = useCallback(
+		(globalX: number) => {
+			const bounds = backgroundSpriteRef.current?.getBounds()
+			if (!bounds) {
+				return displayValue.length
+			}
+
+			const localX = globalX - bounds.x - INPUT_PADDING_X
+			return getSingleLineIndexAtX({
+				value: displayValue,
+				secure,
+				viewportWidth: Math.max(1, bounds.width - INPUT_PADDING_X * 2),
+				align,
+				scrollLeft: activeEditor?.scroll.left ?? 0,
+				x: localX,
+			})
+		},
+		[activeEditor?.scroll.left, align, displayValue, secure],
+	)
+
+	const handlePointerDown = useCallback(
+		(event: FederatedPointerEvent) => {
+			if (disabled || isDomOverlayOccluded) {
+				return
+			}
+
+			const startIndex = resolveSelectionIndex(event.global.x)
+			activate({
+				selection: {
+					start: startIndex,
+					end: startIndex,
+					direction: 'none',
+				},
+			})
+
+			const handlePointerMove = (moveEvent: PointerEvent) => {
+				const canvasRect = app?.canvas?.getBoundingClientRect()
+				const nextIndex = resolveSelectionIndex(
+					canvasRect ? moveEvent.clientX - canvasRect.left : moveEvent.clientX,
+				)
+				updateSelection({
+					start: startIndex,
+					end: nextIndex,
+					direction: nextIndex >= startIndex ? 'forward' : 'backward',
+				})
+			}
+
+			const handlePointerUp = () => {
+				window.removeEventListener('pointermove', handlePointerMove)
+				window.removeEventListener('pointerup', handlePointerUp)
+			}
+
+			window.addEventListener('pointermove', handlePointerMove)
+			window.addEventListener('pointerup', handlePointerUp)
+		},
+		[
+			activate,
+			app,
+			disabled,
+			isDomOverlayOccluded,
+			resolveSelectionIndex,
+			updateSelection,
+		],
+	)
+
 	return (
 		<layoutContainer
-			ref={inputContainerRef}
 			eventMode='static'
 			cursor={disabled ? 'default' : 'text'}
-			onPointerDown={() => {
-				if (!disabled && !isDomOverlayOccluded) {
-					domInputRef.current?.focus()
-				}
-			}}
+			onPointerDown={handlePointerDown}
 			layout={rootLayout}
 			alpha={disabled ? 0.7 : 1}
 		>
@@ -234,6 +281,84 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 					applySizeDirectly: true,
 				}}
 			/>
+			<layoutContainer
+				layout={{
+					position: 'absolute',
+					left: INPUT_PADDING_X,
+					right: INPUT_PADDING_X,
+					top: 0,
+					bottom: 0,
+					overflow: 'hidden',
+				}}
+			>
+				<pixiGraphics
+					draw={(graphics) => {
+						graphics.clear()
+
+						for (const rect of selectionRects) {
+							graphics.rect(rect.x, rect.y, rect.width, rect.height)
+							graphics.fill({ color: SELECTION_COLOR, alpha: 0.35 })
+						}
+					}}
+				/>
+				{displayText ? (
+					<pixiBitmapText
+						text={displayText}
+						x={
+							activeEditor
+								? getSingleLineCaretPosition({
+										value: displayValue,
+										secure,
+										index: 0,
+										viewportWidth,
+										align,
+										scrollLeft,
+										caretHeight: INPUT_CARET_HEIGHT,
+										contentHeight: height,
+									}).x
+								: 0
+						}
+						y={Math.max(0, (height - INPUT_FONT_SIZE) / 2 - 1)}
+						style={{
+							fontFamily: 'inter',
+							fontSize: INPUT_FONT_SIZE,
+							fill: effectiveTextColor,
+						}}
+					/>
+				) : placeholder ? (
+					<pixiBitmapText
+						text={placeholder}
+						x={0}
+						y={Math.max(0, (height - INPUT_FONT_SIZE) / 2 - 1)}
+						style={{
+							fontFamily: 'inter',
+							fontSize: INPUT_FONT_SIZE,
+							fill: Colors.disabled,
+						}}
+					/>
+				) : null}
+				<pixiGraphics
+					draw={(graphics) => {
+						graphics.clear()
+
+						if (
+							!activeEditor ||
+							activeEditor.selection.start !== activeEditor.selection.end ||
+							!caretPosition
+						) {
+							return
+						}
+
+						graphics.rect(
+							caretPosition.x,
+							caretPosition.y,
+							1,
+							INPUT_CARET_HEIGHT,
+						)
+						graphics.fill(effectiveTextColor)
+					}}
+				/>
+			</layoutContainer>
 		</layoutContainer>
 	)
 })
