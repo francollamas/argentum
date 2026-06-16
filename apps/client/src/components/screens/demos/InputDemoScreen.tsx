@@ -20,7 +20,7 @@ export const InputDemoScreen: FC = () => {
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='Input Demo' font='title' color={Colors.gold} />
 				<WrappedLabel
-					text='Pixi-rendered input with a single shared DOM editor for native editing semantics'
+					text='Layout-driven input with DOM keyboard capture and Pixi rendering'
 					width={640}
 					font='bodySm'
 					color={Colors.silver}
@@ -36,7 +36,7 @@ export const InputDemoScreen: FC = () => {
 				<Panel layout={{ width: 420, gap: 14 }}>
 					<Label text='Basic States' font='titleSm' color={Colors.gold} />
 					<WrappedLabel
-						text='Placeholder, controlled value, and Enter submission all go through the shared hidden DOM editor.'
+						text='Placeholder, controlled value, and Enter submission all use the hidden DOM input.'
 						width={360}
 						font='bodySm'
 						color={Colors.silver}

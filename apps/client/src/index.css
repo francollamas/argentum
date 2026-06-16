@@ -152,42 +152,44 @@ table {
 	border-spacing: 0;
 }
 
-.active-dom-text-editor::placeholder {
+.input-overlay::placeholder,
+.textarea-overlay::placeholder {
 	color: var(--input-placeholder-color, #888888);
 	opacity: 1;
 }
 
-.active-dom-text-editor::selection {
+.input-overlay::selection,
+.textarea-overlay::selection {
 	background: rgba(255, 214, 102, 0.35);
 	color: inherit;
 }
 
-.active-dom-textarea {
+.textarea-overlay {
 	scrollbar-width: thin;
 	scrollbar-color: #8a6239 transparent;
 }
 
-.active-dom-textarea::-webkit-scrollbar {
+.textarea-overlay::-webkit-scrollbar {
 	width: 10px;
 }
 
-.active-dom-textarea::-webkit-scrollbar-track,
-.active-dom-textarea::-webkit-scrollbar-track:hover {
+.textarea-overlay::-webkit-scrollbar-track,
+.textarea-overlay::-webkit-scrollbar-track:hover {
 	background: transparent;
 }
 
-.active-dom-textarea::-webkit-scrollbar-corner {
+.textarea-overlay::-webkit-scrollbar-corner {
 	background: transparent;
 }
 
-.active-dom-textarea::-webkit-scrollbar-thumb {
+.textarea-overlay::-webkit-scrollbar-thumb {
 	background: linear-gradient(180deg, #9b7449 0%, #7a522b 100%);
 	border: 2px solid transparent;
 	border-radius: 999px;
 	background-clip: padding-box;
 }
 
-.active-dom-textarea::-webkit-scrollbar-thumb:hover {
+.textarea-overlay::-webkit-scrollbar-thumb:hover {
 	background: linear-gradient(180deg, #ad8458 0%, #8a6239 100%);
 	border: 2px solid transparent;
 	background-clip: padding-box;

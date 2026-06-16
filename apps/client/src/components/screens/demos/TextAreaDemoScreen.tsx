@@ -5,7 +5,7 @@ import { Colors, Label, Panel, TextArea, WrappedLabel } from '../../ui'
 
 const LONG_TEXT = `Born in Ullathorpe, this mage keeps notes about every hunt, every failed spell, and every rumor heard at the docks.
 
-The field should support multiple paragraphs naturally, keep internal scrolling, and mirror the shared DOM editor state without a visible overlay.`
+The field should support multiple paragraphs naturally, keep internal scrolling, and preserve the same DOM overlay strategy used by the input component.`
 
 export const TextAreaDemoScreen: FC = () => {
 	const [bio, setBio] = useState('Mage looking for a party in Nix.')
@@ -24,7 +24,7 @@ export const TextAreaDemoScreen: FC = () => {
 			<layoutContainer layout={tw`flex-col items-center gap-1`}>
 				<Label text='TextArea Demo' font='title' color={Colors.gold} />
 				<WrappedLabel
-					text='Multiline editable text using the same shared DOM editor bridge as Input'
+					text='Multiline editable text using the same DOM attachment strategy as Input'
 					width={640}
 					font='bodySm'
 					color={Colors.silver}
