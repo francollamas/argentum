@@ -13,13 +13,13 @@ importers:
         version: 5.4.0(react-hook-form@7.79.0(react@19.2.4))
       '@pixi/devtools':
         specifier: ^2.0.1
-        version: 2.0.1(pixi.js@8.17.1)
+        version: 2.0.1(pixi.js@8.19.0)
       '@pixi/layout':
         specifier: ^3.2.0
-        version: 3.2.0(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)(yoga-layout@3.2.1)
+        version: 3.2.0(@types/react@19.2.14)(pixi.js@8.19.0)(react@19.2.4)(yoga-layout@3.2.1)
       '@pixi/react':
         specifier: ^8.0.5
-        version: 8.0.5(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)
+        version: 8.0.5(@types/react@19.2.14)(pixi.js@8.19.0)(react@19.2.4)
       '@tauri-apps/api':
         specifier: 2.10.1
         version: 2.10.1
@@ -30,8 +30,8 @@ importers:
         specifier: ^25.0.0
         version: 25.0.0
       pixi.js:
-        specifier: ^8.17.1
-        version: 8.17.1
+        specifier: ^8.19.0
+        version: 8.19.0
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -949,8 +949,8 @@ packages:
   '@webgpu/types@0.1.69':
     resolution: {integrity: sha512-RPmm6kgRbI8e98zSD3RVACvnuktIja5+yLgDAkTmxLr90BEwdTXRQWNLF3ETTTyH/8mKhznZuN5AveXYFEsMGQ==}
 
-  '@xmldom/xmldom@0.8.11':
-    resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
+  '@xmldom/xmldom@0.8.13':
+    resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
 
   abort-controller@3.0.0:
@@ -1422,8 +1422,8 @@ packages:
   parse-bmfont-xml@1.1.6:
     resolution: {integrity: sha512-0cEliVMZEhrFDwMh4SxIyVJpqYoOWDJ9P895tFuS+XuNzI5UBmBk5U5O4KuJdTnZpSBI4LFA2+ZiJaiwfSwlMA==}
 
-  parse-svg-path@0.1.2:
-    resolution: {integrity: sha512-JyPSBnkTJ0AI8GGJLfMXvKq42cj5c006fnLz6fXy6zfoVjJizi8BNTpu8on8ziI1cKy9d9DGNuY17Ce7wuejpQ==}
+  parse-svg-path@0.2.0:
+    resolution: {integrity: sha512-Tf7FFIrguPKQwzD4pWnYkR2VOv3raoHeKED80Bm+BYHI3KxC8KsgsGC5+fSMzAGDA6UEk4bHvmi+RsjmL3khpg==}
 
   parse-uri@1.0.16:
     resolution: {integrity: sha512-WMX9ygt2zzbtd3UlChi8S2Uj/dZa0N9QaotTkyRD7v06c50dor4qEWrM5ZvHiiaZYpXal4otRS9hynwwX0DVoA==}
@@ -1455,8 +1455,8 @@ packages:
     resolution: {integrity: sha512-1wrVzJ2STrpmONHKBy228LM1b84msXDUoAzVEl0R8Mz4Ce6EPr+IVtxm8+yvrqLYMHswREkjYFaMxnyGnaY3Ng==}
     hasBin: true
 
-  pixi.js@8.17.1:
-    resolution: {integrity: sha512-OB4TpZHrP5RYy+7FqmFrAc0IHRhfOoNIfF4sVeinvK3aG1r2pYrSMneJAKi9+WvGKC70Dj7GEpZ2OZGB6o/xdg==}
+  pixi.js@8.19.0:
+    resolution: {integrity: sha512-pq1O6emA/GFjjeF+8d3Pb5t7knD8FsnfWGqQcRjYjsqFZ7QdzG1XgjLDUu0DFJRbafjV5+g8iNLFBx0b9649lg==}
 
   pngjs@6.0.0:
     resolution: {integrity: sha512-TRzzuFRRmEoSW/p1KVAmiOgPco2Irlah+bGFCeNfJXxxYGwSw7YwAOAcd7X28K/m5bjBWKsC29KyoMfHbypayg==}
@@ -2290,24 +2290,24 @@ snapshots:
 
   '@pixi/colord@2.9.6': {}
 
-  '@pixi/devtools@2.0.1(pixi.js@8.17.1)':
+  '@pixi/devtools@2.0.1(pixi.js@8.19.0)':
     dependencies:
-      pixi.js: 8.17.1
+      pixi.js: 8.19.0
 
-  '@pixi/layout@3.2.0(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)(yoga-layout@3.2.1)':
+  '@pixi/layout@3.2.0(@types/react@19.2.14)(pixi.js@8.19.0)(react@19.2.4)(yoga-layout@3.2.1)':
     dependencies:
-      pixi.js: 8.17.1
+      pixi.js: 8.19.0
       yoga-layout: 3.2.1
     optionalDependencies:
-      '@pixi/react': 8.0.5(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)
+      '@pixi/react': 8.0.5(@types/react@19.2.14)(pixi.js@8.19.0)(react@19.2.4)
     transitivePeerDependencies:
       - '@types/react'
       - react
 
-  '@pixi/react@8.0.5(@types/react@19.2.14)(pixi.js@8.17.1)(react@19.2.4)':
+  '@pixi/react@8.0.5(@types/react@19.2.14)(pixi.js@8.19.0)(react@19.2.4)':
     dependencies:
       its-fine: 2.0.0(@types/react@19.2.14)(react@19.2.4)
-      pixi.js: 8.17.1
+      pixi.js: 8.19.0
       react: 19.2.4
       react-reconciler: 0.31.0(react@19.2.4)
     transitivePeerDependencies:
@@ -2539,7 +2539,7 @@ snapshots:
 
   '@webgpu/types@0.1.69': {}
 
-  '@xmldom/xmldom@0.8.11': {}
+  '@xmldom/xmldom@0.8.13': {}
 
   abort-controller@3.0.0:
     dependencies:
@@ -2994,7 +2994,7 @@ snapshots:
       xml-parse-from-string: 1.0.1
       xml2js: 0.5.0
 
-  parse-svg-path@0.1.2: {}
+  parse-svg-path@0.2.0: {}
 
   parse-uri@1.0.16: {}
 
@@ -3016,17 +3016,17 @@ snapshots:
     dependencies:
       pngjs: 7.0.0
 
-  pixi.js@8.17.1:
+  pixi.js@8.19.0:
     dependencies:
       '@pixi/colord': 2.9.6
       '@types/earcut': 3.0.0
       '@webgpu/types': 0.1.69
-      '@xmldom/xmldom': 0.8.11
+      '@xmldom/xmldom': 0.8.13
       earcut: 3.0.2
       eventemitter3: 5.0.1
       gifuct-js: 2.1.2
       ismobilejs: 1.1.1
-      parse-svg-path: 0.1.2
+      parse-svg-path: 0.2.0
       tiny-lru: 11.4.7
 
   pngjs@6.0.0: {}
