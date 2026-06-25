@@ -19,6 +19,7 @@ import {
 	Label,
 	Panel,
 	ScrollView,
+	Slider,
 	WrappedLabel,
 } from '../../ui'
 
@@ -110,6 +111,7 @@ const DialogFormBody: FC<{
 	onCancel: () => void
 }> = ({ onSubmit, onCancel }) => {
 	const [status, setStatus] = useState('Ready to validate the dialog form')
+	const [volumePreview, setVolumePreview] = useState(65)
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
@@ -130,6 +132,7 @@ const DialogFormBody: FC<{
 
 	const resetDialog = () => {
 		form.reset(defaultValues)
+		setVolumePreview(65)
 		setStatus('Form reset to defaults')
 	}
 
@@ -143,6 +146,19 @@ const DialogFormBody: FC<{
 						font='bodySm'
 						color={Colors.silver}
 					/>
+					<layoutContainer layout={{ ...tw`w-full flex-col`, gap: 10 }}>
+						<Label text='Volume preview' font='label' color={Colors.gold} />
+						<Slider
+							value={volumePreview}
+							onChange={setVolumePreview}
+							layout={{ width: '100%' }}
+						/>
+						<Label
+							text={`Current value: ${volumePreview}`}
+							font='labelSm'
+							color={Colors.silver}
+						/>
+					</layoutContainer>
 					<CharacterFormFields form={form} status={status} />
 				</Panel>
 			</ScrollView>
