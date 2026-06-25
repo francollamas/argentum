@@ -1,8 +1,8 @@
 import type { LayoutOptions } from '@pixi/layout'
 import { tw } from '@pixi/layout/tailwind'
-import type { FederatedPointerEvent } from 'pixi.js'
+import type { Container, FederatedPointerEvent } from 'pixi.js'
 import type { FC, ReactNode } from 'react'
-import { useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { ScrollGestureContext } from './ScrollGestureContext'
 
 type ScrollViewProps = {
@@ -12,6 +12,14 @@ type ScrollViewProps = {
 	layout?: Record<string, unknown>
 	contentLayout?: Record<string, unknown>
 	maxSpeed?: number
+}
+
+type ScrollTrackpadContainer = Container & {
+	_trackpad?: {
+		pointerUp: () => void
+		x: number
+		y: number
+	}
 }
 
 const DEFAULT_MAX_SPEED = 400
@@ -28,6 +36,8 @@ export const ScrollView: FC<ScrollViewProps> = ({
 	const activePointerIdRef = useRef<number | null>(null)
 	const pointerStartRef = useRef<{ x: number; y: number } | null>(null)
 	const didDragRef = useRef(false)
+	const claimedPointerIdRef = useRef<number | null>(null)
+	const scrollContainerRef = useRef<ScrollTrackpadContainer | null>(null)
 
 	const viewportLayout = {
 		...(width != null ? { width } : { width: '100%' }),
@@ -65,9 +75,14 @@ export const ScrollView: FC<ScrollViewProps> = ({
 			y: event.global.y,
 		}
 		didDragRef.current = false
+		claimedPointerIdRef.current = null
 	}
 
 	const handlePointerMove = (event: FederatedPointerEvent) => {
+		if (event.pointerId === claimedPointerIdRef.current) {
+			return
+		}
+
 		if (event.pointerId !== activePointerIdRef.current || didDragRef.current) {
 			return
 		}
@@ -91,19 +106,55 @@ export const ScrollView: FC<ScrollViewProps> = ({
 
 		activePointerIdRef.current = null
 		pointerStartRef.current = null
+		claimedPointerIdRef.current = null
 	}
+
+	const claimGesture = useCallback((pointerId: number) => {
+		if (pointerId !== activePointerIdRef.current) {
+			return
+		}
+
+		const trackpad = scrollContainerRef.current?._trackpad
+		if (trackpad) {
+			const currentX = trackpad.x
+			const currentY = trackpad.y
+			trackpad.pointerUp()
+			trackpad.x = currentX
+			trackpad.y = currentY
+		}
+
+		claimedPointerIdRef.current = pointerId
+		didDragRef.current = true
+	}, [])
+
+	const releaseGesture = useCallback((pointerId: number) => {
+		if (claimedPointerIdRef.current !== pointerId) {
+			return
+		}
+
+		claimedPointerIdRef.current = null
+	}, [])
+
+	const isGestureClaimed = useCallback(
+		(pointerId: number) => claimedPointerIdRef.current === pointerId,
+		[],
+	)
 
 	const gestureContextValue = useMemo(
 		() => ({
-			shouldCancelTap: () => didDragRef.current,
+			shouldCancelTap: () =>
+				didDragRef.current || claimedPointerIdRef.current != null,
+			claimGesture,
+			releaseGesture,
+			isGestureClaimed,
 		}),
-		[],
+		[claimGesture, isGestureClaimed, releaseGesture],
 	)
 
 	return (
 		<ScrollGestureContext.Provider value={gestureContextValue}>
 			<layoutContainer
-				key={JSON.stringify(trackpadOptions)}
+				ref={scrollContainerRef}
 				eventMode='static'
 				onPointerDown={handlePointerDown}
 				onGlobalPointerMove={handlePointerMove}

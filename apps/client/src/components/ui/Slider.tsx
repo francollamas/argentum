@@ -4,6 +4,7 @@ import type { Container, FederatedPointerEvent, PointData } from 'pixi.js'
 import type { FC } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
+import { useScrollGestureContext } from './ScrollGestureContext'
 
 type LayoutMeasuredContainer = Container & {
 	layout?: {
@@ -11,6 +12,12 @@ type LayoutMeasuredContainer = Container & {
 			width?: number
 		}
 	}
+}
+
+type SliderGesture = {
+	pointerId: number
+	start: PointData
+	mode: 'pending' | 'dragging'
 }
 
 type SliderProps = {
@@ -31,6 +38,7 @@ const DEFAULT_THUMB_WIDTH = 24
 const DEFAULT_THUMB_HEIGHT = 34
 const TRACK_SLICE_SIZE = 12
 const FILL_SLICE_SIZE = 10
+const DRAG_THRESHOLD = 8
 
 const clamp = (value: number, min: number, max: number) =>
 	Math.min(max, Math.max(min, value))
@@ -71,8 +79,11 @@ export const Slider: FC<SliderProps> = ({
 	layout,
 }) => {
 	const { app } = useApplication()
+	const { claimGesture, isGestureClaimed, releaseGesture } =
+		useScrollGestureContext()
 	const trackRef = useRef<Container | null>(null)
-	const [isDragging, setIsDragging] = useState(false)
+	const gestureRef = useRef<SliderGesture | null>(null)
+	const [isGestureActive, setIsGestureActive] = useState(false)
 	const [trackWidth, setTrackWidth] = useState(width ?? DEFAULT_WIDTH)
 
 	const trackTexture = useUITexture('slider-track')
@@ -167,20 +178,29 @@ export const Slider: FC<SliderProps> = ({
 		[onChange, range, resolvedValue, safeMax, safeMin, step, trackWidth],
 	)
 
-	const handlePointerDown = useCallback(
-		(event: FederatedPointerEvent) => {
-			setIsDragging(true)
-			setValueFromGlobal(event.global)
-		},
-		[setValueFromGlobal],
-	)
+	const handlePointerDown = useCallback((event: FederatedPointerEvent) => {
+		gestureRef.current = {
+			pointerId: event.pointerId,
+			start: {
+				x: event.global.x,
+				y: event.global.y,
+			},
+			mode: 'pending',
+		}
+		setIsGestureActive(true)
+	}, [])
 
 	useEffect(() => {
-		if (!isDragging) {
+		if (!isGestureActive) {
 			return
 		}
 
 		const handleWindowPointerMove = (event: PointerEvent) => {
+			const gesture = gestureRef.current
+			if (!gesture || event.pointerId !== gesture.pointerId) {
+				return
+			}
+
 			if (!app.canvas) {
 				return
 			}
@@ -191,23 +211,88 @@ export const Slider: FC<SliderProps> = ({
 				y: event.clientY - rect.top,
 			}
 
+			if (gesture.mode === 'pending') {
+				const deltaX = global.x - gesture.start.x
+				const deltaY = global.y - gesture.start.y
+				const distanceSquared = deltaX * deltaX + deltaY * deltaY
+
+				if (distanceSquared < DRAG_THRESHOLD * DRAG_THRESHOLD) {
+					return
+				}
+
+				if (Math.abs(deltaY) > Math.abs(deltaX)) {
+					gestureRef.current = null
+					setIsGestureActive(false)
+					return
+				}
+
+				gesture.mode = 'dragging'
+				claimGesture(gesture.pointerId)
+			}
+
 			setValueFromGlobal(global)
 		}
 
-		const stopDragging = () => {
-			setIsDragging(false)
+		const stopDragging = (event: PointerEvent) => {
+			const gesture = gestureRef.current
+			if (!gesture || event.pointerId !== gesture.pointerId) {
+				return
+			}
+
+			if (!app.canvas) {
+				gestureRef.current = null
+				setIsGestureActive(false)
+				return
+			}
+
+			const rect = app.canvas.getBoundingClientRect()
+			const global = {
+				x: event.clientX - rect.left,
+				y: event.clientY - rect.top,
+			}
+
+			if (gesture.mode === 'pending') {
+				setValueFromGlobal(global)
+			} else {
+				setValueFromGlobal(global)
+				releaseGesture(gesture.pointerId)
+			}
+
+			gestureRef.current = null
+			setIsGestureActive(false)
+		}
+
+		const cancelDragging = (event: PointerEvent) => {
+			const gesture = gestureRef.current
+			if (!gesture || event.pointerId !== gesture.pointerId) {
+				return
+			}
+
+			if (isGestureClaimed(gesture.pointerId)) {
+				releaseGesture(gesture.pointerId)
+			}
+
+			gestureRef.current = null
+			setIsGestureActive(false)
 		}
 
 		window.addEventListener('pointermove', handleWindowPointerMove)
 		window.addEventListener('pointerup', stopDragging)
-		window.addEventListener('pointercancel', stopDragging)
+		window.addEventListener('pointercancel', cancelDragging)
 
 		return () => {
 			window.removeEventListener('pointermove', handleWindowPointerMove)
 			window.removeEventListener('pointerup', stopDragging)
-			window.removeEventListener('pointercancel', stopDragging)
+			window.removeEventListener('pointercancel', cancelDragging)
 		}
-	}, [app.canvas, isDragging, setValueFromGlobal])
+	}, [
+		app.canvas,
+		claimGesture,
+		isGestureActive,
+		isGestureClaimed,
+		releaseGesture,
+		setValueFromGlobal,
+	])
 
 	useEffect(() => {
 		return () => {
