@@ -161,6 +161,7 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 			isDomOverlayOccluded ? null : (
 				<DomInputOverlay
 					style={domInputStyle}
+					interactive={active}
 					placeholder={placeholder}
 					value={value}
 					inputRef={domInputRef}
@@ -178,6 +179,7 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 			),
 		)
 	}, [
+		active,
 		disabled,
 		domInputStyle,
 		isDomOverlayOccluded,

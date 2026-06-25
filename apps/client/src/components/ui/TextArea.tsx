@@ -166,6 +166,7 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 				isDomOverlayOccluded ? null : (
 					<DomTextAreaOverlay
 						style={domTextAreaStyle}
+						interactive={active}
 						placeholder={placeholder}
 						value={value}
 						textareaRef={domTextAreaRef}
@@ -181,6 +182,7 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 				),
 			)
 		}, [
+			active,
 			disabled,
 			domTextAreaStyle,
 			isDomOverlayOccluded,

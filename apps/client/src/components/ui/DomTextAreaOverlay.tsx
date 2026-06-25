@@ -6,6 +6,7 @@ type DomTextAreaOverlayStyle = CSSProperties & {
 
 type DomTextAreaOverlayProps = {
 	style: DomTextAreaOverlayStyle | null
+	interactive?: boolean
 	placeholder: string
 	value: string
 	textareaRef?: RefObject<HTMLTextAreaElement | null>
@@ -18,6 +19,7 @@ type DomTextAreaOverlayProps = {
 
 export const DomTextAreaOverlay: FC<DomTextAreaOverlayProps> = ({
 	style,
+	interactive = false,
 	placeholder,
 	value,
 	textareaRef,
@@ -68,7 +70,7 @@ export const DomTextAreaOverlay: FC<DomTextAreaOverlayProps> = ({
 		lineHeight: style.lineHeight,
 		appearance: style.appearance,
 		outline: style.outline,
-		pointerEvents: 'auto',
+		pointerEvents: interactive && !disabled ? 'auto' : 'none',
 		resize: style.resize,
 		overflowX: style.overflowX,
 		overflowY: style.overflowY,
