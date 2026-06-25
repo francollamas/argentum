@@ -1,4 +1,5 @@
 import type { LayoutOptions } from '@pixi/layout'
+import type { LayoutContainer as PixiLayoutContainer } from '@pixi/layout/components'
 import { tw } from '@pixi/layout/tailwind'
 import type { Container, FederatedPointerEvent } from 'pixi.js'
 import type { FC, ReactNode } from 'react'
@@ -37,7 +38,7 @@ export const ScrollView: FC<ScrollViewProps> = ({
 	const pointerStartRef = useRef<{ x: number; y: number } | null>(null)
 	const didDragRef = useRef(false)
 	const claimedPointerIdRef = useRef<number | null>(null)
-	const scrollContainerRef = useRef<ScrollTrackpadContainer | null>(null)
+	const scrollContainerRef = useRef<PixiLayoutContainer | null>(null)
 
 	const viewportLayout = {
 		...(width != null ? { width } : { width: '100%' }),
@@ -114,7 +115,7 @@ export const ScrollView: FC<ScrollViewProps> = ({
 			return
 		}
 
-		const trackpad = scrollContainerRef.current?._trackpad
+		const trackpad = (scrollContainerRef.current as ScrollTrackpadContainer | null)?._trackpad
 		if (trackpad) {
 			const currentX = trackpad.x
 			const currentY = trackpad.y
