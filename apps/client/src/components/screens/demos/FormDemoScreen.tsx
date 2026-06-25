@@ -112,6 +112,7 @@ const DialogFormBody: FC<{
 }> = ({ onSubmit, onCancel }) => {
 	const [status, setStatus] = useState('Ready to validate the dialog form')
 	const [volumePreview, setVolumePreview] = useState(65)
+	const [previewActionCount, setPreviewActionCount] = useState(0)
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
@@ -133,6 +134,7 @@ const DialogFormBody: FC<{
 	const resetDialog = () => {
 		form.reset(defaultValues)
 		setVolumePreview(65)
+		setPreviewActionCount(0)
 		setStatus('Form reset to defaults')
 	}
 
@@ -155,6 +157,18 @@ const DialogFormBody: FC<{
 						/>
 						<Label
 							text={`Current value: ${volumePreview}`}
+							font='labelSm'
+							color={Colors.silver}
+						/>
+					</layoutContainer>
+					<layoutContainer layout={{ ...tw`w-full flex-col`, gap: 10 }}>
+						<Label text='Button preview' font='label' color={Colors.gold} />
+						<Button
+							text='Trigger preview action'
+							onPress={() => setPreviewActionCount((count) => count + 1)}
+						/>
+						<Label
+							text={`Pressed ${previewActionCount} times`}
 							font='labelSm'
 							color={Colors.silver}
 						/>
