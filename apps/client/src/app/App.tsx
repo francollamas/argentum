@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { ScreenRoot } from '../components/layout'
 import { DemoHubScreen } from '../components/screens/DemoHubScreen'
 import { TooltipLayerProvider } from '../components/ui/TooltipLayer'
+import { useGameSurfaceSelectionGuard } from '../hooks/useGameSurfaceSelectionGuard'
 import { usePixelDensitySync } from '../hooks/usePixelDensitySync'
 import { useResources } from '../hooks/useResources'
 import '@pixi/layout/devtools'
@@ -13,6 +14,7 @@ const App: FC = () => {
 	const { app } = useApplication()
 	const resourcesLoaded = useResources()
 	usePixelDensitySync()
+	useGameSurfaceSelectionGuard()
 
 	useEffect(() => {
 		if (!app) return

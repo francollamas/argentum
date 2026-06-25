@@ -26,6 +26,7 @@ export function useDomOverlayHost(
 		const shouldRestorePosition = parentStyle.position === 'static'
 		const hostElement = document.createElement('div')
 		const overlayRoot = createRoot(hostElement)
+		hostElement.className = 'game-surface-overlay-host'
 
 		if (shouldRestorePosition) {
 			canvasParent.style.position = 'relative'

@@ -129,6 +129,35 @@ body {
 	line-height: 1;
 }
 
+html,
+body,
+#root,
+.game-surface-overlay-host {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+
+html,
+body,
+#root {
+	overscroll-behavior: none;
+}
+
+#root canvas {
+	touch-action: none;
+}
+
+.input-overlay,
+.textarea-overlay {
+	-webkit-touch-callout: default;
+	-webkit-user-select: text;
+	user-select: text;
+	touch-action: manipulation;
+}
+
 ol,
 ul {
 	list-style: none;
