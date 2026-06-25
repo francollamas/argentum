@@ -45,7 +45,9 @@ export const usePressableState = ({
 		onPointerUp: () => {
 			setIsPressed(false)
 			onPressEnd?.()
-			if (isHovered && !shouldCancelTap()) {
+		},
+		onPointerTap: () => {
+			if (!shouldCancelTap()) {
 				onPress?.()
 			}
 		},
