@@ -3,6 +3,7 @@ import type { FC } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
 import { Label } from './Label'
+import { useScrollGestureContext } from './ScrollGestureContext'
 
 type CheckBoxVariant = 'normal' | 'radio'
 
@@ -29,13 +30,14 @@ export const CheckBox: FC<CheckBoxProps> = ({
 	invalid = false,
 	layout,
 }) => {
+	const { shouldCancelTap } = useScrollGestureContext()
 	const prefix = variant === 'radio' ? 'radio' : 'checkbox'
 	const uncheckedTexture = useUITexture(`${prefix}-unchecked`)
 	const checkedTexture = useUITexture(`${prefix}-checked`)
 	const texture = checked ? checkedTexture : uncheckedTexture
 
 	const handleToggle = () => {
-		if (!disabled) {
+		if (!disabled && !shouldCancelTap()) {
 			onChange?.(!checked)
 		}
 	}
@@ -50,7 +52,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
 		<layoutContainer
 			eventMode='static'
 			cursor={disabled ? 'default' : 'pointer'}
-			onPointerDown={handleToggle}
+			onPointerTap={handleToggle}
 			alpha={disabled ? 0.6 : 1}
 			layout={{
 				...tw`flex-row items-center`,

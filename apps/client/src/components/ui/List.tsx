@@ -3,6 +3,7 @@ import type { FC } from 'react'
 import { usePressableState } from '../../hooks/usePressableState'
 import { Colors } from './colors'
 import { Label } from './Label'
+import { useScrollGestureContext } from './ScrollGestureContext'
 
 type ListItem = {
 	text: string
@@ -37,9 +38,17 @@ const SelectableListItem: FC<SelectableListItemProps> = ({
 	disabled,
 	onPress,
 }) => {
+	const { shouldCancelTap } = useScrollGestureContext()
 	const { isHovered, ...pressableProps } = usePressableState({
 		disabled,
-		onPress: selected ? undefined : onPress,
+		onPress:
+			selected || !onPress
+				? undefined
+				: () => {
+						if (!shouldCancelTap()) {
+							onPress()
+						}
+					},
 	})
 
 	const backgroundColor = selected

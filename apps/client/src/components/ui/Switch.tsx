@@ -3,6 +3,7 @@ import type { FC } from 'react'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
 import { Label } from './Label'
+import { useScrollGestureContext } from './ScrollGestureContext'
 
 type SwitchProps = {
 	enabled?: boolean
@@ -25,6 +26,7 @@ export const Switch: FC<SwitchProps> = ({
 	invalid = false,
 	layout,
 }) => {
+	const { shouldCancelTap } = useScrollGestureContext()
 	const offTexture = useUITexture('switch-off')
 	const onTexture = useUITexture('switch-on')
 	const texture = enabled ? onTexture : offTexture
@@ -37,7 +39,7 @@ export const Switch: FC<SwitchProps> = ({
 	const switchWidth = Math.round(switchHeight * aspectRatio)
 
 	const handleToggle = () => {
-		if (!disabled) {
+		if (!disabled && !shouldCancelTap()) {
 			onChange?.(!enabled)
 		}
 	}
@@ -52,7 +54,7 @@ export const Switch: FC<SwitchProps> = ({
 		<layoutContainer
 			eventMode='static'
 			cursor={disabled ? 'default' : 'pointer'}
-			onPointerDown={handleToggle}
+			onPointerTap={handleToggle}
 			alpha={disabled ? 0.6 : 1}
 			layout={{
 				...tw`flex-row items-center`,

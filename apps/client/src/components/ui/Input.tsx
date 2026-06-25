@@ -18,6 +18,7 @@ import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
 import { DomInputOverlay } from './DomInputOverlay'
+import { useScrollGestureContext } from './ScrollGestureContext'
 
 export type InputHandle = {
 	focus: () => void
@@ -70,6 +71,7 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 	ref,
 ) {
 	const { app } = useApplication()
+	const { shouldCancelTap } = useScrollGestureContext()
 	const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 	const domInputRef = useRef<HTMLInputElement | null>(null)
 	const [active, setActive] = useState(false)
@@ -198,16 +200,18 @@ export const Input = forwardRef<InputHandle, InputProps>(function Input(
 		...layout,
 	} as unknown as Omit<LayoutOptions, 'target'>
 
+	const handleFocus = () => {
+		if (!disabled && !isDomOverlayOccluded && !shouldCancelTap()) {
+			domInputRef.current?.focus()
+		}
+	}
+
 	return (
 		<layoutContainer
 			ref={inputContainerRef}
 			eventMode='static'
 			cursor={disabled ? 'default' : 'text'}
-			onPointerDown={() => {
-				if (!disabled && !isDomOverlayOccluded) {
-					domInputRef.current?.focus()
-				}
-			}}
+			onPointerTap={handleFocus}
 			layout={rootLayout}
 			alpha={disabled ? 0.7 : 1}
 		>

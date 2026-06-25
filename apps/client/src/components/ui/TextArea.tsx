@@ -18,6 +18,7 @@ import { usePixiLayoutListener } from '../../hooks/usePixiLayoutListener'
 import { useUITexture } from '../../hooks/useUITexture'
 import { Colors } from './colors'
 import { DomTextAreaOverlay } from './DomTextAreaOverlay'
+import { useScrollGestureContext } from './ScrollGestureContext'
 
 export type TextAreaHandle = {
 	focus: () => void
@@ -67,6 +68,7 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 		ref,
 	) {
 		const { app } = useApplication()
+		const { shouldCancelTap } = useScrollGestureContext()
 		const backgroundSpriteRef = useRef<NineSliceSprite | null>(null)
 		const domTextAreaRef = useRef<HTMLTextAreaElement | null>(null)
 		const [active, setActive] = useState(false)
@@ -199,16 +201,18 @@ export const TextArea = forwardRef<TextAreaHandle, TextAreaProps>(
 			...layout,
 		} as unknown as Omit<LayoutOptions, 'target'>
 
+		const handleFocus = () => {
+			if (!disabled && !isDomOverlayOccluded && !shouldCancelTap()) {
+				domTextAreaRef.current?.focus()
+			}
+		}
+
 		return (
 			<layoutContainer
 				ref={textAreaContainerRef}
 				eventMode='static'
 				cursor={disabled ? 'default' : 'text'}
-				onPointerDown={() => {
-					if (!disabled && !isDomOverlayOccluded) {
-						domTextAreaRef.current?.focus()
-					}
-				}}
+				onPointerTap={handleFocus}
 				layout={rootLayout}
 				alpha={disabled ? 0.7 : 1}
 			>
