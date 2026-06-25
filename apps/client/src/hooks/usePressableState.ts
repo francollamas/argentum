@@ -1,5 +1,6 @@
 import type { EventMode } from 'pixi.js'
 import { useEffect, useState } from 'react'
+import { useScrollGestureContext } from '../components/ui/ScrollGestureContext'
 
 type UsePressableStateOptions = {
 	disabled?: boolean
@@ -14,6 +15,7 @@ export const usePressableState = ({
 	onPressStart,
 	onPressEnd,
 }: UsePressableStateOptions) => {
+	const { shouldCancelTap } = useScrollGestureContext()
 	const [isHovered, setIsHovered] = useState(false)
 	const [isPressed, setIsPressed] = useState(false)
 	const eventMode: EventMode = disabled ? 'none' : 'static'
@@ -43,7 +45,7 @@ export const usePressableState = ({
 		onPointerUp: () => {
 			setIsPressed(false)
 			onPressEnd?.()
-			if (isHovered) {
+			if (isHovered && !shouldCancelTap()) {
 				onPress?.()
 			}
 		},
