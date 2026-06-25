@@ -25,7 +25,7 @@ describe('getTooltipInnerLayout', () => {
 			paddingRight: 14,
 			paddingTop: 10,
 			paddingBottom: 10,
-			gap: 4,
+			gap: 0,
 		})
 	})
 })
