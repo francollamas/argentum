@@ -115,7 +115,9 @@ export const ScrollView: FC<ScrollViewProps> = ({
 			return
 		}
 
-		const trackpad = (scrollContainerRef.current as ScrollTrackpadContainer | null)?._trackpad
+		const trackpad = (
+			scrollContainerRef.current as ScrollTrackpadContainer | null
+		)?._trackpad
 		if (trackpad) {
 			const currentX = trackpad.x
 			const currentY = trackpad.y
