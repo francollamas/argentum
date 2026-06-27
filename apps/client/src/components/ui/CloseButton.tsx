@@ -1,4 +1,5 @@
 import { tw } from '@pixi/layout/tailwind'
+import { Circle } from 'pixi.js'
 import type { FC } from 'react'
 import { usePressableState } from '../../hooks/usePressableState'
 import { useUITexture } from '../../hooks/useUITexture'
@@ -46,17 +47,25 @@ export const CloseButton: FC<CloseButtonProps> = ({
 				...layout,
 			}}
 			alpha={disabled ? 0.5 : 1}
-			{...pressableProps}
 		>
 			<pixiSprite
 				texture={currentTexture}
 				width={size}
 				height={size}
+				hitArea={
+					new Circle(
+						currentTexture.width / 2,
+						currentTexture.height / 2,
+						Math.min(currentTexture.width, currentTexture.height) / 2,
+					)
+				}
 				layout={{
+					position: 'absolute',
 					width: size,
 					height: size,
 					flexShrink: 0,
 				}}
+				{...pressableProps}
 			/>
 		</layoutContainer>
 	)
