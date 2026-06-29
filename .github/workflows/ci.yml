@@ -7,10 +7,10 @@ on:
 
 defaults:
   run:
-    working-directory: apps/client
+    working-directory: apps/client-pixi
 
 env:
-  CLIENT_DIR: apps/client
+  CLIENT_DIR: apps/client-pixi
 
 jobs:
   continuous-integration:

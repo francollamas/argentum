@@ -8,10 +8,10 @@ on:
 
 defaults:
   run:
-    working-directory: apps/client
+    working-directory: apps/client-pixi
 
 env:
-  CLIENT_DIR: apps/client
+  CLIENT_DIR: apps/client-pixi
   ANDROID_NDK_VERSION: 27.0.11902837
   ANDROID_BUILD_TOOLS_VERSION: 34.0.0
 
@@ -68,8 +68,8 @@ jobs:
         with:
           name: client-generated-assets
           path: |
-            apps/client/src/assets
-            apps/client/public/fonts
+            apps/client-pixi/src/assets
+            apps/client-pixi/public/fonts
 
   publish-desktop:
     name: Publish desktop bundles
@@ -124,13 +124,13 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: client-generated-assets
-          path: apps/client
+          path: apps/client-pixi
 
       - uses: tauri-apps/tauri-action@v0.6.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: apps/client
+          projectPath: apps/client-pixi
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'App v__VERSION__'
           releaseDraft: true
@@ -174,7 +174,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: client-generated-assets
-          path: apps/client
+          path: apps/client-pixi
 
       - name: Build app bundle
         run: pnpm tauri android build -v
@@ -207,4 +207,4 @@ jobs:
           tag_name: ${{ needs.prepare.outputs.release_tag }}
           generate_release_notes: true
           files: |
-            apps/client/src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ needs.prepare.outputs.version }}.apk
+            apps/client-pixi/src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ needs.prepare.outputs.version }}.apk

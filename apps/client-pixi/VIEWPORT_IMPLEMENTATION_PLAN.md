@@ -5,7 +5,7 @@
 - Plan version: `v2`
 - Overall status: `done`
 - Last updated: `2026-04-14`
-- Owner: `apps/client`
+- Owner: `apps/client-pixi`
 
 ## Objective
 

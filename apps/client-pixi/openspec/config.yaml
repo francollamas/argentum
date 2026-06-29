@@ -6,7 +6,7 @@ context: |
   Architecture: Multiplatform MMORPG client. React-PixiJS game view hierarchy (App → GameView → map/player). Zustand stores for client state. Texture atlases via atlasify. Binary loaders as PixiJS extensions. Map rendering with 4-layer viewport culling, single-map cache.
   Testing: Vitest with @vitest/coverage-v8. Colocated *.test.ts(x) files. CI runs pnpm test and pnpm linter-check on ubuntu-latest.
   Style: Biome formatting (tabs, single quotes, as-needed semicolons). No code comments. PascalCase components, camelCase utilities. All code in English.
-  Monorepo: Project root /Users/franco/Documents/AO/argentum. Client in apps/client. Server (TBD) expected in apps/server.
+  Monorepo: Project root /Users/franco/Documents/AO/argentum. Client in apps/client-pixi. Server (TBD) expected in apps/server.
 
 strict_tdd: true
 

@@ -77,6 +77,6 @@ Las decisiones y consideraciones estan documentadas en `context/reimplementacion
 
 ## Stack del cliente nuevo
 
-El cliente nuevo (`apps/client/`) ya tiene stack definido: TypeScript, React 19, PixiJS 8, Redux Toolkit, Vite, Biome, Tauri v2. Ver `apps/client/AGENTS.md` para detalles de build, test y convenciones del cliente.
+El cliente nuevo (`apps/client-pixi/`) ya tiene stack definido: TypeScript, React 19, PixiJS 8, Redux Toolkit, Vite, Biome, Tauri v2. Ver `apps/client-pixi/AGENTS.md` para detalles de build, test y convenciones del cliente.
 
 El servidor (`apps/server/`) esta pendiente de definir stack.

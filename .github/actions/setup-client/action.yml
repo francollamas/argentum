@@ -5,7 +5,7 @@ inputs:
   working-directory:
     description: Client working directory
     required: false
-    default: apps/client
+    default: apps/client-pixi
   node-version:
     description: Node.js version
     required: false
@@ -17,7 +17,7 @@ inputs:
   cache-dependency-path:
     description: Lockfile path used for pnpm cache
     required: false
-    default: apps/client/pnpm-lock.yaml
+    default: apps/client-pixi/pnpm-lock.yaml
 
 runs:
   using: composite

@@ -13,13 +13,13 @@ on:
         type: boolean
 
 env:
-  CLIENT_DIR: apps/client
+  CLIENT_DIR: apps/client-pixi
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 defaults:
   run:
-    working-directory: apps/client
+    working-directory: apps/client-pixi
 
 jobs:
   deploy:
