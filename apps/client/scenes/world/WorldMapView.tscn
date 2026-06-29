@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://kfj5w4itj5wgm"]
+
+[ext_resource type="Script" path="res://scripts/world/world_map_view.gd" id="1_2v0k4"]
+
+[node name="WorldMapView" type="Node2D"]
+script = ExtResource("1_2v0k4")
+map_number = 1
+player_tile_x = 50
+player_tile_y = 50
+show_debug_overlay = true
+show_grid = true
+show_blocked_tiles = true
+show_trigger_tiles = true
+show_trigger_numbers = true

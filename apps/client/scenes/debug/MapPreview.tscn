@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://du4r4n6s1b58g"]
+
+[ext_resource type="Script" path="res://scripts/debug/map_preview.gd" id="1_nh2dc"]
+[ext_resource type="PackedScene" path="res://scenes/world/WorldMapView.tscn" id="2_hkjqs"]
+
+[node name="MapPreview" type="Node2D"]
+script = ExtResource("1_nh2dc")
+
+[node name="WorldMapView" parent="." instance=ExtResource("2_hkjqs")]
