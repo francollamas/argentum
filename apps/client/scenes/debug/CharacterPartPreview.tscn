@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://mixgk0cdylex"]
+
+[ext_resource type="Script" uid="uid://b613bat316gs3" path="res://scripts/debug/character_part_preview.gd" id="1_gxhdv"]
+
+[node name="CharacterPartPreview" type="Node2D" unique_id=1579520018]
+script = ExtResource("1_gxhdv")
+resource_type = "bodies"
+part_id = 14
+direction = "down"

@@ -24,6 +24,14 @@ func create_graphic_node(definition: SpriteDefinition) -> Node2D:
 	return _create_animated_sprite(definition)
 
 
+func create_graphic_node_by_id(graphic_id: int) -> Node2D:
+	if not _catalog.has_graphic(graphic_id):
+		push_error('Graphic %d was not found in sprites.bin' % graphic_id)
+		return null
+
+	return create_graphic_node(_catalog.get_graphic(graphic_id))
+
+
 
 func _create_static_sprite(definition: SpriteDefinition) -> Sprite2D:
 	var texture := _build_frame_texture(definition)
