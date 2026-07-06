@@ -21,7 +21,7 @@ var _direction := CharacterPartDefinition.DOWN
 		_part_id = value
 		_refresh_preview()
 
-@export_enum('up', 'left', 'down', 'right') var direction: String:
+@export_enum('up', 'right', 'down', 'left') var direction: String:
 	get:
 		return String(_direction)
 	set(value):

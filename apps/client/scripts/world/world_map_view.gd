@@ -102,18 +102,19 @@ var _layer_2_renderer: Node2D
 var _layer_3_renderer: Node2D
 var _layer_4_renderer: Node2D
 var _debug_overlay: Node2D
+var _is_initialized := false
 
 
 func _ready() -> void:
+	if _is_initialized:
+		_refresh_view()
+		return
+
+	_is_initialized = true
 	_ensure_nodes()
 	var viewport := get_viewport()
 	if viewport != null and not viewport.size_changed.is_connected(_refresh_view):
 		viewport.size_changed.connect(_refresh_view)
-	_reload_map()
-
-
-func _enter_tree() -> void:
-	_ensure_nodes()
 	_reload_map()
 
 
@@ -134,6 +135,7 @@ func _reload_map() -> void:
 	if not is_inside_tree():
 		return
 
+	_ensure_nodes()
 	_map_data = _parser.parse_map(_map_number)
 	_refresh_view()
 
@@ -145,6 +147,8 @@ func _refresh_view() -> void:
 	_ensure_nodes()
 
 	if _map_data == null:
+		_clear_rendered_layers()
+		_debug_overlay.visible = false
 		return
 
 	var player_tile_position: Vector2 = _map_data.tile_to_pixel(_player_tile_x, _player_tile_y)
@@ -282,3 +286,14 @@ func _ensure_nodes() -> void:
 	_debug_overlay = MAP_DEBUG_OVERLAY_SCRIPT.new()
 	_debug_overlay.name = 'DebugOverlay'
 	_map_container.add_child(_debug_overlay)
+
+
+func _clear_rendered_layers() -> void:
+	if is_instance_valid(_layer_1_renderer):
+		_layer_1_renderer.clear_layer()
+	if is_instance_valid(_layer_2_renderer):
+		_layer_2_renderer.clear_layer()
+	if is_instance_valid(_layer_3_renderer):
+		_layer_3_renderer.clear_layer()
+	if is_instance_valid(_layer_4_renderer):
+		_layer_4_renderer.clear_layer()

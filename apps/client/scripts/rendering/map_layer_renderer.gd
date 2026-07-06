@@ -4,6 +4,8 @@ extends Node2D
 const TILE_SIZE := 32.0
 
 var _factory := GraphicNodeFactory.new()
+var _tile_nodes: Dictionary = {}
+var _tile_graphics: Dictionary = {}
 
 
 func render_layer(
@@ -15,7 +17,7 @@ func render_layer(
 	end_tile_y: int,
 	center_graphics: bool,
 ) -> void:
-	_clear_layer()
+	var visible_keys := {}
 
 	for tile_y in range(start_tile_y, end_tile_y + 1):
 		for tile_x in range(start_tile_x, end_tile_x + 1):
@@ -27,7 +29,10 @@ func render_layer(
 			if graphic_id <= 0:
 				continue
 
-			var graphic_node := _factory.create_graphic_node_by_id(graphic_id)
+			var tile_key := Vector2i(tile_x, tile_y)
+			visible_keys[tile_key] = true
+
+			var graphic_node := _get_or_create_tile_node(tile_key, graphic_id)
 			if graphic_node == null:
 				continue
 
@@ -36,7 +41,51 @@ func render_layer(
 				map_data.tile_to_pixel(tile_x, tile_y),
 				center_graphics,
 			)
-			add_child(graphic_node)
+
+	_clear_missing_tiles(visible_keys)
+
+
+func clear_layer() -> void:
+	for tile_key in _tile_nodes.keys():
+		_remove_tile_node(tile_key)
+
+
+func _get_or_create_tile_node(tile_key: Vector2i, graphic_id: int) -> Node2D:
+	if _tile_nodes.has(tile_key):
+		if _tile_graphics.get(tile_key) == graphic_id:
+			return _tile_nodes[tile_key]
+
+		_remove_tile_node(tile_key)
+
+	var graphic_node := _factory.create_graphic_node_by_id(graphic_id)
+	if graphic_node == null:
+		return null
+
+	_tile_nodes[tile_key] = graphic_node
+	_tile_graphics[tile_key] = graphic_id
+	add_child(graphic_node)
+	return graphic_node
+
+
+func _clear_missing_tiles(visible_keys: Dictionary) -> void:
+	for tile_key in _tile_nodes.keys():
+		if visible_keys.has(tile_key):
+			continue
+
+		_remove_tile_node(tile_key)
+
+
+func _remove_tile_node(tile_key: Vector2i) -> void:
+	if not _tile_nodes.has(tile_key):
+		return
+
+	var graphic_node: Node = _tile_nodes[tile_key]
+	_tile_nodes.erase(tile_key)
+	_tile_graphics.erase(tile_key)
+
+	if is_instance_valid(graphic_node):
+		remove_child(graphic_node)
+		graphic_node.queue_free()
 
 
 func _position_graphic_node(graphic_node: Node2D, tile_position: Vector2, center_graphics: bool) -> void:
@@ -68,9 +117,3 @@ func _get_graphic_size(graphic_node: Node2D) -> Vector2:
 			return texture.get_size()
 
 	return Vector2(TILE_SIZE, TILE_SIZE)
-
-
-func _clear_layer() -> void:
-	for child in get_children():
-		remove_child(child)
-		child.queue_free()

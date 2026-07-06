@@ -6,6 +6,9 @@ const DEFAULT_ANIMATION_NAME := &'default'
 const DEFAULT_ANIMATION_FPS := 1.0
 const PIXI_TICK_RATE := 60.0
 
+static var _static_texture_cache: Dictionary = {}
+static var _animated_frames_cache: Dictionary = {}
+
 var _catalog := GraphicsCatalog.new()
 
 
@@ -34,7 +37,7 @@ func create_graphic_node_by_id(graphic_id: int) -> Node2D:
 
 
 func _create_static_sprite(definition: SpriteDefinition) -> Sprite2D:
-	var texture := _build_frame_texture(definition)
+	var texture := _get_static_texture(definition)
 	if texture == null:
 		return null
 
@@ -45,6 +48,34 @@ func _create_static_sprite(definition: SpriteDefinition) -> Sprite2D:
 
 
 func _create_animated_sprite(definition: SpriteDefinition) -> AnimatedSprite2D:
+	var sprite_frames := _get_animated_frames(definition)
+	if sprite_frames == null:
+		return null
+
+	var sprite := AnimatedSprite2D.new()
+	sprite.centered = true
+	sprite.sprite_frames = sprite_frames
+	sprite.animation = DEFAULT_ANIMATION_NAME
+	sprite.play(DEFAULT_ANIMATION_NAME)
+	return sprite
+
+
+func _get_static_texture(definition: SpriteDefinition) -> AtlasTexture:
+	if _static_texture_cache.has(definition.id):
+		return _static_texture_cache[definition.id]
+
+	var texture := _build_frame_texture(definition)
+	if texture == null:
+		return null
+
+	_static_texture_cache[definition.id] = texture
+	return texture
+
+
+func _get_animated_frames(definition: SpriteDefinition) -> SpriteFrames:
+	if _animated_frames_cache.has(definition.id):
+		return _animated_frames_cache[definition.id]
+
 	var sprite_frames := SpriteFrames.new()
 	sprite_frames.set_animation_loop_mode(DEFAULT_ANIMATION_NAME, SpriteFrames.LOOP_LINEAR)
 
@@ -55,7 +86,7 @@ func _create_animated_sprite(definition: SpriteDefinition) -> AnimatedSprite2D:
 			push_error('Animated graphic %d references unknown frame %d' % [definition.id, frame_id])
 			continue
 
-		var texture := _build_frame_texture(frame_definition)
+		var texture := _get_static_texture(frame_definition)
 		if texture == null:
 			continue
 
@@ -71,13 +102,8 @@ func _create_animated_sprite(definition: SpriteDefinition) -> AnimatedSprite2D:
 		DEFAULT_ANIMATION_FPS,
 	)
 	sprite_frames.set_animation_speed(DEFAULT_ANIMATION_NAME, animation_fps)
-
-	var sprite := AnimatedSprite2D.new()
-	sprite.centered = true
-	sprite.sprite_frames = sprite_frames
-	sprite.animation = DEFAULT_ANIMATION_NAME
-	sprite.play(DEFAULT_ANIMATION_NAME)
-	return sprite
+	_animated_frames_cache[definition.id] = sprite_frames
+	return sprite_frames
 
 
 
