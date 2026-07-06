@@ -127,8 +127,9 @@ func _build_frame_texture(definition: SpriteDefinition) -> AtlasTexture:
 
 func _load_source_texture(texture_id: int) -> Texture2D:
 	var texture_path := '%s/%d.png' % [GRAPHICS_BASE_PATH, texture_id]
-	if not FileAccess.file_exists(texture_path):
+	var texture := load(texture_path) as Texture2D
+	if texture == null:
 		push_error('Missing source texture %d at %s' % [texture_id, texture_path])
 		return null
 
-	return load(texture_path) as Texture2D
+	return texture
