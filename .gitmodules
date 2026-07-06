@@ -1,0 +1,3 @@
+[submodule "apps/client/.deps/godot-ai"]
+	path = apps/client/.deps/godot-ai
+	url = https://github.com/hi-godot/godot-ai.git

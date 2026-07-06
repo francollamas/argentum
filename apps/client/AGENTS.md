@@ -78,6 +78,21 @@ When implementing in this project:
 - avoid editor-only hacks becoming serialized scene data accidentally
 - preserve pixel-art fidelity through project-level defaults and correct texture handling
 
+## Godot tooling rule
+
+For any operation that depends on the live Godot editor or the running game, use the `godot-ai` MCP tools by default.
+
+This includes:
+- opening or inspecting scenes in the editor
+- reading or modifying nodes and properties through the editor
+- running the project or current scene
+- checking editor or game logs
+- taking screenshots
+- runtime inspection and input simulation
+- running Godot-side tests
+
+Use normal repository file editing tools for plain source or documentation changes when live editor state is not required.
+
 ## Current milestone
 
 The first milestone is:
@@ -105,3 +120,37 @@ Before implementing a new piece:
 3. Evaluate whether Godot already has a native solution.
 4. Implement the smallest correct slice in Godot.
 5. Validate visually in-engine before expanding scope.
+
+## Godot AI plugin dependency
+
+This project uses `godot_ai` as an external dependency via **git submodule**, not as vendored source code.
+
+- Submodule path: `apps/client/.deps/godot-ai`
+- Godot plugin path: `apps/client/addons/godot_ai` (symlink to `../.deps/godot-ai/plugin/addons/godot_ai`)
+- Upstream: `https://github.com/hi-godot/godot-ai.git`
+- Versioning rule: keep it pinned to an explicit tag or commit
+
+Why this rule exists:
+- do not mix third-party plugin source changes into normal client commits
+- keep the plugin version reproducible across machines
+- update the plugin only when intentionally changing the dependency version
+
+Common commands:
+
+```bash
+git submodule update --init --recursive
+git submodule status
+test -f apps/client/addons/godot_ai/plugin.cfg
+```
+
+To update the plugin intentionally:
+
+```bash
+git -C apps/client/.deps/godot-ai fetch --tags
+git -C apps/client/.deps/godot-ai checkout vX.Y.Z
+git add apps/client/.deps/godot-ai
+```
+
+Important note:
+- enabling or reconfiguring the plugin from the Godot editor may modify `apps/client/project.godot`
+- treat those changes as explicit project-configuration changes, not as part of unrelated gameplay or rendering work
