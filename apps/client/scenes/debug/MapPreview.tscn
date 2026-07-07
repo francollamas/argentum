@@ -7,4 +7,29 @@
 script = ExtResource("1_nh2dc")
 
 [node name="WorldMapView" parent="." unique_id=1509070317 instance=ExtResource("2_hkjqs")]
-player_tile_y = 67
+
+[node name="HudLayer" type="CanvasLayer" parent="." unique_id=2086750094]
+
+[node name="HudRoot" type="Control" parent="HudLayer" unique_id=1104524572]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="MapSwitchBar" type="HBoxContainer" parent="HudLayer/HudRoot" unique_id=338447188]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 56.0
+
+[node name="PreviousButton" type="Button" parent="HudLayer/HudRoot/MapSwitchBar" unique_id=1038639964]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Anterior"
+
+[node name="NextButton" type="Button" parent="HudLayer/HudRoot/MapSwitchBar" unique_id=200196410]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Siguiente"
