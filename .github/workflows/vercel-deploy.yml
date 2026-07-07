@@ -54,4 +54,4 @@ jobs:
 
       - name: Deploy project artifacts to Vercel
         working-directory: ${{ env.CLIENT_DIR }}
-        run: vercel deploy --yes ${{ inputs.production && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --yes --archive=tgz ${{ inputs.production && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
