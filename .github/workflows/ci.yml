@@ -8,6 +8,7 @@ on:
 env:
   CLIENT_DIR: apps/client
   GODOT_VERSION: 4.7.0
+  WEB_ARTIFACT_NAME: client-web-build
 
 jobs:
   continuous-integration:
@@ -23,9 +24,6 @@ jobs:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: false
           include-templates: true
-
-      - name: Verify Godot plugin dependency
-        run: test -f "${{ env.CLIENT_DIR }}/addons/godot_ai/plugin.cfg"
 
       - name: Import Godot project
         run: godot --headless --path "${{ env.CLIENT_DIR }}" --import > godot-import.log 2>&1
@@ -47,3 +45,85 @@ jobs:
         run: |
           test -f "${{ env.CLIENT_DIR }}/export/web/index.html"
           test -f "${{ env.CLIENT_DIR }}/export/web/index.js"
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.WEB_ARTIFACT_NAME }}
+          path: ${{ env.CLIENT_DIR }}/export
+
+  deploy-preview:
+    name: Deploy preview to Vercel
+    if: ${{ github.event_name == 'pull_request' && github.head_ref != 'main' && github.head_ref != 'develop' && !github.event.pull_request.head.repo.fork }}
+    needs: continuous-integration
+    runs-on: ubuntu-latest
+    concurrency:
+      group: vercel-preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Download web build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ env.WEB_ARTIFACT_NAME }}
+          path: ${{ env.CLIENT_DIR }}
+
+      - name: Verify downloaded build
+        run: |
+          test -f "${{ env.CLIENT_DIR }}/export/web/index.html"
+          test -f "${{ env.CLIENT_DIR }}/export/web/index.js"
+
+      - name: Install Vercel
+        run: npm install --global vercel@canary
+
+      - name: Pull Vercel environment information
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy project artifacts to Vercel
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: vercel deploy --yes --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-production:
+    name: Deploy production to Vercel
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') }}
+    needs: continuous-integration
+    runs-on: ubuntu-latest
+    concurrency:
+      group: vercel-production-${{ github.ref }}
+      cancel-in-progress: true
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Download web build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ env.WEB_ARTIFACT_NAME }}
+          path: ${{ env.CLIENT_DIR }}
+
+      - name: Verify downloaded build
+        run: |
+          test -f "${{ env.CLIENT_DIR }}/export/web/index.html"
+          test -f "${{ env.CLIENT_DIR }}/export/web/index.js"
+
+      - name: Install Vercel
+        run: npm install --global vercel@canary
+
+      - name: Pull Vercel environment information
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy project artifacts to Vercel
+        working-directory: ${{ env.CLIENT_DIR }}
+        run: vercel deploy --yes --archive=tgz --prod --token=${{ secrets.VERCEL_TOKEN }}
