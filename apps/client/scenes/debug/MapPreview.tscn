@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://du4r4n6s1b58g"]
 
-[ext_resource type="Script" path="res://scripts/debug/map_preview.gd" id="1_nh2dc"]
-[ext_resource type="PackedScene" path="res://scenes/world/WorldMapView.tscn" id="2_hkjqs"]
+[ext_resource type="Script" uid="uid://dhfa37wqk7dpy" path="res://scripts/debug/map_preview.gd" id="1_nh2dc"]
+[ext_resource type="PackedScene" uid="uid://coqfq0ocfq5w3" path="res://scenes/world/WorldMapView.tscn" id="2_hkjqs"]
 
-[node name="MapPreview" type="Node2D"]
+[node name="MapPreview" type="Node2D" unique_id=1866491267]
 script = ExtResource("1_nh2dc")
 
-[node name="WorldMapView" parent="." instance=ExtResource("2_hkjqs")]
+[node name="WorldMapView" parent="." unique_id=1509070317 instance=ExtResource("2_hkjqs")]

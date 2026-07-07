@@ -5,5 +5,5 @@
 [node name="CharacterPartPreview" type="Node2D" unique_id=1579520018]
 script = ExtResource("1_gxhdv")
 resource_type = "bodies"
-part_id = 14
+part_id = 9
 direction = "down"
