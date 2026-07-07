@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://coqfq0ocfq5w3"]
+
+[ext_resource type="Script" uid="uid://ctbh5ixawu4mc" path="res://scripts/world/world_map_view.gd" id="1_2v0k4"]
+[ext_resource type="PackedScene" uid="uid://bypov8uj2au7s" path="res://scenes/world/PlayerCharacter.tscn" id="3_yfr7d"]
+
+[node name="WorldMapView" type="Node2D" unique_id=1778436392]
+script = ExtResource("1_2v0k4")
+show_debug_overlay = false
+
+[node name="PlayerCharacter" parent="." unique_id=1499846248 instance=ExtResource("3_yfr7d")]

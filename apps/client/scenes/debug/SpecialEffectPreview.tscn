@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cbcdw3lgv7ue0"]
+
+[ext_resource type="Script" uid="uid://ycwmmcawdbsa" path="res://scripts/debug/special_effect_preview.gd" id="1_k3h8e"]
+
+[node name="SpecialEffectPreview" type="Node2D" unique_id=1133356098]
+script = ExtResource("1_k3h8e")

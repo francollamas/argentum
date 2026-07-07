@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bcayed0ijjt84"]
+
+[ext_resource type="Script" uid="uid://cpu0j7btsb0g8" path="res://scripts/debug/graphic_preview.gd" id="1_5xi0b"]
+
+[node name="GraphicPreview" type="Node2D" unique_id=1565707257]
+script = ExtResource("1_5xi0b")
+graphic_id = 25
