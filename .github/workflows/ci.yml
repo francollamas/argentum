@@ -9,6 +9,7 @@ env:
   CLIENT_DIR: apps/client
   GODOT_VERSION: 4.7.0
   WEB_ARTIFACT_NAME: client-web-build
+  VERCEL_DEPLOY_DIR: ${{ runner.temp }}/vercel-deploy
 
 jobs:
   continuous-integration:
@@ -87,8 +88,16 @@ jobs:
         working-directory: ${{ env.CLIENT_DIR }}
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Prepare Vercel deploy directory
+        run: |
+          rm -rf "${{ env.VERCEL_DEPLOY_DIR }}"
+          mkdir -p "${{ env.VERCEL_DEPLOY_DIR }}/.vercel"
+          cp "${{ env.CLIENT_DIR }}/vercel.json" "${{ env.VERCEL_DEPLOY_DIR }}/vercel.json"
+          cp "${{ env.CLIENT_DIR }}/.vercel/project.json" "${{ env.VERCEL_DEPLOY_DIR }}/.vercel/project.json"
+          cp -R "${{ env.CLIENT_DIR }}/export" "${{ env.VERCEL_DEPLOY_DIR }}/export"
+
       - name: Deploy project artifacts to Vercel
-        working-directory: ${{ env.CLIENT_DIR }}
+        working-directory: ${{ env.VERCEL_DEPLOY_DIR }}
         run: vercel deploy --yes --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
 
   deploy-production:
@@ -125,6 +134,14 @@ jobs:
         working-directory: ${{ env.CLIENT_DIR }}
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Prepare Vercel deploy directory
+        run: |
+          rm -rf "${{ env.VERCEL_DEPLOY_DIR }}"
+          mkdir -p "${{ env.VERCEL_DEPLOY_DIR }}/.vercel"
+          cp "${{ env.CLIENT_DIR }}/vercel.json" "${{ env.VERCEL_DEPLOY_DIR }}/vercel.json"
+          cp "${{ env.CLIENT_DIR }}/.vercel/project.json" "${{ env.VERCEL_DEPLOY_DIR }}/.vercel/project.json"
+          cp -R "${{ env.CLIENT_DIR }}/export" "${{ env.VERCEL_DEPLOY_DIR }}/export"
+
       - name: Deploy project artifacts to Vercel
-        working-directory: ${{ env.CLIENT_DIR }}
+        working-directory: ${{ env.VERCEL_DEPLOY_DIR }}
         run: vercel deploy --yes --archive=tgz --prod --token=${{ secrets.VERCEL_TOKEN }}
