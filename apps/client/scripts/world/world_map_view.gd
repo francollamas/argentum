@@ -10,6 +10,10 @@ const MOVEMENT_CONTROLLER_SCRIPT := preload('res://scripts/world/movement_contro
 const PLAYER_CHARACTER_SCENE := preload('res://scenes/world/PlayerCharacter.tscn')
 
 const TILE_SIZE := 32.0
+const MOVE_LEFT_ACTION := &'move_left'
+const MOVE_RIGHT_ACTION := &'move_right'
+const MOVE_UP_ACTION := &'move_up'
+const MOVE_DOWN_ACTION := &'move_down'
 const MIN_TILE_X := 1
 const MIN_TILE_Y := 1
 const MAX_TILE_X := 100
@@ -154,6 +158,22 @@ func move_player_by(delta_x: int, delta_y: int) -> void:
 
 	set_held_direction(direction)
 	clear_held_direction(direction)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if Engine.is_editor_hint() or _movement_controller == null:
+		return
+
+	var direction := _direction_from_input(event)
+	if direction == MovementController.NO_DIRECTION:
+		return
+
+	if event.is_pressed():
+		set_held_direction(direction)
+		get_viewport().set_input_as_handled()
+	elif event.is_released():
+		clear_held_direction(direction)
+		get_viewport().set_input_as_handled()
 
 
 func set_held_direction(direction: StringName) -> void:
@@ -482,3 +502,16 @@ func _delta_to_direction(delta_x: int, delta_y: int) -> StringName:
 	if delta_y > 0:
 		return &'down'
 	return &''
+
+
+func _direction_from_input(event: InputEvent) -> StringName:
+	if event.is_action_pressed(MOVE_LEFT_ACTION) or event.is_action_released(MOVE_LEFT_ACTION):
+		return MovementController.LEFT
+	if event.is_action_pressed(MOVE_RIGHT_ACTION) or event.is_action_released(MOVE_RIGHT_ACTION):
+		return MovementController.RIGHT
+	if event.is_action_pressed(MOVE_UP_ACTION) or event.is_action_released(MOVE_UP_ACTION):
+		return MovementController.UP
+	if event.is_action_pressed(MOVE_DOWN_ACTION) or event.is_action_released(MOVE_DOWN_ACTION):
+		return MovementController.DOWN
+
+	return MovementController.NO_DIRECTION
