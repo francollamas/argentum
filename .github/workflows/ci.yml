@@ -72,7 +72,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: ${{ env.WEB_ARTIFACT_NAME }}
-          path: ${{ env.CLIENT_DIR }}
+          path: ${{ env.CLIENT_DIR }}/export
 
       - name: Verify downloaded build
         run: |
@@ -110,7 +110,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: ${{ env.WEB_ARTIFACT_NAME }}
-          path: ${{ env.CLIENT_DIR }}
+          path: ${{ env.CLIENT_DIR }}/export
 
       - name: Verify downloaded build
         run: |
