@@ -8,5 +8,3 @@ script = ExtResource("1_2v0k4")
 show_debug_overlay = false
 
 [node name="PlayerCharacter" parent="." unique_id=1499846248 instance=ExtResource("3_yfr7d")]
-position = Vector2(-887, -887)
-scale = Vector2(1.56, 1.56)

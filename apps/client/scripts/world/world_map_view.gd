@@ -4,6 +4,7 @@ extends Node2D
 
 const MAP_PARSER_SCRIPT := preload('res://scripts/data/map_parser.gd')
 const MAP_LAYER_RENDERER_SCRIPT := preload('res://scripts/rendering/map_layer_renderer.gd')
+const WORLD_MID_LAYER_RENDERER_SCRIPT := preload('res://scripts/rendering/world_mid_layer_renderer.gd')
 const MAP_DEBUG_OVERLAY_SCRIPT := preload('res://scripts/debug/map_debug_overlay.gd')
 const MOVEMENT_CONTROLLER_SCRIPT := preload('res://scripts/world/movement_controller.gd')
 const PLAYER_CHARACTER_SCENE := preload('res://scenes/world/PlayerCharacter.tscn')
@@ -124,7 +125,7 @@ var _map_data
 var _map_container: Node2D
 var _layer_1_renderer: Node2D
 var _layer_2_renderer: Node2D
-var _layer_3_renderer: Node2D
+var _mid_layer_renderer: WorldMidLayerRenderer
 var _layer_4_renderer: Node2D
 var _debug_overlay: Node2D
 var _movement_controller: MovementController
@@ -241,14 +242,13 @@ func _refresh_view() -> void:
 		ground_bounds['end_y'],
 		false,
 	)
-	_layer_3_renderer.render_layer(
+	_mid_layer_renderer.render_mid_layer(
 		_map_data,
-		2,
 		upper_bounds['start_x'],
 		upper_bounds['end_x'],
 		upper_bounds['start_y'],
 		upper_bounds['end_y'],
-		true,
+		_build_visible_actors(),
 	)
 	_layer_4_renderer.render_layer(
 		_map_data,
@@ -340,11 +340,8 @@ func _ensure_nodes() -> void:
 			_player_character = PLAYER_CHARACTER_SCENE.instantiate() as PlayerCharacter
 			_player_character.name = 'PlayerCharacter'
 			add_child(_player_character)
-	move_child(_player_character, get_child_count() - 1)
 
 	if is_instance_valid(_map_container):
-		move_child(_player_character, get_child_count() - 1)
-		_update_player_screen_position()
 		return
 
 	_map_container = Node2D.new()
@@ -359,9 +356,11 @@ func _ensure_nodes() -> void:
 	_layer_2_renderer.name = 'Layer2'
 	_map_container.add_child(_layer_2_renderer)
 
-	_layer_3_renderer = MAP_LAYER_RENDERER_SCRIPT.new()
-	_layer_3_renderer.name = 'Layer3'
-	_map_container.add_child(_layer_3_renderer)
+	_mid_layer_renderer = WORLD_MID_LAYER_RENDERER_SCRIPT.new()
+	_mid_layer_renderer.name = 'MidLayer'
+	_map_container.add_child(_mid_layer_renderer)
+	if _player_character.get_parent() != _mid_layer_renderer:
+		_player_character.reparent(_mid_layer_renderer)
 
 	_layer_4_renderer = MAP_LAYER_RENDERER_SCRIPT.new()
 	_layer_4_renderer.name = 'Layer4'
@@ -370,8 +369,6 @@ func _ensure_nodes() -> void:
 	_debug_overlay = MAP_DEBUG_OVERLAY_SCRIPT.new()
 	_debug_overlay.name = 'DebugOverlay'
 	_map_container.add_child(_debug_overlay)
-	move_child(_player_character, get_child_count() - 1)
-	_update_player_screen_position()
 
 
 func _clear_rendered_layers() -> void:
@@ -379,8 +376,8 @@ func _clear_rendered_layers() -> void:
 		_layer_1_renderer.clear_layer()
 	if is_instance_valid(_layer_2_renderer):
 		_layer_2_renderer.clear_layer()
-	if is_instance_valid(_layer_3_renderer):
-		_layer_3_renderer.clear_layer()
+	if is_instance_valid(_mid_layer_renderer):
+		_mid_layer_renderer.clear_layer()
 	if is_instance_valid(_layer_4_renderer):
 		_layer_4_renderer.clear_layer()
 
@@ -430,7 +427,8 @@ func _update_focus_visuals() -> void:
 	_follow_world_position = focus_world_position
 	_map_container.scale = Vector2.ONE * _world_zoom
 	_map_container.position = _calculate_map_container_position(focus_world_position)
-	_update_player_screen_position()
+	if _mid_layer_renderer != null:
+		_mid_layer_renderer.update_actor_positions(_build_visible_actors())
 
 
 func _get_current_focus_world_position() -> Vector2:
@@ -455,25 +453,23 @@ func _get_current_tile_position() -> Vector2i:
 
 	return Vector2i(_player_tile_x, _player_tile_y)
 
-
-func _update_player_screen_position() -> void:
-	if _player_character == null:
-		return
-
-	if Engine.is_editor_hint():
-		_player_character.position = _follow_world_position + _map_container.position
-		_player_character.scale = Vector2.ONE * _world_zoom
-		return
-
-	_player_character.position = (get_viewport_rect().size / 2.0).round()
-	_player_character.scale = Vector2.ONE * _world_zoom
-
-
 func _sync_player_motion_state() -> void:
 	if _player_character != null:
 		_player_character.set_moving(_movement_controller != null and _movement_controller.is_moving())
 	if _movement_controller == null or not _movement_controller.is_moving():
 		_refresh_view()
+
+
+func _build_visible_actors() -> Array[Dictionary]:
+	if _player_character == null:
+		return []
+
+	return [{
+		'id': &'player',
+		'tile_position': _get_current_tile_position(),
+		'world_position': _get_current_focus_world_position(),
+		'node': _player_character,
+	}]
 
 
 func _delta_to_direction(delta_x: int, delta_y: int) -> StringName:
