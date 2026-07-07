@@ -1,0 +1,166 @@
+import type { LayoutContainer as PixiLayoutContainer } from '@pixi/layout/components'
+import { tw } from '@pixi/layout/tailwind'
+import { BlurFilter, Rectangle } from 'pixi.js'
+import type { FC, ReactNode } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import {
+	OverlayLayerProvider,
+	useOverlayLayer,
+	useTopModalLayer,
+} from '../../hooks/useOverlayLayer'
+import { useScreenMetrics } from '../../store/viewportStore'
+import { CloseButton } from './CloseButton'
+import { Colors } from './colors'
+import { Label } from './Label'
+import { Panel } from './Panel'
+
+type WindowProps = {
+	visible: boolean
+	title: string
+	children?: ReactNode
+	onClose?: () => void
+	width?: number
+	height?: number
+	layout?: Record<string, unknown>
+	backgroundContent?: ReactNode
+}
+
+const DEFAULT_WIDTH = 560
+const DEFAULT_BLUR = 4
+const HEADER_CLOSE_BUTTON_SIZE = 52
+
+export const Window: FC<WindowProps> = ({
+	visible,
+	title,
+	children,
+	onClose,
+	width = DEFAULT_WIDTH,
+	height,
+	layout,
+	backgroundContent,
+}) => {
+	const { screenWidth, screenHeight } = useScreenMetrics()
+	const currentLayer = useOverlayLayer()
+	const parentTopModalLayer = useTopModalLayer()
+	const backgroundContainerRef = useRef<PixiLayoutContainer | null>(null)
+	const blurFilter = useMemo(
+		() =>
+			new BlurFilter({
+				strength: DEFAULT_BLUR,
+				quality: 4,
+				kernelSize: 5,
+			}),
+		[],
+	)
+	const filterArea = useMemo(
+		() => new Rectangle(0, 0, screenWidth, screenHeight),
+		[screenHeight, screenWidth],
+	)
+	const modalLayer = currentLayer + 1
+	const topModalLayer = visible
+		? Math.max(parentTopModalLayer, modalLayer)
+		: parentTopModalLayer
+
+	useEffect(() => {
+		if (backgroundContainerRef.current) {
+			backgroundContainerRef.current.filterArea = filterArea
+		}
+	}, [filterArea])
+
+	if (!visible && !backgroundContent) {
+		return null
+	}
+
+	return (
+		<layoutContainer
+			layout={{
+				...tw`w-full h-full`,
+				position: 'relative',
+			}}
+		>
+			{backgroundContent ? (
+				<layoutContainer
+					ref={backgroundContainerRef}
+					layout={{
+						...tw`w-full h-full`,
+						position: 'absolute',
+						left: 0,
+						top: 0,
+					}}
+					filters={visible ? [blurFilter] : undefined}
+				>
+					<OverlayLayerProvider
+						layer={currentLayer}
+						topModalLayer={topModalLayer}
+					>
+						{backgroundContent}
+					</OverlayLayerProvider>
+				</layoutContainer>
+			) : null}
+			{visible ? (
+				<OverlayLayerProvider layer={modalLayer} topModalLayer={topModalLayer}>
+					<layoutContainer
+						layout={{
+							...tw`w-full h-full items-center justify-center`,
+							position: backgroundContent ? 'absolute' : 'relative',
+							left: backgroundContent ? 0 : undefined,
+							top: backgroundContent ? 0 : undefined,
+						}}
+						eventMode='static'
+					>
+						<layoutContainer
+							layout={{
+								position: 'absolute',
+								left: 0,
+								top: 0,
+								width: '100%',
+								height: '100%',
+								backgroundColor: Colors.backgroundDark,
+							}}
+							alpha={0.72}
+						/>
+						<Panel
+							layout={{
+								width,
+								...(height != null ? { height } : {}),
+								maxWidth: Math.max(280, screenWidth - 80),
+								maxHeight: Math.max(220, screenHeight - 80),
+								gap: 16,
+								padding: 20,
+								...layout,
+							}}
+						>
+							<layoutContainer
+								layout={{
+									...tw`w-full flex-row items-center justify-between`,
+									gap: 16,
+									flexShrink: 0,
+								}}
+							>
+								<Label
+									text={title}
+									font='titleSm'
+									color={Colors.gold}
+									layout={{ flex: 1 }}
+								/>
+								<CloseButton
+									size={HEADER_CLOSE_BUTTON_SIZE}
+									onPress={onClose}
+								/>
+							</layoutContainer>
+							<layoutContainer
+								layout={{
+									...tw`w-full flex-col`,
+									...(height != null ? { flex: 1 } : {}),
+									gap: 12,
+								}}
+							>
+								{children}
+							</layoutContainer>
+						</Panel>
+					</layoutContainer>
+				</OverlayLayerProvider>
+			) : null}
+		</layoutContainer>
+	)
+}

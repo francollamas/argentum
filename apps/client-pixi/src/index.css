@@ -1,0 +1,225 @@
+@font-face {
+	font-family: 'inter-dom';
+	src: url('/fonts/inter.ttf') format('truetype');
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'spacegrotesk-regular-dom';
+	src: url('/fonts/spacegrotesk-regular.ttf') format('truetype');
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'tahoma-regular-dom';
+	src: url('/fonts/tahoma-regular.ttf') format('truetype');
+	font-display: swap;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	font-size: 100%;
+	vertical-align: baseline;
+	overflow: hidden;
+}
+
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+	display: block;
+}
+
+body {
+	line-height: 1;
+}
+
+html,
+body,
+#root,
+.game-surface-overlay-host {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+
+html,
+body,
+#root {
+	overscroll-behavior: none;
+}
+
+#root canvas {
+	touch-action: none;
+}
+
+.input-overlay,
+.textarea-overlay {
+	-webkit-touch-callout: default;
+	-webkit-user-select: text;
+	user-select: text;
+	touch-action: manipulation;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+blockquote,
+q {
+	quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: "";
+	content: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.input-overlay::placeholder,
+.textarea-overlay::placeholder {
+	color: var(--input-placeholder-color, #888888);
+	opacity: 1;
+}
+
+.input-overlay::selection,
+.textarea-overlay::selection {
+	background: rgba(255, 214, 102, 0.35);
+	color: inherit;
+}
+
+.textarea-overlay {
+	scrollbar-width: thin;
+	scrollbar-color: #8a6239 transparent;
+}
+
+.textarea-overlay::-webkit-scrollbar {
+	width: 10px;
+}
+
+.textarea-overlay::-webkit-scrollbar-track,
+.textarea-overlay::-webkit-scrollbar-track:hover {
+	background: transparent;
+}
+
+.textarea-overlay::-webkit-scrollbar-corner {
+	background: transparent;
+}
+
+.textarea-overlay::-webkit-scrollbar-thumb {
+	background: linear-gradient(180deg, #9b7449 0%, #7a522b 100%);
+	border: 2px solid transparent;
+	border-radius: 999px;
+	background-clip: padding-box;
+}
+
+.textarea-overlay::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(180deg, #ad8458 0%, #8a6239 100%);
+	border: 2px solid transparent;
+	background-clip: padding-box;
+}

@@ -1,40 +1,36 @@
 name: continuous integration
 
 on:
-    pull_request:
-    push:
-        branches: ['develop', 'main']
+  pull_request:
+  push:
+    branches: ['develop', 'main']
+
+defaults:
+  run:
+    working-directory: apps/client-pixi
+
+env:
+  CLIENT_DIR: apps/client-pixi
 
 jobs:
-    continuous-integration:
-        runs-on: ubuntu-latest
+  continuous-integration:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v6
 
-            - uses: pnpm/action-setup@v4
-              with:
-                  version: 10.20.0
+      - uses: ./.github/actions/setup-client
+        with:
+          working-directory: ${{ env.CLIENT_DIR }}
 
-            - name: setup node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: lts/*
+      - name: Generate assets
+        run: pnpm run generate-assets
 
-            - name: Install Free Tex Packer
-              run: pnpm add -g free-tex-packer-cli
+      - name: Build
+        run: pnpm run build
 
-            - name: Install dependencies
-              run: pnpm i
+      - name: Test
+        run: pnpm test
 
-            - name: Generate assets
-              run: pnpm -C apps/client run generate-assets
-
-            - name: Build
-              run: pnpm -C apps/client run build
-
-            - name: Test
-              run: pnpm -C apps/client test
-
-            - name: Linter and Format
-              run: pnpm -C apps/client run linter-check
+      - name: Linter and format
+        run: pnpm run linter-check

@@ -1,0 +1,117 @@
+import { tw } from '@pixi/layout/tailwind'
+import type { FC } from 'react'
+import { useEffect } from 'react'
+import { FONTS } from '../../config/typography'
+import { useNineSliceBackground } from '../../hooks/useNineSliceBackground'
+import { usePressableState } from '../../hooks/usePressableState'
+import { useUITexture } from '../../hooks/useUITexture'
+
+type ButtonVariant = 'normal' | 'small'
+
+type ButtonProps = {
+	text: string
+	width?: number
+	height?: number
+	onPress?: () => void
+	textColor?: number
+	variant?: ButtonVariant
+	disabled?: boolean
+	layout?: Record<string, unknown>
+}
+
+type ButtonStyleConfig = {
+	sliceSize: number
+	fontType: 'button' | 'buttonSm'
+	paddingH: number
+	paddingV: number
+	minHeight: number
+}
+
+const BUTTON_STYLES: Record<ButtonVariant, ButtonStyleConfig> = {
+	normal: {
+		sliceSize: 14,
+		fontType: 'button',
+		paddingH: 14,
+		paddingV: 11,
+		minHeight: 45,
+	},
+	small: {
+		sliceSize: 14,
+		fontType: 'buttonSm',
+		paddingH: 8,
+		paddingV: 6,
+		minHeight: 30,
+	},
+}
+
+export const Button: FC<ButtonProps> = ({
+	text,
+	width,
+	height,
+	onPress,
+	textColor = 0xffffff,
+	variant = 'normal',
+	disabled = false,
+	layout,
+}) => {
+	const { isHovered, isPressed, ...pressableProps } = usePressableState({
+		disabled,
+		onPress,
+	})
+
+	const defaultTexture = useUITexture('button-main-normal')
+	const hoverTexture = useUITexture('button-main-hover')
+	const pressedTexture = useUITexture('button-main-pressed')
+
+	const style = BUTTON_STYLES[variant]
+	const fontConfig = FONTS[style.fontType]
+
+	const currentTexture = isPressed
+		? pressedTexture
+		: isHovered
+			? hoverTexture
+			: defaultTexture
+
+	const { containerRefCallback, setTexture } = useNineSliceBackground({
+		texture: defaultTexture,
+		sliceSize: style.sliceSize,
+	})
+
+	useEffect(() => {
+		setTexture(currentTexture)
+	}, [currentTexture, setTexture])
+
+	return (
+		<layoutContainer
+			ref={containerRefCallback}
+			layout={{
+				...tw`items-center justify-center`,
+				...(width != null ? { width } : {}),
+				...(height != null ? { height } : {}),
+				minHeight: style.minHeight,
+				paddingLeft: style.paddingH,
+				paddingRight: style.paddingH,
+				paddingTop: style.paddingV,
+				paddingBottom: style.paddingV,
+				...layout,
+			}}
+			alpha={disabled ? 0.5 : 1}
+			{...pressableProps}
+		>
+			<pixiBitmapText
+				text={text}
+				style={{
+					fontFamily: fontConfig.fontFamily,
+					fontSize: fontConfig.fontSize,
+					fill: textColor,
+				}}
+				layout={{
+					width: 'intrinsic',
+					height: 'intrinsic',
+					flexShrink: 0,
+				}}
+				roundPixels
+			/>
+		</layoutContainer>
+	)
+}

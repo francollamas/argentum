@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="28" viewBox="0 0 700 28">
+  <defs>
+    <linearGradient id="fillBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D982;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#D8A94A;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#B7772A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B4D22;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="fillBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F6E4B8;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#734321;stop-opacity:0.85" />
+    </linearGradient>
+
+    <linearGradient id="fillGloss" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF1C9;stop-opacity:0.65" />
+      <stop offset="100%" style="stop-color:#FFF1C9;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="696" height="24" rx="10" fill="url(#fillBody)" stroke="url(#fillBorder)" stroke-width="2"/>
+  <rect x="6" y="4" width="688" height="5" rx="2.5" fill="url(#fillGloss)"/>
+</svg>

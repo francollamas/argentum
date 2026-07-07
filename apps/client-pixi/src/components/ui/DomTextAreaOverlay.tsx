@@ -1,0 +1,99 @@
+import type { CSSProperties, FC, RefObject } from 'react'
+
+type DomTextAreaOverlayStyle = CSSProperties & {
+	'--input-placeholder-color'?: string
+}
+
+type DomTextAreaOverlayProps = {
+	style: DomTextAreaOverlayStyle | null
+	interactive?: boolean
+	placeholder: string
+	value: string
+	textareaRef?: RefObject<HTMLTextAreaElement | null>
+	maxLength?: number
+	disabled?: boolean
+	onChange?: (value: string) => void
+	onFocus?: () => void
+	onBlur?: () => void
+}
+
+export const DomTextAreaOverlay: FC<DomTextAreaOverlayProps> = ({
+	style,
+	interactive = false,
+	placeholder,
+	value,
+	textareaRef,
+	maxLength,
+	disabled = false,
+	onChange,
+	onFocus,
+	onBlur,
+}) => {
+	if (!style) return null
+
+	const shellStyle: DomTextAreaOverlayStyle = {
+		position: style.position,
+		top: style.top,
+		left: style.left,
+		width: style.width,
+		height: style.height,
+		borderRadius: style.borderRadius,
+		overflow: 'hidden',
+		pointerEvents: 'none',
+		zIndex: style.zIndex,
+		'--input-placeholder-color': style['--input-placeholder-color'],
+	}
+
+	const viewportStyle: CSSProperties = {
+		position: 'absolute',
+		top: style.paddingTop,
+		right: style.paddingRight,
+		bottom: style.paddingBottom,
+		left: style.paddingLeft,
+		overflow: 'hidden',
+	}
+
+	const textAreaStyle: CSSProperties = {
+		display: 'block',
+		width: '100%',
+		height: '100%',
+		padding: 0,
+		margin: style.margin,
+		boxSizing: style.boxSizing,
+		border: style.border,
+		background: style.background,
+		color: style.color,
+		caretColor: style.caretColor,
+		textAlign: style.textAlign,
+		fontSize: style.fontSize,
+		fontFamily: style.fontFamily,
+		lineHeight: style.lineHeight,
+		appearance: style.appearance,
+		outline: style.outline,
+		pointerEvents: interactive && !disabled ? 'auto' : 'none',
+		resize: style.resize,
+		overflowX: style.overflowX,
+		overflowY: style.overflowY,
+	}
+
+	return (
+		<div className='textarea-overlay-shell' style={shellStyle}>
+			<div className='textarea-overlay-viewport' style={viewportStyle}>
+				<textarea
+					ref={textareaRef}
+					className='textarea-overlay'
+					maxLength={maxLength}
+					disabled={disabled}
+					autoComplete='off'
+					spellCheck={false}
+					placeholder={placeholder}
+					value={value}
+					style={textAreaStyle}
+					onChange={(event) => onChange?.(event.currentTarget.value)}
+					onFocus={onFocus}
+					onBlur={onBlur}
+				/>
+			</div>
+		</div>
+	)
+}

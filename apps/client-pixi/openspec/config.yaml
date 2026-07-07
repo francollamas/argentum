@@ -1,0 +1,66 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: TypeScript, React 19, PixiJS 8 (@pixi/react, @pixi/layout), Zustand, Vite 8, Biome 2.4.9, Vitest 4.1.2, Tauri v2, pnpm 10.33.0
+  Architecture: Multiplatform MMORPG client. React-PixiJS game view hierarchy (App → GameView → map/player). Zustand stores for client state. Texture atlases via atlasify. Binary loaders as PixiJS extensions. Map rendering with 4-layer viewport culling, single-map cache.
+  Testing: Vitest with @vitest/coverage-v8. Colocated *.test.ts(x) files. CI runs pnpm test and pnpm linter-check on ubuntu-latest.
+  Style: Biome formatting (tabs, single quotes, as-needed semicolons). No code comments. PascalCase components, camelCase utilities. All code in English.
+  Monorepo: Project root /Users/franco/Documents/AO/argentum. Client in apps/client-pixi. Server (TBD) expected in apps/server.
+
+strict_tdd: true
+
+testing:
+  runner:
+    command: pnpm test
+    framework: vitest
+  layers:
+    unit:
+      available: true
+      tool: vitest
+    integration:
+      available: false
+      tool: null
+    e2e:
+      available: false
+      tool: null
+  coverage:
+    available: true
+    command: pnpm coverage
+  quality:
+    linter:
+      available: true
+      command: pnpm linter-check
+    type_checker:
+      available: true
+      command: tsc --noEmit (via pnpm build)
+    formatter:
+      available: true
+      command: biome check --fix --unsafe . (via pnpm linter)
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Reference legacy docs from context/reimplementacion/ or legacy/legacy-server/docs/wiki/
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - Reference Java client patterns from legacy/legacy-client-java/
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing code patterns in src/
+    - Use @pixi/react JSX, never imperative PixiJS
+    - Run pnpm generate-assets after texture changes
+    tdd: true
+    test_command: pnpm test
+  verify:
+    test_command: pnpm test
+    build_command: pnpm build
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas

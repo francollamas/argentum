@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="48" viewBox="0 0 750 48">
+  <defs>
+    <linearGradient id="trackBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C9A27F;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8A5D44;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5A3525;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="trackShell" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3A241B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1B110C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#312018;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="trackGroove" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#070505;stop-opacity:1" />
+      <stop offset="45%" style="stop-color:#1B130F;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#241813;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A0706;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="trackHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F2D8B1;stop-opacity:0.55" />
+      <stop offset="100%" style="stop-color:#F2D8B1;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="8" width="746" height="32" rx="12" fill="url(#trackShell)" stroke="url(#trackBorder)" stroke-width="4"/>
+  <rect x="10" y="15" width="730" height="18" rx="8" fill="url(#trackGroove)"/>
+  <rect x="12" y="16" width="726" height="4" rx="2" fill="url(#trackHighlight)"/>
+</svg>

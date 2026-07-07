@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="80" viewBox="0 0 320 80">
+  <defs>
+    <linearGradient id="tabHoverBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#352118;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#24140F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tabHoverBorder" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#B78354;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#754C31;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="6" width="316" height="72" rx="10" fill="url(#tabHoverBg)" stroke="url(#tabHoverBorder)" stroke-width="3"/>
+</svg>
