@@ -7,3 +7,4 @@
 script = ExtResource("1_nh2dc")
 
 [node name="WorldMapView" parent="." unique_id=1509070317 instance=ExtResource("2_hkjqs")]
+player_tile_y = 67

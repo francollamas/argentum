@@ -7,6 +7,7 @@ const MAP_LAYER_RENDERER_SCRIPT := preload('res://scripts/rendering/map_layer_re
 const WORLD_MID_LAYER_RENDERER_SCRIPT := preload('res://scripts/rendering/world_mid_layer_renderer.gd')
 const MAP_DEBUG_OVERLAY_SCRIPT := preload('res://scripts/debug/map_debug_overlay.gd')
 const MOVEMENT_CONTROLLER_SCRIPT := preload('res://scripts/world/movement_controller.gd')
+const VIRTUAL_JOYSTICK_SCRIPT := preload('res://scripts/ui/virtual_joystick.gd')
 const PLAYER_CHARACTER_SCENE := preload('res://scenes/world/PlayerCharacter.tscn')
 
 const TILE_SIZE := 32.0
@@ -25,6 +26,8 @@ const ROOF_PADDING := 12
 const ROOF_TRIGGERS := [1, 2, 4]
 const DEFAULT_WORLD_ZOOM := 1.56
 const DEFAULT_MOVEMENT_TILES_PER_SECOND := 4.0
+const JOYSTICK_MARGIN := 24.0
+const JOYSTICK_SIZE := 112.0
 
 var _map_number := 1
 var _player_tile_x := 50
@@ -134,6 +137,9 @@ var _layer_4_renderer: Node2D
 var _debug_overlay: Node2D
 var _movement_controller: MovementController
 var _player_character: PlayerCharacter
+var _hud_layer: CanvasLayer
+var _hud_root: Control
+var _virtual_joystick: Control
 var _follow_world_position := Vector2.ZERO
 var _is_initialized := false
 var _roof_visible := true
@@ -401,6 +407,8 @@ func _ensure_nodes() -> void:
 			_player_character.name = 'PlayerCharacter'
 			add_child(_player_character)
 
+	_ensure_hud()
+
 	if is_instance_valid(_map_container):
 		return
 
@@ -430,6 +438,41 @@ func _ensure_nodes() -> void:
 	_debug_overlay = MAP_DEBUG_OVERLAY_SCRIPT.new()
 	_debug_overlay.name = 'DebugOverlay'
 	_map_container.add_child(_debug_overlay)
+
+
+func _ensure_hud() -> void:
+	if is_instance_valid(_hud_layer) and is_instance_valid(_hud_root) and is_instance_valid(_virtual_joystick):
+		return
+
+	if _hud_layer == null:
+		_hud_layer = get_node_or_null('HudLayer') as CanvasLayer
+		if _hud_layer == null:
+			_hud_layer = CanvasLayer.new()
+			_hud_layer.name = 'HudLayer'
+			add_child(_hud_layer)
+
+	if _hud_root == null:
+		_hud_root = _hud_layer.get_node_or_null('HudRoot') as Control
+		if _hud_root == null:
+			_hud_root = Control.new()
+			_hud_root.name = 'HudRoot'
+			_hud_root.anchor_right = 1.0
+			_hud_root.anchor_bottom = 1.0
+			_hud_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_hud_layer.add_child(_hud_root)
+
+	if _virtual_joystick == null:
+		_virtual_joystick = _hud_root.get_node_or_null('VirtualJoystick')
+		if _virtual_joystick == null:
+			_virtual_joystick = VIRTUAL_JOYSTICK_SCRIPT.new()
+			_virtual_joystick.name = 'VirtualJoystick'
+			_virtual_joystick.anchor_top = 1.0
+			_virtual_joystick.anchor_bottom = 1.0
+			_virtual_joystick.offset_left = JOYSTICK_MARGIN
+			_virtual_joystick.offset_top = -(JOYSTICK_MARGIN + JOYSTICK_SIZE)
+			_virtual_joystick.offset_right = JOYSTICK_MARGIN + JOYSTICK_SIZE
+			_virtual_joystick.offset_bottom = -JOYSTICK_MARGIN
+			_hud_root.add_child(_virtual_joystick)
 
 
 func _clear_rendered_layers() -> void:
