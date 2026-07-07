@@ -18,7 +18,7 @@ const MIN_TILE_X := 1
 const MIN_TILE_Y := 1
 const MAX_TILE_X := 100
 const MAX_TILE_Y := 100
-const ROOF_HIDDEN_ALPHA := 0.15
+const ROOF_FADE_DURATION := 0.25
 const GROUND_PADDING := 1
 const UPPER_PADDING := 10
 const ROOF_PADDING := 12
@@ -136,6 +136,8 @@ var _movement_controller: MovementController
 var _player_character: PlayerCharacter
 var _follow_world_position := Vector2.ZERO
 var _is_initialized := false
+var _roof_visible := true
+var _roof_tween: Tween
 
 
 func _ready() -> void:
@@ -307,12 +309,50 @@ func _calculate_map_container_position(focus_world_position: Vector2) -> Vector2
 
 
 func _update_roof_visibility() -> void:
-	var current_tile = get_current_tile()
-	if current_tile == null:
-		_layer_4_renderer.modulate.a = 1.0
+	if not is_instance_valid(_layer_4_renderer):
 		return
 
-	_layer_4_renderer.modulate.a = ROOF_HIDDEN_ALPHA if ROOF_TRIGGERS.has(current_tile.trigger) else 1.0
+	var current_tile = get_current_tile()
+	if current_tile == null:
+		_set_roof_visibility(true, false)
+		return
+
+	_set_roof_visibility(not ROOF_TRIGGERS.has(current_tile.trigger), true)
+
+
+func _set_roof_visibility(is_visible: bool, animate: bool) -> void:
+	if not is_instance_valid(_layer_4_renderer):
+		return
+
+	if is_instance_valid(_roof_tween):
+		_roof_tween.kill()
+		_roof_tween = null
+
+	if not animate:
+		_roof_visible = is_visible
+		_layer_4_renderer.visible = is_visible
+		_layer_4_renderer.modulate.a = 1.0 if is_visible else 0.0
+		return
+
+	if _roof_visible == is_visible and is_equal_approx(_layer_4_renderer.modulate.a, 1.0 if is_visible else 0.0):
+		_layer_4_renderer.visible = is_visible
+		return
+
+	_roof_visible = is_visible
+
+	if is_visible:
+		_layer_4_renderer.visible = true
+		_roof_tween = create_tween()
+		_roof_tween.tween_property(_layer_4_renderer, ^"modulate:a", 1.0, ROOF_FADE_DURATION)
+		return
+
+	_layer_4_renderer.visible = true
+	_roof_tween = create_tween()
+	_roof_tween.tween_property(_layer_4_renderer, ^"modulate:a", 0.0, ROOF_FADE_DURATION)
+	_roof_tween.tween_callback(func() -> void:
+		if is_instance_valid(_layer_4_renderer) and not _roof_visible:
+			_layer_4_renderer.visible = false
+	)
 
 
 func _calculate_layer_bounds(padding: int) -> Dictionary:
@@ -384,6 +424,7 @@ func _ensure_nodes() -> void:
 
 	_layer_4_renderer = MAP_LAYER_RENDERER_SCRIPT.new()
 	_layer_4_renderer.name = 'Layer4'
+	_layer_4_renderer.modulate.a = 1.0
 	_map_container.add_child(_layer_4_renderer)
 
 	_debug_overlay = MAP_DEBUG_OVERLAY_SCRIPT.new()
