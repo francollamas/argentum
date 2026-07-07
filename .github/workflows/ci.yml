@@ -3,7 +3,7 @@ name: continuous integration
 on:
   pull_request:
   push:
-    branches: ['develop', 'main']
+    branches: []
 
 env:
   CLIENT_DIR: apps/client
