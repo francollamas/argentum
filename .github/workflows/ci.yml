@@ -1,0 +1,36 @@
+name: continuous integration
+
+on:
+  pull_request:
+  push:
+    branches: ['develop', 'main']
+
+defaults:
+  run:
+    working-directory: apps/client-pixi
+
+env:
+  CLIENT_DIR: apps/client-pixi
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: ./.github/actions/setup-client
+        with:
+          working-directory: ${{ env.CLIENT_DIR }}
+
+      - name: Generate assets
+        run: pnpm run generate-assets
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Linter and format
+        run: pnpm run linter-check
