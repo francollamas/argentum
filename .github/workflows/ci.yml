@@ -5,12 +5,9 @@ on:
   push:
     branches: ['develop', 'main']
 
-defaults:
-  run:
-    working-directory: apps/client-pixi
-
 env:
-  CLIENT_DIR: apps/client-pixi
+  CLIENT_DIR: apps/client
+  GODOT_VERSION: 4.7.0
 
 jobs:
   continuous-integration:
@@ -18,19 +15,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-
-      - uses: ./.github/actions/setup-client
         with:
-          working-directory: ${{ env.CLIENT_DIR }}
+          submodules: recursive
 
-      - name: Generate assets
-        run: pnpm run generate-assets
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
 
-      - name: Build
-        run: pnpm run build
+      - name: Verify Godot plugin dependency
+        run: test -f "${{ env.CLIENT_DIR }}/addons/godot_ai/plugin.cfg"
 
-      - name: Test
-        run: pnpm test
+      - name: Import Godot project
+        run: godot --headless --path "${{ env.CLIENT_DIR }}" --import > godot-import.log 2>&1
 
-      - name: Linter and format
-        run: pnpm run linter-check
+      - name: Validate import log
+        run: |
+          if grep -E "SCRIPT ERROR|Parse Error" godot-import.log; then
+            cat godot-import.log
+            exit 1
+          fi
+
+      - name: Export Web build
+        run: |
+          rm -rf "${{ env.CLIENT_DIR }}/export/web"
+          mkdir -p "${{ env.CLIENT_DIR }}/export/web"
+          godot --headless --path "${{ env.CLIENT_DIR }}" --export-release "Web" "export/web/index.html"
+
+      - name: Verify exported build
+        run: |
+          test -f "${{ env.CLIENT_DIR }}/export/web/index.html"
+          test -f "${{ env.CLIENT_DIR }}/export/web/index.js"
