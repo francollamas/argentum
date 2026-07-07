@@ -27,6 +27,8 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v6
+        with:
+          submodules: recursive
 
       - uses: chickensoft-games/setup-godot@v2
         with:
@@ -43,6 +45,7 @@ jobs:
       - name: Export Web build
         run: |
           rm -rf "${{ env.CLIENT_DIR }}/export/web"
+          mkdir -p "${{ env.CLIENT_DIR }}/export/web"
           godot --headless --path "${{ env.CLIENT_DIR }}" --export-release "Web" "export/web/index.html"
 
       - name: Pull Vercel environment information
