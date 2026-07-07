@@ -9,7 +9,7 @@ env:
   CLIENT_DIR: apps/client
   GODOT_VERSION: 4.7.0
   WEB_ARTIFACT_NAME: client-web-build
-  VERCEL_DEPLOY_DIR: .vercel-deploy
+  VERCEL_DEPLOY_DIR: ${{ runner.temp }}/vercel-deploy
 
 jobs:
   continuous-integration:
